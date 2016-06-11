@@ -83,7 +83,7 @@ ConsList<T> concat(ConsList<T> rhs);
 ConsList<T> cons(T newHead);
 ```
 
-Two static methods are provided to make cons() and conca() more natural. E.g.
+Two static methods are provided to make cons() and concat() more natural. E.g.
 
 ```
 import static io.soabase.halva.sugar.Sugar.List;

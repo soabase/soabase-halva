@@ -243,6 +243,7 @@
                             <exclude>**/assets/**</exclude>
                             <exclude>**/examples/**</exclude>
                             <exclude>**/io/soabase/com/google/**</exclude>
+                            <exclude>**/com/company/**</exclude>
                         </excludes>
                         <strictCheck>true</strictCheck>
                     </configuration>

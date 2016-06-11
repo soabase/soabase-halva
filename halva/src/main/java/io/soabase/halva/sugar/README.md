@@ -8,6 +8,8 @@ In Scala the idiom for instantiating various objects is to use simply use the cl
 * Iterator
 * Iterable
 
+Note: all instances returned by Sugar are immutable.
+
 E.g.
 
 #### List

@@ -38,6 +38,33 @@ Map<String, Integer> myMap = Map(Pair("10", 10), Pair("20", 20));
 
 ```
 
+#### Set
+
+```
+import static io.soabase.halva.sugar.Sugar.Set;
+
+...
+
+Set<String> mySet = Set("1", "2", "3");
+
+```
+
+#### Iterable/Iterator
+
+These allow wrapping single objects as Iterators or Iterables so that can be iterated over or streamed.
+
+```
+import static io.soabase.halva.sugar.Sugar.Iterable;
+import static io.soabase.halva.sugar.Sugar.Iterator;
+
+...
+
+Iterator<String> iterator = Iterator("test");
+Iterable<String> iterator = Iterable("test");
+
+
+```
+
 #### ConsList
 
 TBD

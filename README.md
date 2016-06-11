@@ -12,7 +12,7 @@ or magic. Using the features in Java should be as close as possibile to how the 
 ### Features
 
 * [Case Classes and Case Objects](../../tree/master/halva/src/main/java/io/soabase/halva/caseclass)
-* [Pattern matching/exraction](../../tree/master/halva/src/main/java/io/soabase/halva/matcher/)
+* [Pattern matching and extraction](../../tree/master/halva/src/main/java/io/soabase/halva/matcher/)
 * [For Comprehensions](../../tree/master/halva/src/main/java/io/soabase/halva/comprehension/)
 * [Type Aliases](../../tree/master/halva/src/main/java/io/soabase/halva/alias/)
 * [Tuples](../../tree/master/halva/src/main/java/io/soabase/halva/tuple/)

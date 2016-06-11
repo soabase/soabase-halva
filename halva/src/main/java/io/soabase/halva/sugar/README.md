@@ -18,6 +18,8 @@ import static io.soabase.halva.sugar.tuple.Pair.Pair;
 
 ...
 
-List<String> myStringList = List("a", "b", "c")
-List<Pair<String, Integer>> myPairs = List(Pair("10", 10), Pair("20", 20))
+List<String> myStringList = List("a", "b", "c");
+List<Pair<String, Integer>> myPairs = List(Pair("10", 10), Pair("20", 20));
 ```
+
+**Note:** The list produced is actually a `ConsList` (see below).

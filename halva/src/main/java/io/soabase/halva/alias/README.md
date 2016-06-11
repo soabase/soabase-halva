@@ -20,7 +20,7 @@ The generated class will be named `PairListAlias`. However, if you were to name 
 
 #### Using the Generated Class 
 
-The generated class is actually an interface and it can be used in place of the original type almost anywhere you'd use the original. However, Java does not support [covariant generic types](http://www.ibm.com/developerworks/library/j-jtp01255/). Therefore, whereby you may always assign the generated alias to a variable of the original type, you may not assign an instance of the original type to an alias. Halva provides a wrapper with every generated to work around this. E.g. (given PairList above)
+The generated class is actually an interface and it can be used in place of the original type almost anywhere you'd use the original. However, Java does not support [covariant generic types](http://www.ibm.com/developerworks/library/j-jtp01255/). Therefore, whereby you may always assign the generated alias to a variable of the original type, you may not assign an instance of the original type to an alias. Halva provides a wrapper with every generated alias to work around this. E.g. (given PairList above)
 
 ```java
 import your.package.name.PairListAlias

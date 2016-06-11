@@ -42,33 +42,6 @@ public class Sugar
         return new ConsListImpl<>(Arrays.asList(a));
     }
 
-    public static <T> ConsList<T> List(Iterable<T> iterable)
-    {
-        if ( iterable == null )
-        {
-            return new ConsListImpl<>();
-        }
-        return new ConsListImpl<>(iterable.iterator());
-    }
-
-    public static <T> ConsList<T> List(Iterator<T> iterator)
-    {
-        if ( iterator == null )
-        {
-            return new ConsListImpl<>();
-        }
-        return new ConsListImpl<>(iterator);
-    }
-
-    public static <T> ConsList<T> List(List<T> list)
-    {
-        if ( list == null )
-        {
-            return new ConsListImpl<>();
-        }
-        return new ConsListImpl<>(list);
-    }
-
     @SafeVarargs
     public static <T> Set<T> Set(T... a)
     {
@@ -78,38 +51,6 @@ public class Sugar
         }
         Set<T> set = new HashSet<>(a.length);
         Collections.addAll(set, a);
-        return Collections.unmodifiableSet(set);
-    }
-
-    public static <T> Set<T> Set(Collection<T> set)
-    {
-        if ( set == null )
-        {
-            return Collections.unmodifiableSet(new HashSet<>());
-        }
-        return Set(set);
-    }
-
-    public static <T> Set<T> Set(Iterable<T> iterable)
-    {
-        if ( iterable == null )
-        {
-            return Collections.unmodifiableSet(new HashSet<>());
-        }
-        return Set(iterable.iterator());
-    }
-
-    public static <T> Set<T> Set(Iterator<T> iterator)
-    {
-        if ( iterator == null )
-        {
-            return Collections.unmodifiableSet(new HashSet<>());
-        }
-        Set<T> set = new HashSet<>();
-        while ( iterator.hasNext() )
-        {
-            set.add(iterator.next());
-        }
         return Collections.unmodifiableSet(set);
     }
 
@@ -124,39 +65,6 @@ public class Sugar
         for ( Tuple2<K, V> t : kvs )
         {
             map.put(t._1, t._2);
-        }
-        return Collections.unmodifiableMap(map);
-    }
-
-    public static <K, V> Map<K, V> Map(Map<K, V> map)
-    {
-        if ( map == null )
-        {
-            return Collections.unmodifiableMap(new HashMap<>());
-        }
-        return Map(map);
-    }
-
-    public static <K, V> Map<K, V> Map(Iterable<Tuple2<K, V>> kvs)
-    {
-        if ( kvs == null )
-        {
-            return Collections.unmodifiableMap(new HashMap<>());
-        }
-        return Map(kvs.iterator());
-    }
-
-    public static <K, V> Map<K, V> Map(Iterator<Tuple2<K, V>> kvs)
-    {
-        if ( kvs == null )
-        {
-            return Collections.unmodifiableMap(new HashMap<>());
-        }
-        Map<K, V> map = new HashMap<>();
-        while ( kvs.hasNext() )
-        {
-            Tuple2<K, V> kv = kvs.next();
-            map.put(kv._1, kv._2);
         }
         return Collections.unmodifiableMap(map);
     }

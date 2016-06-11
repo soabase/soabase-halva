@@ -18,14 +18,20 @@ package io.soabase.halva.caseclass;
 import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
+import io.soabase.halva.any.AnyType;
+import io.soabase.halva.sugar.ConsList;
+import io.soabase.halva.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
+import java.util.List;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.any.AnyDeclaration.anyInt;
 import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueT;
+import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.matcher.Matcher.match;
+import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.T;
 
@@ -68,5 +74,35 @@ public class TestMatcher
     {
         Assert.assertEquals(3, subtract(Value(6), Value(3)));
         Assert.assertEquals(-3, subtract(Value(3), Value(6)));
+    }
+
+    static AnyDeclaration<Pair<String, Integer>> myDecl = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){});
+
+    static List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
+        Any<Pair<String, Integer>> foundPair = myDecl.define();
+
+        return For(foundPair, list)
+            .when(() -> foundPair.val()._1.equals(key))
+            .yield(foundPair::val);
+    }
+
+    @Test
+    public void testFindMatches()
+    {
+        Assert.assertEquals(List(Pair("even", 2), Pair("even", 4)), findMatches("even", List(Pair("odd", 1), Pair("even", 2), Pair("odd", 3), Pair("even", 4))));
+    }
+
+    @Test
+    public void testListExtraction()
+    {
+        ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
+        Any<Pair<String, Integer>> anyStringIntPair = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){}).define();
+        Any<ConsList<Pair<String, Integer>>> anyPairList = AnyDeclaration.of(new AnyType<ConsList<Pair<String, Integer>>>(){}).define();
+
+        Any<Void> patternMatcher = Any.defineAnyHeadAnyTail(anyStringIntPair, anyPairList);
+        String str = match(list)
+            .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
+            .get();
+        Assert.assertEquals("The tail is: " + list.tail(), str);
     }
 }

@@ -54,7 +54,7 @@ public class TestTuple
         assertEquals(T("a", T(1, 2, 3), "b"), T("a", T(1, 2, 3), "b"));
     }
 
-    private String cons(ConsList<Pair<String, Integer>> list)
+    private String extractFunc(ConsList<Pair<String, Integer>> list)
     {
         Any<Pair<String, Integer>> p = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){}).define();
         Any<ConsList<Pair<String, Integer>>> t = AnyDeclaration.of(new AnyType<ConsList<Pair<String, Integer>>>(){}).define();
@@ -77,10 +77,10 @@ public class TestTuple
     @Test
     public void testConsListExtraction()
     {
-        Assert.assertEquals("empty", cons(List()));
-        Assert.assertEquals("10/10 :: " + List(Pair("100", 100), Pair("200", 200)), cons(List(Pair("10", 10), Pair("100", 100), Pair("200", 200))));
-        Assert.assertEquals("-10/-10 :: 20/20", cons(List(Pair("-10", -10), Pair("20", 20))));
-        Assert.assertEquals(Pair("100", 100) + " :: 20/20 30/30", cons(List(Pair("100", 100), Pair("20", 20), Pair("30", 30))));
-        Assert.assertEquals(Pair("66", 66) + " :: " + List(Pair("100", 100), Pair("200", 200)), cons(List(Pair("66", 66), Pair("100", 100), Pair("200", 200))));
+        Assert.assertEquals("empty", extractFunc(List()));
+        Assert.assertEquals("10/10 :: " + List(Pair("100", 100), Pair("200", 200)), extractFunc(List(Pair("10", 10), Pair("100", 100), Pair("200", 200))));
+        Assert.assertEquals("-10/-10 :: 20/20", extractFunc(List(Pair("-10", -10), Pair("20", 20))));
+        Assert.assertEquals(Pair("100", 100) + " :: 20/20 30/30", extractFunc(List(Pair("100", 100), Pair("20", 20), Pair("30", 30))));
+        Assert.assertEquals(Pair("66", 66) + " :: " + List(Pair("100", 100), Pair("200", 200)), extractFunc(List(Pair("66", 66), Pair("100", 100), Pair("200", 200))));
     }
 }

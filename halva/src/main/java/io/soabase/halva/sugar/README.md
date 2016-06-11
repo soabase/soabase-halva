@@ -51,7 +51,7 @@ Set<String> mySet = Set("1", "2", "3");
 
 #### Iterable/Iterator
 
-These allow wrapping single objects as Iterators or Iterables so that can be iterated over or streamed.
+These allow wrapping single objects as Iterators or Iterables so that they can be iterated over or streamed.
 
 ```
 import static io.soabase.halva.sugar.Sugar.Iterable;

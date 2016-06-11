@@ -24,7 +24,7 @@ The generated class is actually an interface and it can be used in place of the 
 
 ```java
 import your.package.name.PairListAlias
-import your.package.name.PairListAlias.PairListAlias
+import static your.package.name.PairListAlias.PairListAlias
 
 PairListAlias alias = List(Pair("10", 10), Pair("20", 20)); // won't compile - PairListAlias is not a ConsList<Pair<String, Integer>>
 PairListAlias alias = PairListAlias(List(Pair("10", 10), Pair("20", 20))); // works

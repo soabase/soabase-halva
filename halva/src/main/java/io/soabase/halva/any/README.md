@@ -40,3 +40,25 @@ List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Intege
         .yield(foundPair::val);
 }
 ```
+
+#### Function List Matching
+
+Anys support some of Scala's list pattern matching. In Scala you can do:
+
+```scala
+list match {
+    case Pair(x, y) :: tail => ...
+}
+```
+
+Halva supports this via Anys. Given existing Anys you can create a container Any that matches parts of a Halva `ConsList`. E.g.
+
+```java
+Any<Pair<String, Integer>> anyStringIntPair = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){}).define();
+Any<ConsList<Pair<String, Integer>>> anyPairList = AnyDeclaration.of(new AnyType<ConsList<Pair<String, Integer>>>(){}).define();
+
+Any<Void> patternMatcher = Any.defineAnyHeadAnyTail(anyStringIntPair, anyPairList);
+match(list)
+    .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
+    .get();
+```

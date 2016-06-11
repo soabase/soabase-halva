@@ -15,12 +15,12 @@
  */
 package io.soabase.halva.alias;
 
-import io.soabase.halva.suagar.ConsList;
+import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static io.soabase.halva.alias.StringList.StringList;
-import static io.soabase.halva.suagar.Sugar.List;
+import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestAlias
 {

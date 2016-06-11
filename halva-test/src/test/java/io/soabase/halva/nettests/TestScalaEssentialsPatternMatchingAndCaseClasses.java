@@ -39,7 +39,7 @@ import static io.soabase.halva.nettests.SuperHero.SuperHero;
 import static io.soabase.halva.nettests.SuperHero.SuperHeroT;
 import static io.soabase.halva.nettests.TestScalaEssentialsPatternMatchingAndCaseClasses.Power.*;
 import static io.soabase.halva.nettests.Villain.Villain;
-import static io.soabase.halva.suagar.Sugar.List;
+import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.T;
 
 // from http://www.slideshare.net/czechscala/scala-essentials-pattern-matching-and-case-classes

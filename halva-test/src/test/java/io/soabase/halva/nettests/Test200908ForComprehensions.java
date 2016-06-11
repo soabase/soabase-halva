@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.soabase.halva.comprehension.For.For;
-import static io.soabase.halva.suagar.Sugar.List;
+import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.T;
 
 // from http://daily-scala.blogspot.com/2009/08/for-comprehensions.html

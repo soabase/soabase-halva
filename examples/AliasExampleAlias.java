@@ -3,7 +3,7 @@ package com.company;
 
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.suagar.ConsList;
+import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.details.Pair;
 import java.lang.Integer;
 import java.lang.Object;

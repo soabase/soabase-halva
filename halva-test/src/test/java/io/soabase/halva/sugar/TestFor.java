@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.suagar;
+package io.soabase.halva.sugar;
 
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
@@ -26,9 +26,9 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static io.soabase.halva.suagar.Author.Author;
-import static io.soabase.halva.suagar.Book.Book;
-import static io.soabase.halva.suagar.Sugar.List;
+import static io.soabase.halva.sugar.Author.Author;
+import static io.soabase.halva.sugar.Book.Book;
+import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.T;
 
 public class TestFor

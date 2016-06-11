@@ -19,7 +19,7 @@ import io.soabase.halva.caseclass.CaseObject;
 import java.util.Date;
 import java.util.List;
 
-import static io.soabase.halva.suagar.Sugar.List;
+import static io.soabase.halva.sugar.Sugar.List;
 
 @CaseObject
 public interface ExampleObject extends Example

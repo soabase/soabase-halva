@@ -16,7 +16,7 @@
 package io.soabase.halva.any;
 
 import io.soabase.halva.alias.TypeAliasType;
-import io.soabase.halva.suagar.ConsList;
+import io.soabase.halva.sugar.ConsList;
 
 public interface AnyDeclaration<T>
 {

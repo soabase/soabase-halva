@@ -16,7 +16,7 @@
 package com.company;
 
 import io.soabase.halva.alias.TypeAlias;
-import io.soabase.halva.suagar.ConsList;
+import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.details.Pair;
 
 @TypeAlias

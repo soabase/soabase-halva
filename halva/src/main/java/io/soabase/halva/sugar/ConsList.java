@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.suagar;
+package io.soabase.halva.sugar;
 
 import java.util.List;
 

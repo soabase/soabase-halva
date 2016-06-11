@@ -18,7 +18,7 @@ package io.soabase.halva.tuple;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.suagar.ConsList;
+import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.details.Pair;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.soabase.halva.matcher.Matcher.match;
-import static io.soabase.halva.suagar.Sugar.List;
+import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.T;
 import static org.junit.Assert.assertEquals;

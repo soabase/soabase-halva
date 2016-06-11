@@ -52,4 +52,41 @@ If the `name()` method in the builder is not used when building the case class, 
 
 ### Reference
 
-Case classes and case objects are generated from a specification interface. The interface may extend other interfaces as needed. The interface can contain any combination of fields, methods, etc. For case classes the annotation processor will notice methods in the interface that conform to _case class fields_ and generate fields in the case class for them. These are no-arg methods that return a value. E.g. `String name();`. Case objects do not have fields. Add a default implementation to the case class field members to provide a custom [default value for the field](###)
+Case classes and case objects are generated from a specification interface. The interface may extend other interfaces as needed. The interface can contain any combination of fields, methods, etc. For case classes the annotation processor will notice methods in the interface that conform to _case class fields_ and generate fields in the case class for them. These are no-arg methods that return a value. E.g. `String name();`. Case objects do not have fields. Add a default implementation to the case class field members to provide a custom [default value for the field](#default-values).
+
+**Naming**
+
+The name of the generated class will be *OriginalName*Case. However, if you were to name the annotated source interface ending with an underscore `_`, the generated class wouild be named _OriginalName_ (i.e. the original name minus the underscore). You can change these defaults with the CaseClass/CaseObject attributes suffix() and unsuffix().
+
+**Mutable/Immutable**
+
+By default, all generated case class fields are immutable and only getter methods are generated. You can mark a method in the source interface with `@CaseClassMutable` to make that field mutable. E.g.
+
+```
+@CaseClass interface Foo {
+    String name(); // immutable
+    @CaseClassMutable int age(); // mutable
+}
+```
+
+**Ignore Fields**
+
+You can instruct the annotation processor to not generate a field for a method in the interface that looks like a _case class field_ by marking it with `@CaseClassIgnore`. E.g.
+
+```
+@CaseClass interface Foo {
+    String name(); // field generated
+    @CaseClassIgnore int getCurrentTime(); // field not generated
+}
+```
+
+**Serialization**
+
+The generated case classes implement `Serializable` so they can be used with standard JDK serialization. If you'd like to use Jackson for JSON serialization, set the optional attribute `json` to true.
+
+```java
+@CaseClass(json = true)
+public interface Example {
+    String name();
+}
+```

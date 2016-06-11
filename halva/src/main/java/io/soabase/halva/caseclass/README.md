@@ -21,7 +21,7 @@ public interface Example {
 
 ... into a complete **Scala-style case class** with **accessors**, a complete **Builder/Factory**, **default values**, **`equals()`**, **`hashCode()`**, **`toString()`** and **`copy()`**. The generated class for the above is here:
 
-> https://github.com/Randgalt/halva/blob/master/examples/example-generated/ExampleCase.java
+> [ExampleCase.java](https://github.com/Randgalt/halva/blob/master/examples/example-generated/ExampleCase.java)
 
 Then you can use it ala:
 

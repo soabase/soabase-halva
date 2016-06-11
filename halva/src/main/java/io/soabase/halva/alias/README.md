@@ -26,6 +26,6 @@ The generated class is actually an interface and it can be used in place of the 
 import your.package.name.PairListAlias
 
 PairListAlias alias = List(Pair("10", 10), Pair("20", 20)); // won't compile - PairListAlias is not a ConsList<Pair<String, Integer>>
-PairListAlias alias = PairListAliasList(Pair("10", 10), Pair("20", 20)); // works
+PairListAlias alias = PairListAlias(List(Pair("10", 10), Pair("20", 20))); // works
 ConsList<Pair<String, Integer>> original = alias; // works
 ```

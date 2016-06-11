@@ -8,7 +8,7 @@ In Scala the idiom for instantiating various objects is to use simply use the cl
 * Iterator
 * Iterable
 
-Note: all instances returned by Sugar are immutable.
+Note: all instances returned by Sugar are immutable. They are also null safe - you can safely pass null arguments and will get back empty collections.
 
 E.g.
 

@@ -67,4 +67,18 @@ Iterable<String> iterator = Iterable("test");
 
 #### ConsList
 
-TBD
+ConsList extends the Java Library's `List` and adds these methods:
+
+```
+// return the list head (first element) or an exception if empty
+T head();
+
+// return a new list of this list minus the first element or an exception if less than 2 items
+ConsList<T> tail();
+
+// return a new list that is a concatenation of this list plus the given list
+ConsList<T> concat(ConsList<T> rhs);
+
+// return a new list that has the given item as the head of this list
+ConsList<T> cons(T newHead);
+```

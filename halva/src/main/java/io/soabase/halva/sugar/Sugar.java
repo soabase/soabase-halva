@@ -16,14 +16,7 @@
 package io.soabase.halva.sugar;
 
 import io.soabase.halva.tuple.details.Tuple2;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 // http://www.grahamlea.com/2014/08/java-8-lambdas-scala-obsolete/
 
@@ -49,6 +42,33 @@ public class Sugar
         return new ConsListImpl<>(Arrays.asList(a));
     }
 
+    public static <T> ConsList<T> List(Iterable<T> iterable)
+    {
+        if ( iterable == null )
+        {
+            return new ConsListImpl<>();
+        }
+        return new ConsListImpl<>(iterable.iterator());
+    }
+
+    public static <T> ConsList<T> List(Iterator<T> iterator)
+    {
+        if ( iterator == null )
+        {
+            return new ConsListImpl<>();
+        }
+        return new ConsListImpl<>(iterator);
+    }
+
+    public static <T> ConsList<T> List(List<T> list)
+    {
+        if ( list == null )
+        {
+            return new ConsListImpl<>();
+        }
+        return new ConsListImpl<>(list);
+    }
+
     @SafeVarargs
     public static <T> Set<T> Set(T... a)
     {
@@ -61,6 +81,38 @@ public class Sugar
         return Collections.unmodifiableSet(set);
     }
 
+    public static <T> Set<T> Set(Collection<T> set)
+    {
+        if ( set == null )
+        {
+            return Collections.unmodifiableSet(new HashSet<>());
+        }
+        return Set(set);
+    }
+
+    public static <T> Set<T> Set(Iterable<T> iterable)
+    {
+        if ( iterable == null )
+        {
+            return Collections.unmodifiableSet(new HashSet<>());
+        }
+        return Set(iterable.iterator());
+    }
+
+    public static <T> Set<T> Set(Iterator<T> iterator)
+    {
+        if ( iterator == null )
+        {
+            return Collections.unmodifiableSet(new HashSet<>());
+        }
+        Set<T> set = new HashSet<>();
+        while ( iterator.hasNext() )
+        {
+            set.add(iterator.next());
+        }
+        return Collections.unmodifiableSet(set);
+    }
+
     @SafeVarargs
     public static <K, V> Map<K, V> Map(Tuple2<K, V>... kvs)
     {
@@ -68,10 +120,43 @@ public class Sugar
         {
             return Collections.unmodifiableMap(new HashMap<>());
         }
-        HashMap<K, V> map = new HashMap<>(kvs.length);
+        Map<K, V> map = new HashMap<>(kvs.length);
         for ( Tuple2<K, V> t : kvs )
         {
             map.put(t._1, t._2);
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    public static <K, V> Map<K, V> Map(Map<K, V> map)
+    {
+        if ( map == null )
+        {
+            return Collections.unmodifiableMap(new HashMap<>());
+        }
+        return Map(map);
+    }
+
+    public static <K, V> Map<K, V> Map(Iterable<Tuple2<K, V>> kvs)
+    {
+        if ( kvs == null )
+        {
+            return Collections.unmodifiableMap(new HashMap<>());
+        }
+        return Map(kvs.iterator());
+    }
+
+    public static <K, V> Map<K, V> Map(Iterator<Tuple2<K, V>> kvs)
+    {
+        if ( kvs == null )
+        {
+            return Collections.unmodifiableMap(new HashMap<>());
+        }
+        Map<K, V> map = new HashMap<>();
+        while ( kvs.hasNext() )
+        {
+            Tuple2<K, V> kv = kvs.next();
+            map.put(kv._1, kv._2);
         }
         return Collections.unmodifiableMap(map);
     }

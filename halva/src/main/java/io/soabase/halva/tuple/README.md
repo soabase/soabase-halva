@@ -12,7 +12,7 @@ A Tuple is a heterogeneous collection of items. Halva provides Tuple sizes for 0
 While you can create individual Tuple types directly, you should create them as you would in Scala. Java does not allow overloading simple parenthesized expressions so Halva uses a static method named `T`. Use static imports to make this clean in your Java souce. E.g.
 
 ```java
-package your.package.here
+package your.package.here;
 
 import static io.soabase.halva.tuple.Tuple.T;
 

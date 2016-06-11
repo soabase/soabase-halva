@@ -14,7 +14,7 @@ E.g.
 
 ```
 import static io.soabase.halva.sugar.Sugar.List;
-import static io.soabase.halva.sugar.tuple.Pair.Pair;
+import static io.soabase.halva.sugar.tuple.Tuple.Pair;
 
 ...
 
@@ -23,6 +23,18 @@ List<Pair<String, Integer>> myPairs = List(Pair("10", 10), Pair("20", 20));
 ```
 
 **Note:** The list produced is actually a `ConsList` [(see below)](#conslist).
+
+#### Map
+
+```
+import static io.soabase.halva.sugar.Sugar.Map;
+import static io.soabase.halva.sugar.tuple.Tuple.Pair;
+
+...
+
+Map<String, Integer> myMap = Map(Pair("10", 10), Pair("20", 20));
+
+```
 
 #### ConsList
 

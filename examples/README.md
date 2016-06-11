@@ -4,6 +4,11 @@ This is an older Scala file I found on the net here:
   
 *  http://www.scala-lang.org/old/node/56.html
 
+The (slightly) modified version of it and the ported Java/Halva version are here:
+
+* [SimpleInterpreter.scala](src/main/java/io/soabase/halva/examples/SimpleInterpreter.scala)
+* [SimpleInterpreter.java](src/main/java/io/soabase/halva/examples/SimpleInterpreter.java)
+
 This one small program contains all the features that people usually wish they could use in Java. To me eye, the Halva/Java version 
 looks remarkably close to the Scala file. It definitely doesn't look like normal Java. Of course, it's noisier than 
 the Scala version - no matter how hard you try Java is noisy. However, Java 8 is much, much, less noisier than 

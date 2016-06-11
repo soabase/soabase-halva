@@ -1,6 +1,6 @@
 ### Anys
 
-In Scala for-comprehensions, pattern matching, etc. you can declare variables that can be use with extracting as the comprehension or matching is occurring. Scala will define these variables for you using the correct type and create a new scope for using them. E.g.
+In Scala for-comprehensions, pattern matching, etc. you can declare variables that can be used with extraction as the comprehension or matching is occurring. Scala will define these variables for you using the correct type and create a new scope for using them. E.g.
 
 ```scala
 x match {

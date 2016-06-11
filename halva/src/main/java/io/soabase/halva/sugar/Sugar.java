@@ -161,6 +161,24 @@ public class Sugar
         return Collections.unmodifiableMap(map);
     }
 
+    public static <T> Iterator<T> Iterator()
+    {
+        return new Iterator<T>()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return false;
+            }
+
+            @Override
+            public T next()
+            {
+                throw new NoSuchElementException();
+            }
+        };
+    }
+
     public static <T> Iterator<T> Iterator(T object)
     {
         return new Iterator<T>()
@@ -189,6 +207,11 @@ public class Sugar
     public static <T> Iterable<T> Iterable(T object)
     {
         return () -> Iterator(object);
+    }
+
+    public static <T> Iterable<T> Iterable()
+    {
+        return Sugar::Iterator;
     }
 
     private Sugar()

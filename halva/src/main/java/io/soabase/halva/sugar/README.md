@@ -51,7 +51,7 @@ Set<String> mySet = Set("1", "2", "3");
 
 #### Iterable/Iterator
 
-These allow wrapping single objects as Iterators or Iterables so that can be iterated over or streamed.
+These allow wrapping single objects as Iterators or Iterables so that they can be iterated over or streamed.
 
 ```
 import static io.soabase.halva.sugar.Sugar.Iterable;
@@ -81,4 +81,18 @@ ConsList<T> concat(ConsList<T> rhs);
 
 // return a new list that has the given item as the head of this list
 ConsList<T> cons(T newHead);
+```
+
+Two static methods are provided to make cons() and conca() more natural. E.g.
+
+```
+import static io.soabase.halva.sugar.Sugar.List;
+import static io.soabase.halva.sugar.Sugar.cons;
+import static io.soabase.halva.sugar.Sugar.concat;
+
+List<Integer> list1 = List(1, 2, 3, 4);
+List<Integer> consList = cons(0, list1); // results in a new list: List(0, 1, 2, 3, 4)
+List<Integer> concatList = concat(list1, List(5, 6, 7)); // results in a new list: List(1, 2, 3, 4, 5, 6, 7)
+List<Integer> list2 = cons(100, consList.tail()); // results in a new list: List(100, 1, 2, 3, 4)
+
 ```

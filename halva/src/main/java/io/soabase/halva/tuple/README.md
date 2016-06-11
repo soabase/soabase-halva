@@ -26,6 +26,10 @@ public class Foo {
 }
 ```
 
+#### Tuplable instead of unapply()
+
+Scala has a magic method named unapply() that is used to deconstruct classes (in particular case classes) into a Tuple of fields (among other things). This type of magic is not possible in Java. Instead, Halva uses the `Tuplable` interface. Classes implement `Tuplable` and they can then be converted into Tuples containing the fields of the class. These can then be used in Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/).
+
 #### Tuple Equality
 
 Tuples exist mainly for Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/). Because of this, the Tuple `equals(Object)` method can behave in surpising ways. It is a loose equality checker and not an exact equality checker. In particular, calling `myTuple.equals(o)` does a deep equality check. If `o` is a single object, it is boxed into a Tuple so that Tuples always compare against other Tuples. Further, as individual items in the Tuple are compared, they are resolved/unboxed as appropriate. For example, if an item on the right of the equals sign or an item in the Tuple itself implements `Tuplable`, that item will be unboxed when comparing for equality. For example:
@@ -41,7 +45,3 @@ public static class Tester implements Tuplable {
 // this prints "true"
 System.out.println(T(1, 2).equals(new Tester()));
 ```
-
-#### Tuplable instead of unapply()
-
-Scala has a magic method named unapply() that is used to deconstruct classes (in particular case classes) into a Tuple of fields (among other things). This type of magic is not possible in Java. Instead, Halva uses the `Tuplable` interface. Classes implement `Tuplable` and they can then be converted into Tuples containing the fields of the class. These can then be used in Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/).

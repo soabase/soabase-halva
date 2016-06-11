@@ -122,7 +122,8 @@ Every generated case class gets the following methods/features:
 
 * A generated field for every *case class field* in the source interface.
 * Default value for every field - [custom defaults](#default-values) can be specified.
-* Accessor method with the same name as the field. E.g. if the field in the source interface was "name", the generated accessor would be: `public String name() { return name; }`
+* Accessor method with the same name as the field. E.g. if the field in the source interface was "name", the generated accessor would be:
+    * `public String name() { return name; }`
 * Optional setter method when `@CaseClassMutable` is used. The setter has the same name as the source interface method. E.g. 
     * `public void name(String newName){ this.name = newName; }`
 * A copy method for generating a copy of a case class instance and changing one or more fields. See [copies](#copies) above.
@@ -133,5 +134,6 @@ Every generated case class gets the following methods/features:
         * `PersonCase p = PersonCase("John Galt", 42);`
 * Generated `equals(Object)`, `hashCode()`, `toString()`, `debugString()`
 * A static `ClassTuple` generator method for use with [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/).
+* The generated class implements `Tuplable` so that it can be "unapplied" for [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/).
 * A complete Builder factory for building instances using a fluent interface. E.g.
     * ```PersonCase p = PersonCase.builder().name("John Galt").age(42).build();```

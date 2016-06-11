@@ -52,4 +52,4 @@ If the `name()` method in the builder is not used when building the case class, 
 
 ### Reference
 
-Case classes and case objects are generated from a specification interface. The interface may extend other interfaces as needed. The interface can contain any combination of fields, methods, etc. For case classes the annotation processor will notice methods in the interface that conform to _case class fields_ and generate fields in the case class for them. These are no-arg methods that return a value. E.g. `String name();`. Case objects do not have fields.
+Case classes and case objects are generated from a specification interface. The interface may extend other interfaces as needed. The interface can contain any combination of fields, methods, etc. For case classes the annotation processor will notice methods in the interface that conform to _case class fields_ and generate fields in the case class for them. These are no-arg methods that return a value. E.g. `String name();`. Case objects do not have fields. Add a default implementation to the case class field members to provide a custom [default value for the field](###)

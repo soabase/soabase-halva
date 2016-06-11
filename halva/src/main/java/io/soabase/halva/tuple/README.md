@@ -16,10 +16,12 @@ package your.package.here;
 
 import static io.soabase.halva.tuple.Tuple.T;
 
-public void fooBar() {
-    System.out.println("My Tuple is: " + T("one", 2, new Date()));
+public class Foo {
+    public void fooBar() {
+        System.out.println("My Tuple is: " + T("one", 2, new Date()));
     
-    Tuple2<String, Integer> myT2 = T("one", 2);
-    Tuple2<Integer, String> swapped = myT2.swap();
+        Tuple2<String, Integer> myT2 = T("one", 2);
+        Tuple2<Integer, String> swapped = myT2.swap();
+    }
 }
 ```

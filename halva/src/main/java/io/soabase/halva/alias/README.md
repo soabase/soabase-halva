@@ -30,3 +30,10 @@ PairListAlias alias = List(Pair("10", 10), Pair("20", 20)); // won't compile - P
 PairListAlias alias = PairListAlias(List(Pair("10", 10), Pair("20", 20))); // works
 ConsList<Pair<String, Integer>> original = alias; // works
 ```
+
+#### Example
+
+An example source alias declaration and generated class is here:
+
+* [AliasExample.java](https://github.com/Randgalt/halva/blob/master/examples/example-generated/AliasExample.java)
+* [AliasExampleAlias.java](https://github.com/Randgalt/halva/blob/master/examples/example-generated/AliasExampleAlias.java)

@@ -74,10 +74,10 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>examples</outputDirectory>
+                            <outputDirectory>../examples/example-generated</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../src/test/java/com/company</directory>
+                                    <directory>src/test/java/com/company</directory>
                                     <include>*.java</include>
                                 </resource>
                                 <resource>

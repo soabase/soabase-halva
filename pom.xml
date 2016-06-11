@@ -10,6 +10,7 @@
         <module>halva</module>
         <module>halva-processor</module>
         <module>halva-test</module>
+        <module>examples</module>
     </modules>
 
     <properties>

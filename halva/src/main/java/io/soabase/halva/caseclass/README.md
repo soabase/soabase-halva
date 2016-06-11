@@ -90,3 +90,26 @@ public interface Example {
     String name();
 }
 ```
+
+**Case Objects**
+
+Case objects are created just like case classes expect you use the `@CaseObject` annotation instead. Additionally, case objects cannot contain any *case class field*s. The generated class is a singleton and the annotation processor generates a public static final field that has the singleton instance. Becauase a static instance is generated, any declared methods must have a default implementation. E.g.
+
+```java
+@CaseObject
+public interface Example {
+    default String name() {
+        return "John Galt";
+    }
+}
+```
+
+You would then use the object like this:
+
+```java
+import static your.package.Example.Example;
+
+...
+
+Sysmte.out.println(Example.name());
+```

@@ -91,8 +91,8 @@ import static io.soabase.halva.sugar.Sugar.cons;
 import static io.soabase.halva.sugar.Sugar.concat;
 
 List<Integer> list1 = List(1, 2, 3, 4);
-List<Integer> consList = cons(0, list1); // results in a new list: List(0, 1, 3, 4)
+List<Integer> consList = cons(0, list1); // results in a new list: List(0, 1, 2, 3, 4)
 List<Integer> concatList = concat(list1, List(5, 6, 7)); // results in a new list: List(1, 2, 3, 4, 5, 6, 7)
-List<Integer> list2 = cons(100, consList.tail()); // results in a new list: List(100, 1, 3, 4)
+List<Integer> list2 = cons(100, consList.tail()); // results in a new list: List(100, 1, 2, 3, 4)
 
 ```

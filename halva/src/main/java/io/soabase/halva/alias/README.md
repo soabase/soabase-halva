@@ -13,7 +13,19 @@ Halva can only alias interfaces. Aliasing concrete classes would most likely req
 The annotated interface may not contain any content - no methods, fields, etc. Here's an example that aliases lists of pairs of string/ints:
 
 ```java
-@TypeAlias interface PairList implements List<Pair<String, Integer>>{}
+@TypeAlias interface PairList implements ConsList<Pair<String, Integer>>{}
 ```
 
 The generated class will be named `PairListAlias`. However, if you were to name the annotated source interface `PairListAlias_`, the generated class wouild be named `PairListAlias`. You can change these defaults with the TypeAlias attributes `suffix()` and `unsuffix()`.
+
+#### Using the Generated Class 
+
+The generated class is actually an interface and it can be used in place of the original type almost anywhere you'd use the original. However, Java does not support [covariant generic types](http://www.ibm.com/developerworks/library/j-jtp01255/). Therefore, whereby you may always assign the generated alias to a variable of the original type, you may not assign an instance of the original type to an alias. Halva provides a wrapper with every generated to work around this. E.g. (given PairList above)
+
+```java
+import your.package.name.PairListAlias
+
+PairListAlias alias = List(Pair("10", 10), Pair("20", 20)); // won't compile - PairListAlias is not a ConsList<Pair<String, Integer>>
+PairListAlias alias = PairListAliasList(Pair("10", 10), Pair("20", 20)); // works
+ConsList<Pair<String, Integer>> original = alias; // works
+```

@@ -8,7 +8,7 @@ import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.sugar.ConsList;
-import io.soabase.halva.tuple.details.Pair;
+import io.soabase.halva.tuple.Pair;
 import java.util.function.Function;
 
 import static io.soabase.halva.any.Any.defineHeadAnyTail;

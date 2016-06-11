@@ -19,7 +19,6 @@ import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
-import io.soabase.halva.tuple.details.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import java.nio.charset.Charset;

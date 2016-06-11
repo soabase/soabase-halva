@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.tuple.details;
+package io.soabase.halva.tuple;
+
+import io.soabase.halva.tuple.details.Tuple2;
 
 public class Pair<A, B> extends Tuple2<A, B>
 {

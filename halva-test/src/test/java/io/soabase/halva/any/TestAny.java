@@ -17,7 +17,7 @@ package io.soabase.halva.any;
 
 import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.sugar.ConsList;
-import io.soabase.halva.tuple.details.Pair;
+import io.soabase.halva.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;

@@ -7,11 +7,11 @@ magic, etc. Also, using the features in Java should be as close as possibile to 
 
 ### Features
 
-* [Case Classes and Case Objects](src/main/java/io/soabase/halva/caseclass/)
-* [Pattern matching/exraction](src/main/java/io/soabase/halva/matching/)
-* [For Comprehensions](src/main/java/io/soabase/halva/comprehension/)
-* [Type Aliases](src/main/java/io/soabase/halva/alias/)
-* [Tuples](src/main/java/io/soabase/halva/tuple/)
-* [Constructor Sugars](src/main/java/io/soabase/halva/sugar/)
+* [Case Classes and Case Objects](/halva/tree/master/halva/src/main/java/io/soabase/halva/caseclass)
+* [Pattern matching/exraction](/halva/tree/master/halva/src/main/java/io/soabase/halva/matching/)
+* [For Comprehensions](/halva/tree/master/halva/src/main/java/io/soabase/halva/comprehension/)
+* [Type Aliases](/halva/tree/master/halva/src/main/java/io/soabase/halva/alias/)
+* [Tuples](/halva/tree/master/halva/src/main/java/io/soabase/halva/tuple/)
+* [Constructor Sugars](/halva/tree/master/halva/src/main/java/io/soabase/halva/sugar/)
 
 

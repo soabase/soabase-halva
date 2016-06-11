@@ -6,4 +6,13 @@
 
 ----
 
-Halva adds support to Java for Scala's match/case feature with extraction. The syntax is as close as possible to Scala 
+Halva adds support to Java for Scala's match/case feature with extraction. The syntax is as close as possible to Scala. The form is:
+
+```
+match(arg)
+    .caseOf(possibleMatch, () -> expression-when-matching
+    .caseOf(anotherPossibleMatch, () -> expression-when-matching
+ ...    
+    .get() // gets the result
+```
+

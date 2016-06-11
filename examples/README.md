@@ -21,6 +21,11 @@ collapses much of the other noise. This is how it looks in IDEA for me: ![IDEA V
 
 Clone the Halva project and then cd into `halva/examples`.
 
+```
+> git clone https://github.com/Randgalt/halva.git
+> cd halva/examples
+```
+
 _Trying the Scala version_
 
 Start the Scala repl and load the program. Then run the test:

@@ -4,7 +4,7 @@ This is an older Scala file I found on the net here:
   
 *  http://www.scala-lang.org/old/node/56.html
 
-This is one small program contains all the features that people usually wish they could use in Java. To me eye, it 
+This one small program contains all the features that people usually wish they could use in Java. To me eye, the Halva/Java version 
 looks remarkably close to the Scala file. It definitely doesn't look like normal Java. Of course, it's noisier than 
 the Scala version - no matter how hard you try Java is noisy. However, Java 8 is much, much, less noisier than 
 previous Javas. Once you get past the imports, semicolons and some other scaffolding, it's not too bad. 
@@ -14,13 +14,15 @@ collapses much of the other noise. This is how it looks in IDEA for me: ![IDEA V
 
 ### Running this Example
 
+Clone the Halva project and then cd into `halva/examples`.
+
 _Trying the Scala version_
 
 Start the Scala repl and load the program. Then run the test:
 
 ```
 > scala
-scala> :load SimpleInterpreter.scala
+scala> :load src/main/java/io/soabase/halva/examples/SimpleInterpreter.scala
 defined object simpleInterpreter
 scala> simpleInterpreter.test(simpleInterpreter.term0)
 res1: String = 42
@@ -32,7 +34,7 @@ _Trying the Java version_
 
 ```
 > mvn clean package
-> java -cp target/examples-0.1.0-SNAPSHOT.jar io.soabase.halva.examples.SimpleInterpreter
+> java -cp target/halva-examples-0.1.0.jar io.soabase.halva.examples.SimpleInterpreter
 42
 wrong
 ```

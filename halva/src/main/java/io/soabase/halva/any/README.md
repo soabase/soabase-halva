@@ -17,7 +17,7 @@ equality to any instance of the enclosed type and the value of that instance wil
 
 #### Declaration vs Definition 
 
-Like any variable in computer science, Anys must first be declared and then defined when they are used. The declaration can be done once and stored in a static/constant and reused as needed. Definitions are used as needed and are single use containers/boxes for the declared type of the Any. An any declaration is create as follows:
+Like any variable in computer science, Anys must first be declared and then defined when they are used. The declaration can be done once and stored in a static/constant and reused as needed. Definitions are used as needed and are single use containers/boxes for the declared type of the Any. An Any Declaration is created as follows:
 
 ```java
 AnyDeclaration<List<String>> anyListOfString = AnyDeclaration.of(new AnyType<List<String>>(){});

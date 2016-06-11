@@ -1,6 +1,6 @@
 ### Constructor Sugars
 
-In Scala the idiom for instantiating various objects is to use simply use the class name and then list the arguments in parenthesis. Halva's sugars provide this for common Java Library classes via the `Sugar` class. Sugar.java exposes static methods for creating Lists, Sets, etc. This is similar to the Java Librar's `Arrays.asList(...)` and similar third party libraries. However, the syntax is made just like Scala by using static importing. Sugars are provided for:
+In Scala the idiom for instantiating various objects is to use the class name and then list the arguments in parenthesis. Halva's sugars provide this for common Java Library classes via the `Sugar` class. Sugar.java exposes static methods for creating Lists, Sets, etc. This is similar to the Java Librar's `Arrays.asList(...)` and similar third party libraries. However, the syntax is made just like Scala by using static importing. Sugars are provided for:
 
 * List
 * Set

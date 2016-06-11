@@ -1,6 +1,7 @@
 ### Anys
 
-In Scala for-comprehensions, pattern matching, etc. you can declare variables that can be used with extraction as the comprehension or matching is occurring. Scala will define these variables for you using the correct type and create a new scope for using them. E.g.
+In Scala for-comprehensions, pattern matching, etc. you can declare variables that can be used with extraction as the 
+comprehension or matching is occurring. Scala will define these variables for you using the correct type and create a new scope for using them. E.g.
 
 ```scala
 x match {
@@ -8,9 +9,11 @@ x match {
 }
 ```
 
-This simply isn't possible in Java without some very magical bytecode writing of some kind. Halva is committed to using "plain old" Java so a different solution had to be implemented. The Any package is the solution for Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/). Additionally, Halva [Tuples](../tuple) recognize the presence of Anys for extraction. 
+This simply isn't possible in Java without some very magical bytecode writing of some kind. Halva is committed to using "plain old" 
+Java so a different solution had to be implemented. The Any package is the solution for Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/). Additionally, Halva [Tuples](../tuple) recognize the presence of Anys for extraction. 
 
-An instance of `Any` is a placeholder for any value of the matching type. During processing, an `Any` instance will compare true for equality to any instance of the enclosed type and the value of that instance will be captured by the `Any` so that it can used later on.
+An instance of `Any` is a placeholder for any value of the matching type. During processing, an `Any` instance will compare true for 
+equality to any instance of the enclosed type and the value of that instance will be captured by the `Any` so that it can used later on.
 
 #### Declaration vs Definition 
 

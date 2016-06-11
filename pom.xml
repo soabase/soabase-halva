@@ -6,11 +6,11 @@
     <artifactId>halva-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.1.0-SNAPSHOT</version>
+
     <modules>
         <module>halva</module>
         <module>halva-processor</module>
         <module>halva-test</module>
-        <module>examples</module>
     </modules>
 
     <properties>

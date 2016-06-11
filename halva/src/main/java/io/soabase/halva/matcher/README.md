@@ -27,5 +27,16 @@ The full list of methods that `match` supports is:
 * `getOpt()` - process the match statements and return an `Optional` that is either empty or the matching result
 * `apply()` - process the match statements without returning anything. Useful with the `caseOfUnit()` methods
 
+### Extraction
 
+As the matcher executes, [Any](../any/) variables get loaded with exctracted values so that the proceeding lambdas can access them.
     
+E.g.
+
+```java
+Any<String> str = AnyDeclaration.anyStr.define();
+
+match(anotherString)
+    .caseOf(str, () -> "It's " + str.val())
+    .get();
+```

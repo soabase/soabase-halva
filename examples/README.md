@@ -34,7 +34,7 @@ _Trying the Java version_
 
 ```
 > mvn clean package
-> java -cp target/halva-examples-0.1.0-SNAPSHOT.jar io.soabase.halva.examples.SimpleInterpreter
+> java -cp target/halva-examples-0.1.0.jar io.soabase.halva.examples.SimpleInterpreter
 42
 wrong
 ```

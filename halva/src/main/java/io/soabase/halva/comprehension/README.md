@@ -2,7 +2,7 @@
 
 ----
 
-**IMPORTANT** - First read about how Halva extracts values using [Anys](../any/)
+**IMPORTANT** - First read about how Halva extracts values using [Anys](../any/README.md)
 
 ----
 
@@ -27,7 +27,7 @@ The full list of methods that `For` supports is:
 
 #### Extraction
 
-Extraction in for-comprehensions works exactly the same way as they do for [Pattern Matching](../matcher#extraction). Refer to the docs there.
+Extraction in for-comprehensions works exactly the same way as they do for [Pattern Matching](../matcher/README.md#extraction). Refer to the docs there.
 
 #### Example
 

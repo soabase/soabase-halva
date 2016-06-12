@@ -2,7 +2,7 @@
 
 ----
 
-**IMPORTANT** - First read about how Halva extracts values using [Anys](../any/)
+**IMPORTANT** - First read about how Halva extracts values using [Anys](../any/README.md)
 
 ----
 

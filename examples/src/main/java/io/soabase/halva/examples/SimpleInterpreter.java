@@ -87,10 +87,10 @@ class SimpleInterpreter
         Any<Integer> m = anyInt.define();
         Any<Integer> n = anyInt.define();
 
-        return match(Pair(a, b))
-            .caseOf( Pair(NumT(m), NumT(n)), () -> unitM(Num(m.val() + n.val())) )
-            .caseOf( () -> unitM(Wrong) )
-        .get();
+        return match(Pair(a, b)).
+            caseOf( Pair(NumT(m), NumT(n)), () -> unitM(Num(m.val() + n.val())) ).
+            caseOf( () -> unitM(Wrong) ).
+        get();
     }
 
     static M<Value> apply(Value a, Value b)

@@ -1,3 +1,3 @@
-### Scala TL:DR for Java Programmers
+### Scala TL/DR for Java Programmers
 
 TBD

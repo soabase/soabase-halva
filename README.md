@@ -13,16 +13,16 @@ Some features are pretty trivial: some simple "sugaring" that wouldn't be hard t
 
 ### Full Featured Example
 
-To see the results of what Halva can do, please look at the [Simple Interpreter Example](../../tree/master/examples).
+To see the results of what Halva can do, please look at the [Simple Interpreter Example](../../tree/master/examples/README.md).
 
 ### Features
 
-* [Case Classes and Case Objects](../../tree/master/halva/src/main/java/io/soabase/halva/caseclass)
-* [Pattern matching and extraction](../../tree/master/halva/src/main/java/io/soabase/halva/matcher/)
-* [For Comprehensions](../../tree/master/halva/src/main/java/io/soabase/halva/comprehension/)
-* [Type Aliases](../../tree/master/halva/src/main/java/io/soabase/halva/alias/)
-* [Tuples](../../tree/master/halva/src/main/java/io/soabase/halva/tuple/)
-* [Constructor Sugars](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/)
+* [Case Classes and Case Objects](../../tree/master/halva/src/main/java/io/soabase/halva/caseclass/README.md)
+* [Pattern matching and extraction](../../tree/master/halva/src/main/java/io/soabase/halva/matcher/README.md)
+* [For Comprehensions](../../tree/master/halva/src/main/java/io/soabase/halva/comprehension/README.md)
+* [Type Aliases](../../tree/master/halva/src/main/java/io/soabase/halva/alias/README.md)
+* [Tuples](../../tree/master/halva/src/main/java/io/soabase/halva/tuple/README.md)
+* [Constructor Sugars](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/README.md)
 
 ### Using Halva
 

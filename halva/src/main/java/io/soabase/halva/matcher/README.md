@@ -50,15 +50,18 @@ E.g.
 
 ```java
 @CaseClass public interface Person{String name(); int age();}
-@CaseClass public interface Animal{String name(); int age();}
+@CaseClass public interface Chair{String color(); int legQty(); int age();}
 
 public int findAnyAge(Object obj)
 {
-    Any<String> name = anyString.define();
+    Any<String> s = anyString.define();
     Any<Integer> age = anyInt.define();
     return match(people)
-        .caseOf(PersonCaseT(name, age), age::val)
-        .caseOf(AnimalCaseT(name, age), age::val)
+        .caseOf(PersonCaseT(s, age), age::val)
+        .caseOf(AnimalCaseT(s, 3, age), age::val)
         .caseOf(() -> 0);
 }
+findAnyAge(PersonCase("John Galt", 42)) -- returns 42
+findAnyAge(Chair("Red", 2, 5)) -- returns 0 - not enough legs
+findAnyAge(Chair("Red", 3, 5)) -- returns 5
 ```

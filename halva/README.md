@@ -2,11 +2,11 @@
 
 ### Features
 
-* [Case Classes and Case Objects](src/main/java/io/soabase/halva/caseclass)
-* [Pattern matching and extraction](src/main/java/io/soabase/halva/matcher/)
-* [For Comprehensions](src/main/java/io/soabase/halva/comprehension/)
-* [Type Aliases](src/main/java/io/soabase/halva/alias/)
-* [Tuples](src/main/java/io/soabase/halva/tuple/)
-* [Constructor Sugars](src/main/java/io/soabase/halva/sugar/)
+* [Case Classes and Case Objects](src/main/java/io/soabase/halva/caseclass/README.md)
+* [Pattern matching and extraction](src/main/java/io/soabase/halva/matcher/README.md)
+* [For Comprehensions](src/main/java/io/soabase/halva/comprehension/README.md)
+* [Type Aliases](src/main/java/io/soabase/halva/alias/README.md)
+* [Tuples](src/main/java/io/soabase/halva/tuple/README.md)
+* [Constructor Sugars](src/main/java/io/soabase/halva/sugar/README.md)
 
 

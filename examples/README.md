@@ -17,6 +17,10 @@ previous Javas. Once you get past the imports, semicolons and some other scaffol
 Note that good IDEs such as IntelliJ IDEA hide a lot of this noise for you - IDEA hides all the imports and 
 collapses much of the other noise. This is how it looks in IDEA for me: ![IDEA View](src/main/java/io/soabase/halva/examples/IntelliJ.png?raw=true)
 
+In particular, the interp() method looks really close to the Scala version. Let's call this a success!
+
+![Comparison](src/main/java/io/soabase/halva/examples/compare.jpg?raw=true)
+
 ### Running this Example
 
 Clone the Halva project and then cd into `halva/examples`.

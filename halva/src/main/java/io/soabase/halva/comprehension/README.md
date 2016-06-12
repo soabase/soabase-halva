@@ -44,9 +44,9 @@ List<Book> books = List(
 {
     Any<Book> book = AnyDeclaration.of(Book.class).define();
     Any<Author> author = AnyDeclaration.of(Author.class).define();
-    Any<Integer> year = AnyDeclaration.of(Integer.class).define();
+    Any<Integer> year = anyInt.define();
 
-    List<Tuple> result = For.For(book, books)
+    List<Tuple> result = For(book, books)
         .when(() -> book.val().authors().size() == 1)
         .and(author, () -> book.val().authors())
         .when(() -> author.val().name().startsWith("Ayn"))

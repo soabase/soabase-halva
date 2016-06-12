@@ -32,7 +32,7 @@ Scala has a magic method named unapply() that is used to deconstruct classes (in
 
 #### Tuple Equality
 
-Tuples exist mainly for Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/). Because of this, the Tuple `equals(Object)` method can behave in surpising ways. It is a loose equality checker and not an exact equality checker. In particular, calling `myTuple.equals(o)` does a deep equality check. If `o` is a single object, it is boxed into a Tuple so that Tuples always compare against other Tuples. Further, as individual items in the Tuple are compared, they are resolved/unboxed as appropriate. For example, if an item on the right of the equals sign or an item in the Tuple itself implements `Tuplable`, that item will be unboxed when comparing for equality. For example:
+Tuples exist mainly for Halva's [For Comprehensions](../comprehension/README.md) and [Matching and Extracting](../matcher/README.md). Because of this, the Tuple `equals(Object)` method can behave in surpising ways. It is a loose equality checker and not an exact equality checker. In particular, calling `myTuple.equals(o)` does a deep equality check. If `o` is a single object, it is boxed into a Tuple so that Tuples always compare against other Tuples. Further, as individual items in the Tuple are compared, they are resolved/unboxed as appropriate. For example, if an item on the right of the equals sign or an item in the Tuple itself implements `Tuplable`, that item will be unboxed when comparing for equality. For example:
 
 ```java
 public static class Tester implements Tuplable {

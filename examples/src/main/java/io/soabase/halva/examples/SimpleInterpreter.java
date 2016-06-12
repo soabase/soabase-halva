@@ -125,9 +125,9 @@ class SimpleInterpreter
                    ).
             caseOf( LamT(x, t), () -> unitM( Fun(arg -> interp(t.val(), Environment(cons(Pair(x.val(), arg), e))))) ).
             caseOf( AppT(f, t), () -> For( a, Iterable(interp(f.val(), e)) ).
-                                       and( b, () -> Iterable(interp(t.val(), e)) ).
-                                       and( c, () -> Iterable(apply(a.val().value(), b.val().value())) ).
-                                       yield1( c::val )
+                                      and( b, () -> Iterable(interp(t.val(), e)) ).
+                                      and( c, () -> Iterable(apply(a.val().value(), b.val().value())) ).
+                                      yield1( c::val )
                    ).
             get();
     }

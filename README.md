@@ -26,7 +26,7 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 
 ### Using Halva
 
-Halva is available from Maven Central. Use your favorite build tool and specify:
+Halva is available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Chalva). Use your favorite build tool and specify:
 
 | GroupId | ArtifactId | Description |
 |---------|------------|-------------|

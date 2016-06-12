@@ -6,6 +6,10 @@
 
 ----
 
+NOTE: If you are not familiar with Scala's Case Classes and Case Objects you should review [Scala for Java Programmers](../../../../../../../../SCALA.md) first.
+
+------------
+
 Halva adds support to Java for Scala's match/case feature with extraction. The syntax is as close as possible to Scala. The form is:
 
 ```

@@ -23,6 +23,7 @@ The full list of methods that `match` supports is:
     * `<T> M caseOf(Object lhs, Guard guard, Supplier<T> proc)` - if the object matches the match arg and the guard proc returns true, proc is executed to generate the result of the match
     * `<T> M caseOfUnit(Object lhs, Runnable proc)` - if the object matches arg, proc is executed and `null` is returned
     * `<T> M caseOfUnit(Object lhs, Guard guard, Runnable proc)` - if the object matches arg and the guard proc returns true, proc is executed and `null` is returned
+* `caseOf(Supplier<T> proc)` - the default handler - the proc is called if all other cases don't match. This is equivalent to Scala's `case _`
 * `get()` - process the match statements and return the matching result or `null`
 * `getOpt()` - process the match statements and return an `Optional` that is either empty or the matching result
 * `apply()` - process the match statements without returning anything. Useful with the `caseOfUnit()` methods
@@ -48,13 +49,16 @@ In combination with Case Classes, Scala allows for extremely rich and complicate
 E.g.
 
 ```java
-@CaseClass public interface SomePerson{String name(); int age();}
+@CaseClass public interface Person{String name(); int age();}
+@CaseClass public interface Animal{String name(); int age();}
 
-private static final AnyDeclaration<SomePersonCase> anyPerson = AnyDeclaration.of(SomePersonCase.class);
-
-public Optional<SomePersonCase> findSomeone(String nameToFind, List<SomePersonCase> people)
+public int findAnyAge(Object obj)
 {
-    Any<SomePersonCase> p = anyPerson.define();
-    return match(people).caseOf(p, () -> p.val().name().equals(nameToFind), p::val).getOpt();
+    Any<String> name = anyString.define();
+    Any<Integer> age = anyInt.define();
+    return match(people)
+        .caseOf(PersonCaseT(name, age), age::val)
+        .caseOf(AnimalCaseT(name, age), age::val)
+        .caseOf(() -> 0);
 }
 ```

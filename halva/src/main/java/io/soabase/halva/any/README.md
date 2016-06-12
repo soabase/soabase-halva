@@ -10,7 +10,7 @@ x match {
 ```
 
 This simply isn't possible in Java without some very magical bytecode writing of some kind. Halva is committed to using "plain old" 
-Java so a different solution had to be implemented. The Any package is the solution for Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/). Additionally, Halva [Tuples](../tuple) recognize the presence of Anys for extraction. 
+Java so a different solution had to be implemented. The Any package is the solution for Halva's [For Comprehensions](../comprehension/README.md) and [Matching and Extracting](../matcher/README.md). Additionally, Halva [Tuples](../tuple/README.md) recognize the presence of Anys for extraction. 
 
 An instance of `Any` is a placeholder for any value of the matching type. During processing, an `Any` instance will compare true for 
 equality to any instance of the enclosed type and the value of that instance will be captured by the `Any` so that it can used later on.

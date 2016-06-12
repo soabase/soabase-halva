@@ -115,7 +115,7 @@ class Getter<ARG> implements GettersBase
     @Override
     public <T> T get()
     {
-        return (T)getOpt().orElse(null);
+        return (T)getOpt().orElseThrow(() -> new MatchError("No matches found and no default provided for: " + getArg()));
     }
 
     @Override

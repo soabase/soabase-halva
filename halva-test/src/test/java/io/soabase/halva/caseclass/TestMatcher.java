@@ -19,6 +19,7 @@ import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.nettests.PersonCase;
 import io.soabase.halva.sugar.ConsList;
@@ -135,5 +136,13 @@ public class TestMatcher
         Assert.assertEquals(14, findAnyAge(AnimalCase("Bobby", 14)));
         Assert.assertEquals(0, findAnyAge(ChairCase("Red", 2, 5)));
         Assert.assertEquals(5, findAnyAge(ChairCase("Red", 3, 5)));
+    }
+
+    @Test(expected = MatchError.class)
+    public void testMatchError()
+    {
+        match("test")
+            .caseOf("nope", () -> "")
+            .get();
     }
 }

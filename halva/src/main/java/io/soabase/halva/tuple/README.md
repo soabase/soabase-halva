@@ -28,7 +28,7 @@ public class Foo {
 
 #### Tuplable instead of unapply()
 
-Scala has a magic method named unapply() that is used to deconstruct classes (in particular case classes) into a Tuple of fields (among other things). This type of magic is not possible in Java. Instead, Halva uses the `Tuplable` interface. Classes implement `Tuplable` and they can then be converted into Tuples containing the fields of the class. These can then be used in Halva's [For Comprehensions](../comprehension/) and [Matching and Extracting](../matcher/).
+Scala has a magic method named unapply() that is used to deconstruct classes (in particular case classes) into a Tuple of fields (among other things). This type of magic is not possible in Java. Instead, Halva uses the `Tuplable` interface. Classes implement `Tuplable` and they can then be converted into Tuples containing the fields of the class. These can then be used in Halva's [For Comprehensions](../comprehension/README.md) and [Matching and Extracting](../matcher/README.md).
 
 #### Tuple Equality
 

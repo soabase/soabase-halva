@@ -19,18 +19,27 @@ import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.matcher.Matcher;
+import io.soabase.halva.nettests.PersonCase;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
+import java.util.Optional;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.any.AnyDeclaration.anyInt;
+import static io.soabase.halva.any.AnyDeclaration.anyString;
+import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
+import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseT;
+import static io.soabase.halva.caseclass.ChairCase.ChairCase;
+import static io.soabase.halva.caseclass.ChairCase.ChairCaseT;
 import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueT;
 import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.matcher.Matcher.match;
+import static io.soabase.halva.nettests.PersonCase.PersonCase;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.T;
@@ -60,8 +69,8 @@ public class TestMatcher
 
     int subtract(Value a, Value b)
     {
-        Any<Integer> m = anyInt().define();
-        Any<Integer> n = anyInt().define();
+        Any<Integer> m = anyInt.define();
+        Any<Integer> n = anyInt.define();
 
         return match(Pair(a, b))
             .caseOf( Pair(ValueT(m), ValueT(n)), () -> m.val() - n.val())
@@ -104,5 +113,27 @@ public class TestMatcher
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
             .get();
         Assert.assertEquals("The tail is: " + list.tail(), str);
+    }
+
+    @CaseClass public interface Animal{String name(); int age();}
+    @CaseClass public interface Chair{String color(); int legQty(); int age();}
+
+    public int findAnyAge(Object obj)
+    {
+        Any<String> s = anyString.define();
+        Any<Integer> age = anyInt.define();
+        return match(obj)
+            .caseOf(AnimalCaseT(s, age), age::val)
+            .caseOf(ChairCaseT(s, 3, age), age::val)
+            .caseOf(() -> 0)
+            .get();
+    }
+
+    @Test
+    public void testFindAny()
+    {
+        Assert.assertEquals(14, findAnyAge(AnimalCase("Bobby", 14)));
+        Assert.assertEquals(0, findAnyAge(ChairCase("Red", 2, 5)));
+        Assert.assertEquals(5, findAnyAge(ChairCase("Red", 3, 5)));
     }
 }

@@ -65,8 +65,8 @@ public class TestAny
     public void testAliasedCons()
     {
         Any<ConsList<String>> stringList = AnyDeclaration.of(new AnyType<ConsList<String>>(){}).define();
-        Any<String> s = anyString().define();
-        Any<Integer> v = anyInt().define();
+        Any<String> s = anyString.define();
+        Any<Integer> v = anyInt.define();
         Any<Environment> e = AnyDeclaration.ofTypeAlias(Environment.TypeAliasType).define();
         Any<Void> cons = defineHeadAnyTail(Pair(s, v), e);
 

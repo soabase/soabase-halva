@@ -42,8 +42,8 @@ public class TestFromScalaSchool
     @Test
     public void testTheMysteryCase()
     {
-        Any<String> name = anyString().define();
-        Any<Integer> extension = anyInt().define();
+        Any<String> name = anyString.define();
+        Any<Integer> extension = anyInt.define();
         ConsList<PhoneExt> extensions = List(PhoneExt("steve", 100), PhoneExt("robey", 200));
         List<PhoneExt> lessThan200 = extensions.stream()
             .filter(e -> match(e).caseOf(PhoneExtT(name, extension), () -> extension.val() < 200).get())

@@ -72,7 +72,7 @@ class SimpleInterpreter
     @TypeAlias interface Environment_ extends ConsList<Pair<String, Value>>{}
 
     static M<Value> lookup(String x, Environment e) {
-        Any<String> y = anyString().define();
+        Any<String> y = anyString.define();
         Any<Value> b = anyValue.define();
         Any<Environment> e1 = anyEnvironment.define();
 
@@ -84,8 +84,8 @@ class SimpleInterpreter
 
     static M<Value> add(Value a, Value b)
     {
-        Any<Integer> m = anyInt().define();
-        Any<Integer> n = anyInt().define();
+        Any<Integer> m = anyInt.define();
+        Any<Integer> n = anyInt.define();
 
         return match(Pair(a, b))
             .caseOf( Pair(NumT(m), NumT(n)), () -> unitM(Num(m.val() + n.val())) )
@@ -105,8 +105,8 @@ class SimpleInterpreter
 
     static M<Value> interp(Term term, Environment e)
     {
-        Any<String> x = anyString().define();
-        Any<Integer> n = anyInt().define();
+        Any<String> x = anyString.define();
+        Any<Integer> n = anyInt.define();
         Any<Term> l = anyTerm.define();
         Any<Term> r = anyTerm.define();
         Any<Term> t = anyTerm.define();

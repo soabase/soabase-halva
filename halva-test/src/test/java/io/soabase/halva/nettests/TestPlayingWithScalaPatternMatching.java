@@ -275,7 +275,7 @@ public class TestPlayingWithScalaPatternMatching
      */
     int eval(Expression expression, int xValue)
     {
-        Any<Integer> cst = AnyDeclaration.anyInt().define();
+        Any<Integer> cst = AnyDeclaration.anyInt.define();
         Any<Expression> addLeft = anyExpression.define();
         Any<Expression> addRight = anyExpression.define();
         Any<Expression> multLeft = anyExpression.define();
@@ -302,7 +302,7 @@ public class TestPlayingWithScalaPatternMatching
      */
     Expression deriv(Expression expression)
     {
-        Any<Integer> cst = AnyDeclaration.anyInt().define();
+        Any<Integer> cst = AnyDeclaration.anyInt.define();
         Any<Expression> addLeft = anyExpression.define();
         Any<Expression> addRight = anyExpression.define();
         Any<Expression> multLeft = anyExpression.define();

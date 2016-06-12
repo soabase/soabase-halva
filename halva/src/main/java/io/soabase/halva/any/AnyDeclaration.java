@@ -35,15 +35,15 @@ public interface AnyDeclaration<T>
         return new AnyDeclarationImpl<>(null, typeAliasType.getAliasType(), typeAliasType);
     }
 
-    static AnyDeclaration<Object> any() { return of(Object.class); }
-    static AnyDeclaration<Integer> anyInt() { return of(Integer.class); }
-    static AnyDeclaration<Long> anyLong() { return of(Long.class); }
-    static AnyDeclaration<Double> anyDouble() { return of(Double.class); }
-    static AnyDeclaration<String> anyString() { return of(String.class); }
-    static AnyDeclaration<ConsList<Integer>> anyIntList() { return of(new AnyType<ConsList<Integer>>(){}); }
-    static AnyDeclaration<ConsList<Long>> anyLongList() { return of(new AnyType<ConsList<Long>>(){}); }
-    static AnyDeclaration<ConsList<Double>> anyDoubleList() { return of(new AnyType<ConsList<Double>>(){}); }
-    static AnyDeclaration<ConsList<String>> anyStringList() { return of(new AnyType<ConsList<String>>(){}); }
+    AnyDeclaration<Object> any = of(Object.class);
+    AnyDeclaration<Integer> anyInt = of(Integer.class);
+    AnyDeclaration<Long> anyLong = of(Long.class);
+    AnyDeclaration<Double> anyDouble = of(Double.class);
+    AnyDeclaration<String> anyString = of(String.class);
+    AnyDeclaration<ConsList<Integer>> anyIntList = of(new AnyType<ConsList<Integer>>(){});
+    AnyDeclaration<ConsList<Long>> anyLongList = of(new AnyType<ConsList<Long>>(){});
+    AnyDeclaration<ConsList<Double>> anyDoubleList = of(new AnyType<ConsList<Double>>(){});
+    AnyDeclaration<ConsList<String>> anyStringList = of(new AnyType<ConsList<String>>(){});
 
     Any<T> define();
 }

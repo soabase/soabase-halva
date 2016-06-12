@@ -28,8 +28,8 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 
 Halva is available from Maven Central. Use your favorite build tool and specify:
 
-| Artifact | GroupId | ArtifactId | Description |
-|----------|---------|------------|-------------|
-| Halva Annotation Processor | io.soabase.halva | halva-processor | Contains the javac processor for @CaseClass, @CaseObject and @TypeAlias |
-| Halva Library | io.soabase.halva | halva | All the runtime code for Halva: matchers, comprehensions, etc. |
+| GroupId | ArtifactId | Description |
+|---------|------------|-------------|
+| io.soabase.halva | halva-processor | Contains the javac processor for @CaseClass, @CaseObject and @TypeAlias |
+| io.soabase.halva | halva | All the runtime code for Halva: matchers, comprehensions, etc. |
 

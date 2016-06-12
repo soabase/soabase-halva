@@ -49,19 +49,21 @@ In combination with Case Classes, Scala allows for extremely rich and complicate
 E.g.
 
 ```java
-@CaseClass public interface Person{String name(); int age();}
+@CaseClass public interface Animal{String name(); int age();}
 @CaseClass public interface Chair{String color(); int legQty(); int age();}
 
 public int findAnyAge(Object obj)
 {
     Any<String> s = anyString.define();
     Any<Integer> age = anyInt.define();
-    return match(people)
-        .caseOf(PersonCaseT(s, age), age::val)
-        .caseOf(AnimalCaseT(s, 3, age), age::val)
-        .caseOf(() -> 0);
+    return match(obj)
+        .caseOf(AnimalCaseT(s, age), age::val)
+        .caseOf(ChairCaseT(s, 3, age), age::val)
+        .caseOf(() -> 0)
+        .get();
 }
-findAnyAge(PersonCase("John Galt", 42)) -- returns 42
-findAnyAge(Chair("Red", 2, 5)) -- returns 0 - not enough legs
-findAnyAge(Chair("Red", 3, 5)) -- returns 5
+
+findAnyAge(AnimalCase("Bobby", 14)) -- 14
+findAnyAge(ChairCase("Red", 2, 5)) -- 0 - not enough legs
+findAnyAge(ChairCase("Red", 3, 5)) -- 5
 ```

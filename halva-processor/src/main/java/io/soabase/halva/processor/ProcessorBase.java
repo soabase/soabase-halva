@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.general;
+package io.soabase.halva.processor;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;

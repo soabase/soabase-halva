@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.caseclass.details;
+package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;

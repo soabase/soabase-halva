@@ -1,2 +1,2 @@
-io.soabase.halva.caseclass.details.CaseClassProcessor
-io.soabase.halva.alias.details.TypeAliasProcessor
+io.soabase.halva.processor.caseclass.CaseClassProcessor
+io.soabase.halva.processor.alias.TypeAliasProcessor

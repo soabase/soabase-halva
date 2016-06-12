@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.alias.details;
+package io.soabase.halva.processor.alias;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.soabase.halva.alias.TypeAlias;
-import io.soabase.halva.general.ProcessorBase;
+import io.soabase.halva.processor.ProcessorBase;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;

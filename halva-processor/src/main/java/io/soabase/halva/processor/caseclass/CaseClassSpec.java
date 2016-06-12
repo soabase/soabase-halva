@@ -13,40 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.alias.details;
+package io.soabase.halva.processor.caseclass;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-class AliasSpec
+class CaseClassSpec
 {
-    private final TypeElement typeElement;
-    private final DeclaredType parameterizedType;
+    private final Optional<TypeElement> element;
+    private final List<CaseClassItem> items;
 
-    AliasSpec()
+    CaseClassSpec()
     {
-        this(null, null);
+        element = Optional.empty();
+        items = new ArrayList<>();
     }
 
-    AliasSpec(TypeElement typeElement, DeclaredType parameterizedType)
+    CaseClassSpec(TypeElement element, List<CaseClassItem> items)
     {
-
-        this.typeElement = typeElement;
-        this.parameterizedType = parameterizedType;
-    }
-
-    boolean isValid()
-    {
-        return typeElement != null;
+        this.element = Optional.of(element);
+        this.items = items;
     }
 
     TypeElement getElement()
     {
-        return typeElement;
+        return element.orElseThrow(() -> new RuntimeException("Empty spec being used"));
     }
 
-    DeclaredType getParameterizedType()
+    List<CaseClassItem> getItems()
     {
-        return parameterizedType;
+        return items;
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.caseclass.details;
+package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -24,7 +24,7 @@ import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseClassMutable;
 import io.soabase.halva.caseclass.CaseObject;
-import io.soabase.halva.general.ProcessorBase;
+import io.soabase.halva.processor.ProcessorBase;
 import io.soabase.halva.tuple.ClassTuplable;
 import io.soabase.halva.tuple.Tuplable;
 import javax.annotation.processing.SupportedAnnotationTypes;

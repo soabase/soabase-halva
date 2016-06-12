@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.caseclass.details;
+package io.soabase.halva.processor.caseclass;
 
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseObject;

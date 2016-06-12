@@ -48,14 +48,13 @@ In combination with Case Classes, Scala allows for extremely rich and complicate
 E.g.
 
 ```java
-@CaseClass Person{String name(); int age();}
-...
-private static final AnyDeclaration<Person> anyPerson = AnyDeclaration.of(Person.class);
+@CaseClass public interface SomePerson{String name(); int age();}
 
-public Optional<Person> findSomeone(String nameToFind, List<Person> people) {
-    Any<Person> p = anyPerson.define();
-    return match(people)
-        .caseOf(p, () -> p.val().name().equals(nameToFind), () -> p.val())
-        .getOpt();
+private static final AnyDeclaration<SomePersonCase> anyPerson = AnyDeclaration.of(SomePersonCase.class);
+
+public Optional<SomePersonCase> findSomeone(String nameToFind, List<SomePersonCase> people)
+{
+    Any<SomePersonCase> p = anyPerson.define();
+    return match(people).caseOf(p, () -> p.val().name().equals(nameToFind), p::val).getOpt();
 }
 ```

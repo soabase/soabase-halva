@@ -9,7 +9,7 @@ The (slightly) modified version of it and the ported Java/Halva version are here
 * [SimpleInterpreter.scala](src/main/java/io/soabase/halva/examples/SimpleInterpreter.scala)
 * [SimpleInterpreter.java](src/main/java/io/soabase/halva/examples/SimpleInterpreter.java)
 
-This one small program contains all the features that people usually wish they could use in Java. To me eye, the Halva/Java version 
+This one small program contains all the features that people usually wish they could use in Java. To my eye, the Halva/Java version 
 looks remarkably close to the Scala file. It definitely doesn't look like normal Java. Of course, it's noisier than 
 the Scala version - no matter how hard you try Java is noisy. However, Java 8 is much, much, less noisier than 
 previous Javas. Once you get past the imports, semicolons and some other scaffolding, it's not too bad. 

@@ -26,13 +26,46 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static io.soabase.halva.any.AnyDeclaration.anyBoolean;
+import static io.soabase.halva.any.AnyDeclaration.anyInt;
+import static io.soabase.halva.any.AnyDeclaration.anyString;
+import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.sugar.Author.Author;
 import static io.soabase.halva.sugar.Book.Book;
+import static io.soabase.halva.sugar.Sugar.Iterable;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.T;
 
 public class TestFor
 {
+    @Test
+    public void testSimple()
+    {
+/*
+val one = "This checks for scala or sbt patterns"
+val two = "java rocks"
+val sentences = List(one, two)
+val dict = List("scala", "sbt", "patterns")
+
+val result = for {
+    sentence <- sentences
+    does = dict forall sentence.contains
+} yield (sentence, does)
+         */
+
+        String one = "This checks for scala or sbt patterns";
+        String two = "java rocks";
+        List<String> sentences = List(one, two);
+        List<String> dict = List("scala", "sbt", "patterns");
+        Any<String> sentence = anyString.define();
+        Any<Boolean> does = anyBoolean.define();
+
+        List<Tuple> ts = For(sentence, sentences)
+            .set(() -> does.set(dict.contains(sentence.val())))
+            .yield(() -> T(sentence.val(), does.val()));
+        System.out.println(ts);
+    }
+
     @Test
     public void testBasic()
     {
@@ -43,7 +76,7 @@ public class TestFor
         Any<List<List<?>>> lol = AnyDeclaration.of(new AnyType<List<List<?>>>(){}).define();
         Any<List<?>> l = AnyDeclaration.of(new AnyType<List<?>>(){}).define();
         Any<Object> o = AnyDeclaration.of(Object.class).define();
-        List<String> s = For.For(lol, big)
+        List<String> s = For(lol, big)
               .and(l, lol::val)
               .and(o, l::val)
               .yield(() -> String.valueOf(o.val()));
@@ -80,7 +113,7 @@ public class TestFor
             Any<Author> author = AnyDeclaration.of(Author.class).define();
             Any<Integer> year = AnyDeclaration.of(Integer.class).define();
 
-            List<Tuple> result = For.For(book, books)
+            List<Tuple> result = For(book, books)
                 .when(() -> book.val().authors().size() == 1)
                 .and(author, () -> book.val().authors())
                 .when(() -> author.val().name().startsWith("Ayn"))
@@ -98,7 +131,7 @@ public class TestFor
     List<Integer> even(int from, int to)
     {
         Any<Integer> i = AnyDeclaration.of(Integer.class).define();
-        return For.For(i, IntStream.range(from, to))
+        return For(i, IntStream.range(from, to))
             .when(() -> i.val() % 2 == 0)
             .yield(i::val);
     }
@@ -119,7 +152,7 @@ public class TestFor
     {
         Any<Integer> i = AnyDeclaration.of(Integer.class).define();
         Any<Integer> j = AnyDeclaration.of(Integer.class).define();
-        return For.For(i, IntStream.range(0, n))
+        return For(i, IntStream.range(0, n))
             .andInt(j, () -> IntStream.range(i.val(), n))
             .when(() -> i.val() + j.val() == v)
             .yield(() -> T(i.val(), j.val()));
@@ -143,7 +176,7 @@ public class TestFor
         Any<Integer> i = AnyDeclaration.of(Integer.class).define();
         Any<Integer> j = AnyDeclaration.of(Integer.class).define();
         StringBuilder str = new StringBuilder();
-        For.For(i, IntStream.range(0, 20))
+        For(i, IntStream.range(0, 20))
             .andInt(j, () -> IntStream.range(i.val(), 20))
             .when(() -> i.val() + j.val() == 32)
             .unit(() -> str.append("(" + i.val() + ", " + j.val() + ")"));

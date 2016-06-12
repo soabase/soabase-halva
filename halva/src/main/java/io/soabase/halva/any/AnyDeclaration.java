@@ -36,10 +36,12 @@ public interface AnyDeclaration<T>
     }
 
     AnyDeclaration<Object> any = of(Object.class);
+    AnyDeclaration<Boolean> anyBoolean = of(Boolean.class);
     AnyDeclaration<Integer> anyInt = of(Integer.class);
     AnyDeclaration<Long> anyLong = of(Long.class);
     AnyDeclaration<Double> anyDouble = of(Double.class);
     AnyDeclaration<String> anyString = of(String.class);
+    AnyDeclaration<ConsList<Boolean>> anyBooleanList = of(new AnyType<ConsList<Boolean>>(){});
     AnyDeclaration<ConsList<Integer>> anyIntList = of(new AnyType<ConsList<Integer>>(){});
     AnyDeclaration<ConsList<Long>> anyLongList = of(new AnyType<ConsList<Long>>(){});
     AnyDeclaration<ConsList<Double>> anyDoubleList = of(new AnyType<ConsList<Double>>(){});

@@ -5,7 +5,7 @@
     <groupId>io.soabase.halva</groupId>
     <artifactId>halva-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
 
     <modules>
         <module>halva</module>

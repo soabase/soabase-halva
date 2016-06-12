@@ -24,7 +24,7 @@ AnyDeclaration<List<String>> anyListOfString = AnyDeclaration.of(new AnyType<Lis
 AnyDeclaration<SimpleType.class> anySimple = AnyDeclaration.of(SimpleType.class);
 ```
 
-The `AnyDeclaration` class pre-declares common Anys such as `anyInt()`, `anyString()`, etc.
+The `AnyDeclaration` class pre-declares common Anys such as `anyInt`, `anyString`, etc.
 
 #### Using a Defined Any
 

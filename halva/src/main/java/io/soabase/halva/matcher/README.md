@@ -40,3 +40,22 @@ match(anotherString)
     .caseOf(str, () -> "It's " + str.val())
     .get();
 ```
+
+**Extraction and Case Classes**
+
+In combination with Case Classes, Scala allows for extremely rich and complicated pattern matching. Halva attempts to support most of what is commonly used. Halva [Case Classes](../caseclass/) adds nuermous methods/features to support extraction. In Scala, you can construct case class instances that have extraction variables as arguments. This is not possible in Java, but we can get very close using Halva. Halva adds a static method to every case class that is the name of the case class suffixed with "T". E.g. if your case class is named "MyCase", the method is named "MyCaseT". This method has the same number of arguments as there are fields in the Case Class. However, the argument type is `Object` so that it can accept any value. Thus, you can pass an `Any` value in any argument position (or multiple positions). The Halva matcher is aware of this syntax and does the appropriate matching and extraction when it is encountered.
+
+E.g.
+
+```java
+@CaseClass Person{String name(); int age();}
+...
+private static final AnyDeclaration<Person> anyPerson = AnyDeclaration.of(Person.class);
+
+public Optional<Person> findSomeone(String nameToFind, List<Person> people) {
+    Any<Person> p = anyPerson.define();
+    return match(people)
+        .caseOf(p, () -> p.val().name().equals(nameToFind), () -> p.val())
+        .getOpt();
+}
+```

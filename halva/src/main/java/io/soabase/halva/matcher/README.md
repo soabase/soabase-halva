@@ -67,3 +67,20 @@ findAnyAge(AnimalCase("Bobby", 14)) -- 14
 findAnyAge(ChairCase(2, 5)) -- 0 - not enough legs
 findAnyAge(ChairCase(3, 5)) -- 5
 ```
+
+### Partials
+
+The front portion of a matcher can be saved for later use as a Partial. E.g.
+
+```
+Any<Integer> anyInt = anyInt.define();
+Partial<Integer> partial = partial(Integer.class)
+    .caseOf(8, () -> "eight")
+    .caseOf(anyInt, () -> "Number " + anyInt.val());
+    
+... later on ...
+
+assertEquals("eight", partial.with(8).get());
+assertEquals("Number 10", partial.with(10).get());
+assertEquals("Number -246", partial.with(-246).get());
+```

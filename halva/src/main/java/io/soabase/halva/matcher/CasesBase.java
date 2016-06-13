@@ -15,23 +15,32 @@
  */
 package io.soabase.halva.matcher;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public interface CasesBase<ARG, M>
 {
+    <T, A> M caseOf(Any<A> patternValue, A lhs, Guard guard, Supplier<T> proc);
+
     <T> M caseOf(Tuple lhs, Guard guard, Supplier<T> proc);
 
     <T> M caseOf(Object lhs, Guard guard, Supplier<T> proc);
+
+    <T, A> M caseOf(Any<A> patternValue, A lhs, Supplier<T> proc);
 
     <T> M caseOf(Tuple lhs, Supplier<T> proc);
 
     <T> M caseOf(Object lhs, Supplier<T> proc);
 
+    <T, A> M caseOfUnit(Any<A> patternValue, A lhs, Guard guard, Runnable proc);
+
     <T> M caseOfUnit(Tuple lhs, Guard guard, Runnable proc);
 
     <T> M caseOfUnit(Object lhs, Guard guard, Runnable proc);
+
+    <T, A> M caseOfUnit(Any<A> patternValue, A lhs, Runnable proc);
 
     <T> M caseOfUnit(Tuple lhs, Runnable proc);
 

@@ -15,6 +15,6 @@
  */
 package io.soabase.halva.tuple;
 
-public interface ClassTuple extends Tuplable
+public interface ClassTuple<T> extends Tuplable
 {
 }

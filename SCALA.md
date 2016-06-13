@@ -3,8 +3,8 @@
 * Case Classes and Case Objects
   * Case Classes
   * Difference between Case Object and Case Classes
-* Pattern matching and extraction
-* For-comprehensions
+* Pattern Matching and Extraction
+* For-Comprehensions
 
 #### Case Class and Case Objects
 
@@ -20,3 +20,10 @@ A simpler explanation: a Case Class is a POJO generated from a specification of 
 
 A Case Object is a specialization of a Case Class. It is a singleton version of a Case Class. Because it is a singleton, it has no fields. It is generated from a similar specification to a Case Class but incldues a singleton definition as well.
 
+### Pattern Matching and Extraction
+
+From http://docs.scala-lang.org/tutorials/tour/pattern-matching -
+
+> Scala has a built-in general pattern matching mechanism. It allows to match on any sort of data with a first-match policy.
+
+Pattern matching is like a Java case statement where the cases can contain expressions and variables. As the case clauses are evaluated the variables are filled with matching values that can then be used as part of the case evaluation. The case caluse, if it matches, can also emit a result.

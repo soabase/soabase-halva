@@ -21,11 +21,13 @@ class AnyImpl<T extends REAL, REAL> implements Any<T>
 {
     private final Class<T> clazz;
     private final AnyType<T> typeLiteral;
+    private final AnyDeclaration<T> declaration;
     private final TypeAliasType<REAL, T> typeAliasType;
     private volatile Object value = null;
 
-    AnyImpl(Class<T> clazz, AnyType<T> typeLiteral, TypeAliasType<REAL, T> typeAliasType)
+    AnyImpl(AnyDeclaration<T> declaration, Class<T> clazz, AnyType<T> typeLiteral, TypeAliasType<REAL, T> typeAliasType)
     {
+        this.declaration = declaration;
         this.typeAliasType = typeAliasType;
         if ( (clazz == null) && (typeLiteral == null) )
         {
@@ -34,6 +36,12 @@ class AnyImpl<T extends REAL, REAL> implements Any<T>
 
         this.clazz = clazz;
         this.typeLiteral = typeLiteral;
+    }
+
+    @Override
+    public AnyDeclaration<T> getDeclaration()
+    {
+        return declaration;
     }
 
     @SuppressWarnings("unchecked")

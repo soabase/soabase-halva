@@ -18,6 +18,7 @@ package io.soabase.halva.any;
 import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
+import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
@@ -27,7 +28,7 @@ import static io.soabase.halva.any.AnyDeclaration.anyInt;
 import static io.soabase.halva.any.AnyDeclaration.anyString;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 import static org.junit.Assert.assertEquals;
 
 public class TestAny
@@ -36,9 +37,9 @@ public class TestAny
     public void testAny()
     {
         Any<Object> any = AnyDeclaration.of(Object.class).define();
-        assertEquals(T("a", any, "b"), T("a", T(1, 2, 3), "b"));
-        assertEquals(T("a", T(1, 2, 3), "b"), T("a", any, "b"));
-        assertEquals(T("a", any, "b"), T("a", any, "b"));
+        assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"));
+        assertEquals(Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"), Tuple.Tu("a", any, "b"));
+        assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", any, "b"));
     }
 
     @TypeAlias interface StringList_ extends ConsList<String>{}

@@ -17,6 +17,7 @@ package io.soabase.halva.nettests;
 
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
+import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple2;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +26,7 @@ import java.util.stream.IntStream;
 
 import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.sugar.Sugar.List;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 // from http://daily-scala.blogspot.com/2009/08/for-comprehensions.html
 public class Test200908ForComprehensions
@@ -58,10 +59,10 @@ public class Test200908ForComprehensions
     {
         List<Tuple2<Integer, Integer>> result = For(i, range)
             .and(j, () -> range)
-            .yield(() -> T(i.val(), j.val()));
-        Assert.assertEquals(List(T(1,1), T(1,2), T(1,3), T(1,4), T(1,5), T(2,1), T(2,2),
-            T(2,3), T(2,4), T(2,5), T(3,1), T(3,2), T(3,3), T(3,4), T(3,5), T(4,1), T(4,2),
-            T(4,3), T(4,4), T(4,5), T(5,1), T(5,2), T(5,3), T(5,4), T(5,5)),
+            .yield(() -> Tuple.Tu(i.val(), j.val()));
+        Assert.assertEquals(List(Tuple.Tu(1,1), Tuple.Tu(1,2), Tuple.Tu(1,3), Tuple.Tu(1,4), Tuple.Tu(1,5), Tuple.Tu(2,1), Tuple.Tu(2,2),
+            Tuple.Tu(2,3), Tuple.Tu(2,4), Tuple.Tu(2,5), Tuple.Tu(3,1), Tuple.Tu(3,2), Tuple.Tu(3,3), Tuple.Tu(3,4), Tuple.Tu(3,5), Tuple.Tu(4,1), Tuple.Tu(4,2),
+            Tuple.Tu(4,3), Tuple.Tu(4,4), Tuple.Tu(4,5), Tuple.Tu(5,1), Tuple.Tu(5,2), Tuple.Tu(5,3), Tuple.Tu(5,4), Tuple.Tu(5,5)),
         result);
     }
 

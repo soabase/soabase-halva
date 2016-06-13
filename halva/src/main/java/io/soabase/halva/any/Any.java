@@ -39,6 +39,8 @@ public interface Any<T>
         return new AnyConsImpl<>(null, head, null, tail);
     }
 
+    AnyDeclaration<T> getDeclaration();
+
     T val();
 
     boolean set(Object value);

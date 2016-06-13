@@ -19,7 +19,6 @@ import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.comprehension.For;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,14 +26,11 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.soabase.halva.any.AnyDeclaration.anyBoolean;
-import static io.soabase.halva.any.AnyDeclaration.anyInt;
 import static io.soabase.halva.any.AnyDeclaration.anyString;
 import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.sugar.Author.Author;
 import static io.soabase.halva.sugar.Book.Book;
-import static io.soabase.halva.sugar.Sugar.Iterable;
 import static io.soabase.halva.sugar.Sugar.List;
-import static io.soabase.halva.tuple.Tuple.T;
 
 public class TestFor
 {
@@ -62,7 +58,7 @@ val result = for {
 
         List<Tuple> ts = For(sentence, sentences)
             .set(() -> does.set(dict.contains(sentence.val())))
-            .yield(() -> T(sentence.val(), does.val()));
+            .yield(() -> Tuple.Tu(sentence.val(), does.val()));
         System.out.println(ts);
     }
 
@@ -118,9 +114,9 @@ val result = for {
                 .and(author, () -> book.val().authors())
                 .when(() -> author.val().name().startsWith("Ayn"))
                 .and(year, () -> author.val().years())
-                .yield(() -> T(book.val().title(), year.val()));
+                .yield(() -> Tuple.Tu(book.val().title(), year.val()));
 
-            Assert.assertEquals(List(T("Atlas Shrugged", 1940), T("Atlas Shrugged", 1950)), result);
+            Assert.assertEquals(List(Tuple.Tu("Atlas Shrugged", 1940), Tuple.Tu("Atlas Shrugged", 1950)), result);
         }
     }
 
@@ -155,13 +151,13 @@ val result = for {
         return For(i, IntStream.range(0, n))
             .andInt(j, () -> IntStream.range(i.val(), n))
             .when(() -> i.val() + j.val() == v)
-            .yield(() -> T(i.val(), j.val()));
+            .yield(() -> Tuple.Tu(i.val(), j.val()));
     }
 
     @Test
     public void testFoo()
     {
-        Assert.assertEquals(List(T(13, 19), T(14, 18), T(15, 17), T(16, 16)), foo(20, 32));
+        Assert.assertEquals(List(Tuple.Tu(13, 19), Tuple.Tu(14, 18), Tuple.Tu(15, 17), Tuple.Tu(16, 16)), foo(20, 32));
     }
 
     /*

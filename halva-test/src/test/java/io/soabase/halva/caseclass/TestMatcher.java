@@ -30,16 +30,16 @@ import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.any.AnyDeclaration.anyInt;
 import static io.soabase.halva.any.AnyDeclaration.anyString;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
-import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseT;
+import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseTu;
 import static io.soabase.halva.caseclass.ChairCase.ChairCase;
-import static io.soabase.halva.caseclass.ChairCase.ChairCaseT;
+import static io.soabase.halva.caseclass.ChairCase.ChairCaseTu;
 import static io.soabase.halva.caseclass.Value.Value;
-import static io.soabase.halva.caseclass.Value.ValueT;
+import static io.soabase.halva.caseclass.Value.ValueTu;
 import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 public class TestMatcher
 {
@@ -50,14 +50,14 @@ public class TestMatcher
 
         GenericExampleCase<String, Integer> generic = GenericExampleCase("hey", 100);
         int value = match(generic)
-            .caseOf(T("hey", anyInt), anyInt::val)
+            .caseOf(Tu("hey", anyInt), anyInt::val)
             .caseOf(() -> 0)
             .get();
         Assert.assertEquals(100, value);
 
         String s = match(generic)
-            .caseOf(T("hey", anyInt), () -> anyInt.val() > 100, () -> "too big")
-            .caseOf(T("hey", anyInt), () -> "It's " + anyInt.val())
+            .caseOf(Tu("hey", anyInt), () -> anyInt.val() > 100, () -> "too big")
+            .caseOf(Tu("hey", anyInt), () -> "It's " + anyInt.val())
             .get();
         Assert.assertEquals("It's 100", s);
     }
@@ -70,7 +70,7 @@ public class TestMatcher
         Any<Integer> n = anyInt.define();
 
         return match(Pair(a, b))
-            .caseOf( Pair(ValueT(m), ValueT(n)), () -> m.val() - n.val())
+            .caseOf( Pair(ValueTu(m), ValueTu(n)), () -> m.val() - n.val())
             .caseOf( () -> 0)
             .get();
     }
@@ -120,8 +120,8 @@ public class TestMatcher
         Any<String> s = anyString.define();
         Any<Integer> age = anyInt.define();
         return match(obj)
-            .caseOf(AnimalCaseT(s, age), age::val)
-            .caseOf(ChairCaseT(s, 3, age), age::val)
+            .caseOf(AnimalCaseTu(s, age), age::val)
+            .caseOf(ChairCaseTu(s, 3, age), age::val)
             .caseOf(() -> 0)
             .get();
     }

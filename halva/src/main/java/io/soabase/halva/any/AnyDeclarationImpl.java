@@ -33,6 +33,6 @@ class AnyDeclarationImpl<T extends REAL, REAL> implements AnyDeclaration<T>
     @Override
     public Any<T> define()
     {
-        return new AnyImpl<>(clazz, typeLiteral, typeAliasType);
+        return new AnyImpl<>(this, clazz, typeLiteral, typeAliasType);
     }
 }

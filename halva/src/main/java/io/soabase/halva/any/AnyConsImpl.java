@@ -33,6 +33,12 @@ class AnyConsImpl<T> implements Any<Void>
     }
 
     @Override
+    public AnyDeclaration<Void> getDeclaration()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Void val()
     {
         return null;

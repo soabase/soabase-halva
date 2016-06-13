@@ -16,6 +16,7 @@
 package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
+import io.soabase.halva.processor.Constants;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
@@ -176,7 +177,7 @@ class Templates
                 .collect(Collectors.joining(", "));
 
             codeBlock = CodeBlock.builder()
-                .addStatement("return $T.T($L)", Tuple.class, args)
+                .addStatement("return $T.$L($L)", Tuple.class, Constants.TUPLE_METHOD, args)
                 .build();
         }
         else
@@ -393,7 +394,7 @@ class Templates
 
     void addClassTuple(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)
     {
-        String classTupleName = className.simpleName() + "T";
+        String classTupleName = className.simpleName() + Constants.TUPLE_METHOD;
         ClassName tupleClassName = ClassName.get(Tuple.class);
         ClassName classTupleClassName = ClassName.get(ClassTuple.class);
 
@@ -429,7 +430,7 @@ class Templates
             .mapToObj(i -> "_" + i)
             .collect(Collectors.joining(", "));
         CodeBlock codeBlock = CodeBlock.builder()
-            .addStatement("return () -> $T.T($L)", tupleClassName, arguments)
+            .addStatement("return () -> $T.$L($L)", tupleClassName, Constants.TUPLE_METHOD, arguments)
             .build();
 
         List<ParameterSpec> parameters = IntStream.rangeClosed(1, spec.getItems().size())

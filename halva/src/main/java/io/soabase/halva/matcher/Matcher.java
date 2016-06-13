@@ -59,19 +59,19 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     @Override
     public <T> Matcher<ARG> caseOf(Object lhs, Supplier<T> proc)
     {
-        return register(Tuple.T(lhs), null, proc);
+        return register(Tuple.Tu(lhs), null, proc);
     }
 
     @Override
     public Matcher<ARG> caseOfUnit(Object lhs, Runnable proc)
     {
-        return register(Tuple.T(lhs), null, wrap(proc));
+        return register(Tuple.Tu(lhs), null, wrap(proc));
     }
 
     @Override
     public <T> Matcher<ARG> caseOf(Object lhs, Guard guard, Supplier<T> proc)
     {
-        return register(Tuple.T(lhs), guard, proc);
+        return register(Tuple.Tu(lhs), guard, proc);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     @Override
     public <T> Matcher<ARG> caseOfUnit(Object lhs, Guard guard, Runnable proc)
     {
-        return register(Tuple.T(lhs), guard, wrap(proc));
+        return register(Tuple.Tu(lhs), guard, wrap(proc));
     }
 
     @Override
@@ -95,13 +95,13 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     @Override
     public <T> Matcher<ARG> caseOfTest(Predicate<ARG> tester, Supplier<T> proc)
     {
-        return register(Tuple.T(tester), null, proc);
+        return register(Tuple.Tu(tester), null, proc);
     }
 
     @Override
     public Matcher<ARG> caseOfTestUnit(Predicate<ARG> tester, Runnable proc)
     {
-        return register(Tuple.T(tester), null, wrap(proc));
+        return register(Tuple.Tu(tester), null, wrap(proc));
     }
 
     @Override

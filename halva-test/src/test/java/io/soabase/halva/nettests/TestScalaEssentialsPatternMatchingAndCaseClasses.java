@@ -34,13 +34,13 @@ import static io.soabase.halva.matcher.Matcher.partial;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
 import static io.soabase.halva.nettests.Guy.Guy;
-import static io.soabase.halva.nettests.Guy.GuyT;
+import static io.soabase.halva.nettests.Guy.GuyTu;
 import static io.soabase.halva.nettests.SuperHero.SuperHero;
-import static io.soabase.halva.nettests.SuperHero.SuperHeroT;
+import static io.soabase.halva.nettests.SuperHero.SuperHeroTu;
 import static io.soabase.halva.nettests.TestScalaEssentialsPatternMatchingAndCaseClasses.Power.*;
 import static io.soabase.halva.nettests.Villain.Villain;
 import static io.soabase.halva.sugar.Sugar.List;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 // from http://www.slideshare.net/czechscala/scala-essentials-pattern-matching-and-case-classes
 // and https://gist.github.com/ksmutny/5439360
@@ -91,7 +91,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         String name();
 
         static ClassTuple CharacterT(Object _1, Object _2) {
-            return () -> Tuple.T(_1, _2);
+            return () -> Tuple.Tu(_1, _2);
         }
     }
 
@@ -120,12 +120,12 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         int age();
 
         static ClassTuple PersonT(Object _1, Object _2) {
-            return () -> Tuple.T(_1, _2);
+            return () -> Tuple.Tu(_1, _2);
         }
 
         default Tuple tuple()
         {
-            return T(name(), age());
+            return Tuple.Tu(name(), age());
         }
     }
     @CaseClass interface Guy_ extends Person{String name(); int age();}
@@ -162,7 +162,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
          */
         Any<Integer> anyAge = AnyDeclaration.of(Integer.class).define();
         String result = match(Guy("Dr. Who", Integer.MAX_VALUE))
-            .caseOf(GuyT("Dr. Who", anyAge), () -> "Exactly!")
+            .caseOf(GuyTu("Dr. Who", anyAge), () -> "Exactly!")
             .caseOf(() -> "anyone!")
             .get();
         Assert.assertEquals("Exactly!", result);
@@ -173,7 +173,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         Any<String> anyName = AnyDeclaration.of(String.class).define();
         Any<List<Power>> anyPowers = AnyDeclaration.of(new AnyType<List<Power>>(){}).define();
         return match(person)
-            .caseOf(SuperHeroT(anyName, anyPowers, Optional.of(TonyStark)), () -> Optional.of(anyPowers.val()))
+            .caseOf(SuperHeroTu(anyName, anyPowers, Optional.of(TonyStark)), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
             .get();
     }
@@ -241,9 +241,9 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         Any<Villain> anyVillain = AnyDeclaration.of(Villain.class).define();
         Any<Object> any = AnyDeclaration.of(Object.class).define();
         return match(aPair)
-            .caseOf(T(42, Math.PI, any), () -> "magic numbers + anything")
-            .caseOf(T(IronMan, Mandarin), () -> "hate each other")
-            .caseOf(T(anyVillain, MaryJane), () -> "Cheating with " + anyVillain.val().name())
+            .caseOf(Tuple.Tu(42, Math.PI, any), () -> "magic numbers + anything")
+            .caseOf(Tuple.Tu(IronMan, Mandarin), () -> "hate each other")
+            .caseOf(Tuple.Tu(anyVillain, MaryJane), () -> "Cheating with " + anyVillain.val().name())
             .caseOf(() -> "")
             .get();
     }
@@ -251,11 +251,11 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     @Test
     public void testFromTuple()
     {
-        Assert.assertEquals("hate each other", fromTuple(T(IronMan, Mandarin)));
-        Assert.assertEquals("Cheating with Mandarin", fromTuple(T(Mandarin, MaryJane)));
-        Assert.assertEquals("Cheating with Joker", fromTuple(T(Joker, MaryJane)));
-        Assert.assertEquals("magic numbers + anything", fromTuple(T(42, Math.PI, Joker)));
-        Assert.assertEquals("magic numbers + anything", fromTuple(T(42, Math.PI, String.class)));
+        Assert.assertEquals("hate each other", fromTuple(Tuple.Tu(IronMan, Mandarin)));
+        Assert.assertEquals("Cheating with Mandarin", fromTuple(Tuple.Tu(Mandarin, MaryJane)));
+        Assert.assertEquals("Cheating with Joker", fromTuple(Tuple.Tu(Joker, MaryJane)));
+        Assert.assertEquals("magic numbers + anything", fromTuple(Tuple.Tu(42, Math.PI, Joker)));
+        Assert.assertEquals("magic numbers + anything", fromTuple(Tuple.Tu(42, Math.PI, String.class)));
     }
 
     // slide 27
@@ -265,7 +265,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         Any<String> anyName = AnyDeclaration.of(String.class).define();
         Any<Wealth> anyWealth = AnyDeclaration.of(Wealth.class).define();
         return match(person)
-            .caseOf(T(anyName, anyWealth), () -> anyWealth.val().n() >= 10000, () -> "Rich guy")
+            .caseOf(Tuple.Tu(anyName, anyWealth), () -> anyWealth.val().n() >= 10000, () -> "Rich guy")
             .caseOf(() -> "anybody else")
             .get();
     }

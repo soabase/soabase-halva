@@ -20,14 +20,11 @@ import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.matcher.MatchError;
-import io.soabase.halva.matcher.Matcher;
-import io.soabase.halva.nettests.PersonCase;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
-import java.util.Optional;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.any.AnyDeclaration.anyInt;
@@ -40,7 +37,6 @@ import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueT;
 import static io.soabase.halva.comprehension.For.For;
 import static io.soabase.halva.matcher.Matcher.match;
-import static io.soabase.halva.nettests.PersonCase.PersonCase;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.T;
@@ -66,7 +62,7 @@ public class TestMatcher
         Assert.assertEquals("It's 100", s);
     }
 
-    @CaseClass interface Value_{int n();};
+    @CaseClass interface Value_{int n();}
 
     int subtract(Value a, Value b)
     {

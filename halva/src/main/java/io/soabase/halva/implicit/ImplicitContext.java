@@ -19,6 +19,7 @@ import io.soabase.halva.any.AnyDeclaration;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 class ImplicitContext
 {
@@ -68,9 +69,9 @@ class ImplicitContext
         return Optional.empty();
     }
 
-    <T> void set(AnyDeclaration<T> key, T value)
+    <T> void set(AnyDeclaration<T> key, Supplier<T> valueSupplier)
     {
-        contexts.getFirst().set(key, value);
+        contexts.getFirst().set(key, valueSupplier);
     }
 
     @SuppressWarnings("unchecked")

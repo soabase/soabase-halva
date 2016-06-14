@@ -87,15 +87,24 @@ public class Implicits
 
     public <T> void setValue(AnyDeclaration<T> key, T value)
     {
-        if ( key == null )
-        {
-            throw new IllegalArgumentException("key cannot be null");
-        }
         if ( value == null )
         {
             throw new IllegalArgumentException("value cannot be null");
         }
-        executeRead(() -> context.set(key, value));
+        setValueProvider(key, () -> value);
+    }
+
+    public <T> void setValueProvider(AnyDeclaration<T> key, Supplier<T> valueSupplier)
+    {
+        if ( key == null )
+        {
+            throw new IllegalArgumentException("key cannot be null");
+        }
+        if ( valueSupplier == null )
+        {
+            throw new IllegalArgumentException("valueSupplier cannot be null");
+        }
+        executeRead(() -> context.set(key, valueSupplier));
     }
 
     public <T> T getValue(AnyDeclaration<T> any)

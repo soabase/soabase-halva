@@ -20,10 +20,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 class ContextLevel
 {
-    private final ConcurrentMap<AnyDeclaration, Object> values = new ConcurrentHashMap<>();
+    private final ConcurrentMap<AnyDeclaration, Supplier> values = new ConcurrentHashMap<>();
     private final ConcurrentMap<AnyDeclaration, Conversion> conversions = new ConcurrentHashMap<>();
 
     static class Conversion
@@ -48,14 +49,15 @@ class ContextLevel
         }
     }
 
-    void set(AnyDeclaration key, Object value)
+    void set(AnyDeclaration key, Supplier valueSupplier)
     {
-        values.put(key, value);
+        values.put(key, valueSupplier);
     }
 
     Object get(AnyDeclaration key)
     {
-        return values.get(key);
+        Supplier supplier = values.get(key);
+        return (supplier != null) ? supplier.get() : null;
     }
 
     void setConversion(Function converter, AnyDeclaration fromType, AnyDeclaration toType)

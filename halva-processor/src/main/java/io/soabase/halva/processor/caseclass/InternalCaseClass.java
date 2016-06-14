@@ -32,7 +32,7 @@ class InternalCaseClass
         this.suffix = caseObject.suffix();
         this.unsuffix = caseObject.unsuffix();
         this.json = false;
-        type = "CaseObject";
+        type = CaseObject.class.getSimpleName();
     }
 
     InternalCaseClass(CaseClass caseClass)
@@ -41,7 +41,7 @@ class InternalCaseClass
         this.suffix = caseClass.suffix();
         this.unsuffix = caseClass.unsuffix();
         this.json = caseClass.json();
-        type = "CaseClass";
+        type = CaseClass.class.getSimpleName();
     }
 
     String getType()

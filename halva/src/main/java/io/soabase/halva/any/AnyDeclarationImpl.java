@@ -33,6 +33,55 @@ class AnyDeclarationImpl<T extends REAL, REAL> implements AnyDeclaration<T>
     @Override
     public Any<T> define()
     {
-        return new AnyImpl<>(clazz, typeLiteral, typeAliasType);
+        return new AnyImpl<>(this, clazz, typeLiteral, typeAliasType);
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder str = new StringBuilder();
+        str.append((clazz != null) ? ("AnyDeclarationImpl(" + clazz + ")") : ("Any(" + typeLiteral + ")"));
+        if ( typeAliasType != null  )
+        {
+            str.append(" - alias for ").append(typeAliasType);
+        }
+        str.append("");
+        return str.toString();
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+
+        AnyDeclarationImpl<?, ?> that = (AnyDeclarationImpl<?, ?>)o;
+
+        if ( clazz != null ? !clazz.equals(that.clazz) : that.clazz != null )
+        {
+            return false;
+        }
+        //noinspection SimplifiableIfStatement
+        if ( typeLiteral != null ? !typeLiteral.equals(that.typeLiteral) : that.typeLiteral != null )
+        {
+            return false;
+        }
+        return typeAliasType != null ? typeAliasType.equals(that.typeAliasType) : that.typeAliasType == null;
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = clazz != null ? clazz.hashCode() : 0;
+        result = 31 * result + (typeLiteral != null ? typeLiteral.hashCode() : 0);
+        result = 31 * result + (typeAliasType != null ? typeAliasType.hashCode() : 0);
+        return result;
     }
 }

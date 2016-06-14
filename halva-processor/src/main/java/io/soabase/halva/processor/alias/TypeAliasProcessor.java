@@ -100,7 +100,7 @@ public class TypeAliasProcessor extends ProcessorBase<AliasSpec, Templates>
         templates.addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
         templates.addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
 
-        createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, "TypeAlias", builder, typeElement);
+        createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getSimpleName(), builder, typeElement);
     }
 
     @Override

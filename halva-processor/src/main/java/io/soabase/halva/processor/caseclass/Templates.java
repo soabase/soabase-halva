@@ -562,11 +562,4 @@ class Templates
         }
         return localCaseClassName;
     }
-
-    private String fixAnyName(String name)
-    {
-        return "any"
-            + Character.toUpperCase(name.charAt(0))
-            + name.substring(1);
-    }
 }

@@ -25,15 +25,15 @@ import java.util.function.Predicate;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Add.Add;
-import static io.soabase.halva.nettests.Add.AddT;
+import static io.soabase.halva.nettests.Add.AddTu;
 import static io.soabase.halva.nettests.Const.Const;
-import static io.soabase.halva.nettests.Const.ConstT;
+import static io.soabase.halva.nettests.Const.ConstTu;
 import static io.soabase.halva.nettests.Mult.Mult;
-import static io.soabase.halva.nettests.Mult.MultT;
+import static io.soabase.halva.nettests.Mult.MultTu;
 import static io.soabase.halva.nettests.Neg.Neg;
-import static io.soabase.halva.nettests.Neg.NegT;
+import static io.soabase.halva.nettests.Neg.NegTu;
 import static io.soabase.halva.nettests.X.X;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 // https://kerflyn.wordpress.com/2011/02/14/playing-with-scalas-pattern-matching/
 public class TestPlayingWithScalaPatternMatching
@@ -199,12 +199,12 @@ public class TestPlayingWithScalaPatternMatching
         Any<Integer> n = AnyDeclaration.of(Integer.class).define();
         Any<String> s = AnyDeclaration.of(String.class).define();
         Any<String> v = AnyDeclaration.of(String.class).define();
-        return match(T(arg, value))
-            .caseOf(T("-l", s), () -> "setLanguageTo(" + s.val() + ")")
-            .caseOf(T(oOrOptim, n), () -> ((0 < n.val()) && (n.val() <= 5)), () -> "setOptimizationLevelTo(" + n.val() + ")")
-            .caseOf(T(oOrOptim, n), () -> "badOptimizationLevel(" + n.val() + ")")
-            .caseOf(T(hOrHelp, v), () -> "displayHelp()")
-            .caseOf(T(s, v), () -> "badArgument(" + s.val() + ")")
+        return match(Tu(arg, value))
+            .caseOf(Tu("-l", s), () -> "setLanguageTo(" + s.val() + ")")
+            .caseOf(Tu(oOrOptim, n), () -> ((0 < n.val()) && (n.val() <= 5)), () -> "setOptimizationLevelTo(" + n.val() + ")")
+            .caseOf(Tu(oOrOptim, n), () -> "badOptimizationLevel(" + n.val() + ")")
+            .caseOf(Tu(hOrHelp, v), () -> "displayHelp()")
+            .caseOf(Tu(s, v), () -> "badArgument(" + s.val() + ")")
             .get();
     }
 
@@ -284,10 +284,10 @@ public class TestPlayingWithScalaPatternMatching
 
         return match(expression)
             .caseOf(X(), () -> xValue)
-            .caseOf(ConstT(cst), cst::val)
-            .caseOf(AddT(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
-            .caseOf(MultT(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
-            .caseOf(NegT(expr), () -> -1 * eval(expr.val(), xValue))
+            .caseOf(ConstTu(cst), cst::val)
+            .caseOf(AddTu(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
+            .caseOf(MultTu(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
+            .caseOf(NegTu(expr), () -> -1 * eval(expr.val(), xValue))
             .get();
     }
 
@@ -311,10 +311,10 @@ public class TestPlayingWithScalaPatternMatching
 
         return match(expression)
             .caseOf(X(), () -> Const(1))
-            .caseOf(ConstT(cst), () -> Const(0))
-            .caseOf(AddT(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
-            .caseOf(MultT(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
-            .caseOf(NegT(expr), () -> Neg(deriv(expr.val())))
+            .caseOf(ConstTu(cst), () -> Const(0))
+            .caseOf(AddTu(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
+            .caseOf(MultTu(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
+            .caseOf(NegTu(expr), () -> Neg(deriv(expr.val())))
             .get();
     }
 

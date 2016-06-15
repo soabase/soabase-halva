@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.sugar.Sugar.List;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 // from http://daily-scala.blogspot.com/2009/08/for-comprehensions.html
 public class Test200908ForComprehensions
@@ -58,10 +58,10 @@ public class Test200908ForComprehensions
     {
         List<Tuple2<Integer, Integer>> result = forComp(i, range)
             .forComp(j, () -> range)
-            .yield(() -> T(i.val(), j.val()));
-        Assert.assertEquals(List(T(1,1), T(1,2), T(1,3), T(1,4), T(1,5), T(2,1), T(2,2),
-            T(2,3), T(2,4), T(2,5), T(3,1), T(3,2), T(3,3), T(3,4), T(3,5), T(4,1), T(4,2),
-            T(4,3), T(4,4), T(4,5), T(5,1), T(5,2), T(5,3), T(5,4), T(5,5)),
+            .yield(() -> Tu(i.val(), j.val()));
+        Assert.assertEquals(List(Tu(1,1), Tu(1,2), Tu(1,3), Tu(1,4), Tu(1,5), Tu(2,1), Tu(2,2),
+            Tu(2,3), Tu(2,4), Tu(2,5), Tu(3,1), Tu(3,2), Tu(3,3), Tu(3,4), Tu(3,5), Tu(4,1), Tu(4,2),
+            Tu(4,3), Tu(4,4), Tu(4,5), Tu(5,1), Tu(5,2), Tu(5,3), Tu(5,4), Tu(5,5)),
         result);
     }
 

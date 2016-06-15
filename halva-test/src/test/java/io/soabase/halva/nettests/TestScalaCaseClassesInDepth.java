@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PersonCase.PersonCase;
-import static io.soabase.halva.nettests.ValueCase.ValueCaseT;
+import static io.soabase.halva.nettests.ValueCase.ValueCaseTu;
 
 // from http://www.alessandrolacava.com/blog/scala-case-classes-in-depth/
 public class TestScalaCaseClassesInDepth
@@ -83,7 +83,7 @@ public class TestScalaCaseClassesInDepth
     {
         Any<T> v = AnyDeclaration.of(typeLiteral).define();
         return match(value)
-            .caseOf(ValueCaseT(v), () -> "We have a value here: " + v.val())
+            .caseOf(ValueCaseTu(v), () -> "We have a value here: " + v.val())
             .caseOf(() -> "I'm sorry, no value")
             .get();
     }

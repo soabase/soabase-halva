@@ -31,7 +31,7 @@ import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.sugar.Author.Author;
 import static io.soabase.halva.sugar.Book.Book;
 import static io.soabase.halva.sugar.Sugar.List;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 public class TestFor
 {
@@ -59,7 +59,7 @@ val result = for {
 
         List<Tuple> ts = forComp(sentence, sentences)
             .set(() -> does.set(dict.contains(sentence.val())))
-            .yield(() -> T(sentence.val(), does.val()));
+            .yield(() -> Tu(sentence.val(), does.val()));
         System.out.println(ts);
     }
 
@@ -115,9 +115,9 @@ val result = for {
                 .forComp(author, () -> book.val().authors())
                 .filter(() -> author.val().name().startsWith("Ayn"))
                 .forComp(year, () -> author.val().years())
-                .yield(() -> T(book.val().title(), year.val()));
+                .yield(() -> Tu(book.val().title(), year.val()));
 
-            Assert.assertEquals(List(T("Atlas Shrugged", 1940), T("Atlas Shrugged", 1950)), result);
+            Assert.assertEquals(List(Tu("Atlas Shrugged", 1940), Tu("Atlas Shrugged", 1950)), result);
         }
     }
 
@@ -152,13 +152,13 @@ val result = for {
         return forComp(i, IntStream.range(0, n))
             .forCompInt(j, () -> IntStream.range(i.val(), n))
             .filter(() -> i.val() + j.val() == v)
-            .yield(() -> T(i.val(), j.val()));
+            .yield(() -> Tu(i.val(), j.val()));
     }
 
     @Test
     public void testFoo()
     {
-        Assert.assertEquals(List(T(13, 19), T(14, 18), T(15, 17), T(16, 16)), foo(20, 32));
+        Assert.assertEquals(List(Tu(13, 19), Tu(14, 18), Tu(15, 17), Tu(16, 16)), foo(20, 32));
     }
 
     /*

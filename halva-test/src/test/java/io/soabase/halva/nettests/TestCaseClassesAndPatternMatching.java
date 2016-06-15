@@ -29,10 +29,10 @@ import java.util.Optional;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.matcher.Matcher.partial;
 import static io.soabase.halva.nettests.BinOp.BinOp;
-import static io.soabase.halva.nettests.BinOp.BinOpT;
+import static io.soabase.halva.nettests.BinOp.BinOpTu;
 import static io.soabase.halva.nettests.Number.Number;
 import static io.soabase.halva.nettests.UnOp.UnOp;
-import static io.soabase.halva.nettests.UnOp.UnOpT;
+import static io.soabase.halva.nettests.UnOp.UnOpTu;
 import static io.soabase.halva.nettests.Var.Var;
 
 // from http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html
@@ -96,9 +96,9 @@ public class TestCaseClassesAndPatternMatching
     {
         Any<Expr> e = AnyDeclaration.of(Expr.class).define();
         return match(expr)
-            .caseOf( UnOpT("-", UnOpT("-", e)), e::val)   // Double negation
-            .caseOf( BinOpT("+", e, Number(0)), e::val)   // Adding zero
-            .caseOf( BinOpT("*", e, Number(1)), e::val)   // Multiplying by one
+            .caseOf( UnOpTu("-", UnOpTu("-", e)), e::val)   // Double negation
+            .caseOf( BinOpTu("+", e, Number(0)), e::val)   // Adding zero
+            .caseOf( BinOpTu("*", e, Number(1)), e::val)   // Multiplying by one
             .caseOf( () -> expr )
             .get()
             ;

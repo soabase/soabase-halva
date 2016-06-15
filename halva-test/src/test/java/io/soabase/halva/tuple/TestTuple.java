@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
-import static io.soabase.halva.tuple.Tuple.T;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -40,18 +39,18 @@ public class TestTuple
     @Test
     public void testBasic()
     {
-        assertEquals(T(), T());
-        assertEquals(T("x"), T("x"));
-        assertNotEquals("x", T("x"));
-        assertEquals(T("x"), "x");
+        assertEquals(Tuple.Tu(), Tuple.Tu());
+        assertEquals(Tuple.Tu("x"), Tuple.Tu("x"));
+        assertNotEquals("x", Tuple.Tu("x"));
+        assertEquals(Tuple.Tu("x"), "x");
 
-        assertEquals(T("x", 10, Charset.defaultCharset()), T("x", 10, Charset.defaultCharset()));
+        assertEquals(Tuple.Tu("x", 10, Charset.defaultCharset()), Tuple.Tu("x", 10, Charset.defaultCharset()));
 
         List<String> arrayList = Arrays.asList("a", "b", "c");
         Collection<String> set = arrayList.stream().collect(Collectors.toSet());
-        assertNotEquals(T(arrayList), T(set));
+        assertNotEquals(Tuple.Tu(arrayList), Tuple.Tu(set));
 
-        assertEquals(T("a", T(1, 2, 3), "b"), T("a", T(1, 2, 3), "b"));
+        assertEquals(Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"), Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"));
     }
 
     private String extractFunc(ConsList<Pair<String, Integer>> list)

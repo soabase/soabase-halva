@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.soabase.halva.sugar.Sugar.*;
-import static io.soabase.halva.tuple.Tuple.T;
+import static io.soabase.halva.tuple.Tuple.Tu;
 
 public class TestSugarObjects
 {
@@ -70,6 +70,6 @@ public class TestSugarObjects
         expected.put("10", 10);
         expected.put("20", 20);
         expected.put("30", 30);
-        Assert.assertEquals(expected, Map(T("10", 10), T("20", 20), T("30", 30)));
+        Assert.assertEquals(expected, Map(Tu("10", 10), Tu("20", 20), Tu("30", 30)));
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.any;
 
+import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.sugar.ConsList;
 
 public interface Any<T>
@@ -37,6 +38,21 @@ public interface Any<T>
     static <T> Any<Void> defineAnyHeadAnyTail(Any<T> head, Any<? extends ConsList<T>> tail)
     {
         return new AnyConsImpl<>(null, head, null, tail);
+    }
+
+    static <T> Any<T> define(Class<T> clazz)
+    {
+        return AnyDeclaration.of(clazz).define();
+    }
+
+    static <T> Any<T> define(AnyType<T> typeLiteral)
+    {
+        return AnyDeclaration.of(typeLiteral).define();
+    }
+
+    static <T extends REAL, REAL> Any<T> defineTypeAlias(TypeAliasType<REAL, T> typeAliasType)
+    {
+        return AnyDeclaration.ofTypeAlias(typeAliasType).define();
     }
 
     AnyDeclaration<T> getDeclaration();

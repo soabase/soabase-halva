@@ -93,8 +93,8 @@ class Templates
 
     private void findImplicit(CodeBlock.Builder builder, VariableElement parameter, List<ContextSpec> specs)
     {
-        Any<ContextSpec> spec = AnyDeclaration.of(ContextSpec.class).define();
-        Any<ContextItem> item = AnyDeclaration.of(ContextItem.class).define();
+        Any<ContextSpec> spec = Any.define(ContextSpec.class);
+        Any<ContextItem> item = Any.define(ContextItem.class);
         List<Pair<ContextSpec, Element>> matchingSpecs = forComp(spec, specs)
             .forComp(item, () -> spec.val().getItems())
             .filter(() -> {

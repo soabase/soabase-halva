@@ -22,18 +22,21 @@ public class TestContext
 {
     @Implicit public static final Animal animal = AnimalCase("dog", 4);
 
-    @Implicit public static final ExtraMethods extraMethods = new ExtraMethods()
+    @Implicit public static ExtraMethods getExtraMethods(@Implicit Animal animal)
     {
-        @Override
-        public String getExtraString(int n)
+        return new ExtraMethods()
         {
-            return "n = " + n;
-        }
+            @Override
+            public String getExtraString(int n)
+            {
+                return animal.type() + ": " + n;
+            }
 
-        @Override
-        public long getTime()
-        {
-            return System.currentTimeMillis();
-        }
-    };
+            @Override
+            public long getTime()
+            {
+                return System.currentTimeMillis();
+            }
+        };
+    }
 }

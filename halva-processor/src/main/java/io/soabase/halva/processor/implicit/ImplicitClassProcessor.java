@@ -98,7 +98,7 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
 
     private boolean isValidProviderMethod(ExecutableElement method)
     {
-        return method.getParameters().stream().allMatch(e -> e.getAnnotation(Implicit.class) == null);
+        return method.getParameters().stream().allMatch(e -> e.getAnnotation(Implicit.class) != null);
     }
 
     private ImplicitSpec getImplicitClassItems(Element element)

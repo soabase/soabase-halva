@@ -33,7 +33,7 @@ public class TestImplicits
     {
         //noinspection MismatchedQueryAndUpdateOfCollection
         BaseClassImpl base = new BaseClassImpl();
-        Assert.assertEquals("n = 10", base.getExtraString(10));
+        Assert.assertEquals("dog: 10", base.getExtraString(10));
         Assert.assertEquals(System.currentTimeMillis() / 10000, base.getTime() / 10000);
     }
 }

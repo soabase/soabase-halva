@@ -19,7 +19,6 @@ import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.comprehension.For;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,12 +26,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.soabase.halva.any.AnyDeclaration.anyBoolean;
-import static io.soabase.halva.any.AnyDeclaration.anyInt;
 import static io.soabase.halva.any.AnyDeclaration.anyString;
-import static io.soabase.halva.comprehension.For.For;
+import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.sugar.Author.Author;
 import static io.soabase.halva.sugar.Book.Book;
-import static io.soabase.halva.sugar.Sugar.Iterable;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.T;
 
@@ -60,7 +57,7 @@ val result = for {
         Any<String> sentence = anyString.define();
         Any<Boolean> does = anyBoolean.define();
 
-        List<Tuple> ts = For(sentence, sentences)
+        List<Tuple> ts = forComp(sentence, sentences)
             .set(() -> does.set(dict.contains(sentence.val())))
             .yield(() -> T(sentence.val(), does.val()));
         System.out.println(ts);
@@ -76,9 +73,9 @@ val result = for {
         Any<List<List<?>>> lol = AnyDeclaration.of(new AnyType<List<List<?>>>(){}).define();
         Any<List<?>> l = AnyDeclaration.of(new AnyType<List<?>>(){}).define();
         Any<Object> o = AnyDeclaration.of(Object.class).define();
-        List<String> s = For(lol, big)
-              .and(l, lol::val)
-              .and(o, l::val)
+        List<String> s = forComp(lol, big)
+              .forComp(l, lol::val)
+              .forComp(o, l::val)
               .yield(() -> String.valueOf(o.val()));
         Assert.assertEquals(List("1", "2", "3", "A", "B", "C", "4", "5", "6", "D", "E", "F"), s);
     }
@@ -113,11 +110,11 @@ val result = for {
             Any<Author> author = AnyDeclaration.of(Author.class).define();
             Any<Integer> year = AnyDeclaration.of(Integer.class).define();
 
-            List<Tuple> result = For(book, books)
-                .when(() -> book.val().authors().size() == 1)
-                .and(author, () -> book.val().authors())
-                .when(() -> author.val().name().startsWith("Ayn"))
-                .and(year, () -> author.val().years())
+            List<Tuple> result = forComp(book, books)
+                .filter(() -> book.val().authors().size() == 1)
+                .forComp(author, () -> book.val().authors())
+                .filter(() -> author.val().name().startsWith("Ayn"))
+                .forComp(year, () -> author.val().years())
                 .yield(() -> T(book.val().title(), year.val()));
 
             Assert.assertEquals(List(T("Atlas Shrugged", 1940), T("Atlas Shrugged", 1950)), result);
@@ -131,8 +128,8 @@ val result = for {
     List<Integer> even(int from, int to)
     {
         Any<Integer> i = AnyDeclaration.of(Integer.class).define();
-        return For(i, IntStream.range(from, to))
-            .when(() -> i.val() % 2 == 0)
+        return forComp(i, IntStream.range(from, to))
+            .filter(() -> i.val() % 2 == 0)
             .yield(i::val);
     }
 
@@ -152,9 +149,9 @@ val result = for {
     {
         Any<Integer> i = AnyDeclaration.of(Integer.class).define();
         Any<Integer> j = AnyDeclaration.of(Integer.class).define();
-        return For(i, IntStream.range(0, n))
-            .andInt(j, () -> IntStream.range(i.val(), n))
-            .when(() -> i.val() + j.val() == v)
+        return forComp(i, IntStream.range(0, n))
+            .forCompInt(j, () -> IntStream.range(i.val(), n))
+            .filter(() -> i.val() + j.val() == v)
             .yield(() -> T(i.val(), j.val()));
     }
 
@@ -176,9 +173,9 @@ val result = for {
         Any<Integer> i = AnyDeclaration.of(Integer.class).define();
         Any<Integer> j = AnyDeclaration.of(Integer.class).define();
         StringBuilder str = new StringBuilder();
-        For(i, IntStream.range(0, 20))
-            .andInt(j, () -> IntStream.range(i.val(), 20))
-            .when(() -> i.val() + j.val() == 32)
+        forComp(i, IntStream.range(0, 20))
+            .forCompInt(j, () -> IntStream.range(i.val(), 20))
+            .filter(() -> i.val() + j.val() == 32)
             .unit(() -> str.append("(" + i.val() + ", " + j.val() + ")"));
         Assert.assertEquals("(13, 19)(14, 18)(15, 17)(16, 16)", str.toString());
     }

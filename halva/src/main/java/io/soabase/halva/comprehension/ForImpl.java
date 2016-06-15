@@ -59,7 +59,7 @@ class ForImpl implements For
     }
 
     @Override
-    public <T, R> For and(Any<T> any, Supplier<Iterable<? extends R>> stream)
+    public <T, R> For forComp(Any<T> any, Supplier<Iterable<? extends R>> stream)
     {
         if ( any == null )
         {
@@ -76,25 +76,25 @@ class ForImpl implements For
     }
 
     @Override
-    public <T> For andInt(Any<T> any, Supplier<IntStream> stream)
+    public <T> For forCompInt(Any<T> any, Supplier<IntStream> stream)
     {
-        return and(any, () -> () -> stream.get().iterator());
+        return forComp(any, () -> () -> stream.get().iterator());
     }
 
     @Override
-    public <T> For andLong(Any<T> any, Supplier<LongStream> stream)
+    public <T> For forCompLong(Any<T> any, Supplier<LongStream> stream)
     {
-        return and(any, () -> () -> stream.get().iterator());
+        return forComp(any, () -> () -> stream.get().iterator());
     }
 
     @Override
-    public <T> For andDouble(Any<T> any, Supplier<DoubleStream> stream)
+    public <T> For forCompDouble(Any<T> any, Supplier<DoubleStream> stream)
     {
-        return and(any, () -> () -> stream.get().iterator());
+        return forComp(any, () -> () -> stream.get().iterator());
     }
 
     @Override
-    public For when(SimplePredicate test)
+    public For filter(SimplePredicate test)
     {
         if ( test == null )
         {

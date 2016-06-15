@@ -23,7 +23,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static io.soabase.halva.comprehension.For.For;
+import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.T;
 
@@ -40,7 +40,7 @@ public class Test200908ForComprehensions
     @Test
     public void testYieldLine11()
     {
-        List<Integer> result = For(i, range).yield(() -> i.val() + 1);
+        List<Integer> result = forComp(i, range).yield(() -> i.val() + 1);
         Assert.assertEquals(List(2, 3, 4, 5, 6), result);
     }
 
@@ -48,7 +48,7 @@ public class Test200908ForComprehensions
     @Test
     public void testFilterLine19()
     {
-        List<Integer> result = For(i, range).when(() -> i.val() % 2 == 0).yield(() -> i.val());
+        List<Integer> result = forComp(i, range).filter(() -> i.val() % 2 == 0).yield(() -> i.val());
         Assert.assertEquals(List(2, 4), result);
     }
 
@@ -56,8 +56,8 @@ public class Test200908ForComprehensions
     @Test
     public void testMultipleGeneratorsLine27()
     {
-        List<Tuple2<Integer, Integer>> result = For(i, range)
-            .and(j, () -> range)
+        List<Tuple2<Integer, Integer>> result = forComp(i, range)
+            .forComp(j, () -> range)
             .yield(() -> T(i.val(), j.val()));
         Assert.assertEquals(List(T(1,1), T(1,2), T(1,3), T(1,4), T(1,5), T(2,1), T(2,2),
             T(2,3), T(2,4), T(2,5), T(3,1), T(3,2), T(3,3), T(3,4), T(3,5), T(4,1), T(4,2),
@@ -69,8 +69,8 @@ public class Test200908ForComprehensions
     @Test
     public void testDeclareVariablesLine32()
     {
-        List<Integer> result = For(i, range)
-            .andInt(j, () -> IntStream.rangeClosed(1, i.val()))
+        List<Integer> result = forComp(i, range)
+            .forCompInt(j, () -> IntStream.rangeClosed(1, i.val()))
             .set(() -> k.set(i.val() - j.val()))
             .yield(() -> k.val());
         Assert.assertEquals(List(0, 1, 0, 2, 1, 0, 3, 2, 1, 0, 4, 3, 2, 1, 0), result);

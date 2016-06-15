@@ -35,7 +35,7 @@ import javax.tools.Diagnostic;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.soabase.halva.comprehension.For.For;
+import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.tuple.Tuple.Pair;
 
 class Templates
@@ -95,9 +95,9 @@ class Templates
     {
         Any<ContextSpec> spec = AnyDeclaration.of(ContextSpec.class).define();
         Any<ContextItem> item = AnyDeclaration.of(ContextItem.class).define();
-        List<Pair<ContextSpec, Element>> matchingSpecs = For(spec, specs)
-            .and(item, () -> spec.val().getItems())
-            .when(() -> {
+        List<Pair<ContextSpec, Element>> matchingSpecs = forComp(spec, specs)
+            .forComp(item, () -> spec.val().getItems())
+            .filter(() -> {
                 Element element = item.val().getElement();
                 if ( element.getKind() == ElementKind.FIELD )
                 {

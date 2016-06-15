@@ -35,7 +35,7 @@ import static io.soabase.halva.caseclass.ChairCase.ChairCase;
 import static io.soabase.halva.caseclass.ChairCase.ChairCaseT;
 import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueT;
-import static io.soabase.halva.comprehension.For.For;
+import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
@@ -87,8 +87,8 @@ public class TestMatcher
     static List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
         Any<Pair<String, Integer>> foundPair = myDecl.define();
 
-        return For(foundPair, list)
-            .when(() -> foundPair.val()._1.equals(key))
+        return forComp(foundPair, list)
+            .filter(() -> foundPair.val()._1.equals(key))
             .yield(foundPair::val);
     }
 

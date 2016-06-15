@@ -25,35 +25,35 @@ import java.util.stream.LongStream;
 @SuppressWarnings("MethodNameSameAsClassName")
 public interface For
 {
-    static <T, R> For For(Any<T> any, Iterable<? extends R> iterator)
+    static <T, R> For forComp(Any<T> any, Iterable<? extends R> iterator)
     {
         return new ForImpl(any, iterator);
     }
 
-    static <T> For For(Any<T> any, IntStream stream)
+    static <T> For forComp(Any<T> any, IntStream stream)
     {
         return new ForImpl(any, stream::iterator);
     }
 
-    static <T> For For(Any<T> any, LongStream stream)
+    static <T> For forComp(Any<T> any, LongStream stream)
     {
         return new ForImpl(any, stream::iterator);
     }
 
-    static <T> For For(Any<T> any, DoubleStream stream)
+    static <T> For forComp(Any<T> any, DoubleStream stream)
     {
         return new ForImpl(any, stream::iterator);
     }
 
-    <T, R> For and(Any<T> any, Supplier<Iterable<? extends R>> stream);
+    <T, R> For forComp(Any<T> any, Supplier<Iterable<? extends R>> stream);
 
-    <T> For andInt(Any<T> any, Supplier<IntStream> stream);
+    <T> For forCompInt(Any<T> any, Supplier<IntStream> stream);
 
-    <T> For andLong(Any<T> any, Supplier<LongStream> stream);
+    <T> For forCompLong(Any<T> any, Supplier<LongStream> stream);
 
-    <T> For andDouble(Any<T> any, Supplier<DoubleStream> stream);
+    <T> For forCompDouble(Any<T> any, Supplier<DoubleStream> stream);
 
-    For when(SimplePredicate test);
+    For filter(SimplePredicate test);
 
     <T> For set(Runnable value);
 

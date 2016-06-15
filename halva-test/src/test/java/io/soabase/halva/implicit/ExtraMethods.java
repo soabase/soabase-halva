@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor;
+package io.soabase.halva.implicit;
 
-public class Constants
+public interface ExtraMethods
 {
-    public static final String TUPLE_METHOD = "Tu";
+    String getExtraString(int n);
 
-    private Constants()
-    {
-    }
+    long getTime();
 }

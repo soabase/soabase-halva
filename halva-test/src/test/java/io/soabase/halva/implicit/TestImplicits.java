@@ -27,4 +27,13 @@ public class TestImplicits
         Assert.assertEquals("dog", animalCage.getAnimal().type());
         Assert.assertEquals(4, animalCage.getAnimal().numberOfLegs());
     }
+
+    @Test
+    public void testPimped()
+    {
+        //noinspection MismatchedQueryAndUpdateOfCollection
+        BaseClassImpl base = new BaseClassImpl();
+        Assert.assertEquals("n = 10", base.getExtraString(10));
+        Assert.assertEquals(System.currentTimeMillis() / 10000, base.getTime() / 10000);
+    }
 }

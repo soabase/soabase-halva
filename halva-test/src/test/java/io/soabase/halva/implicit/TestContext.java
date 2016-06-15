@@ -21,4 +21,19 @@ import static io.soabase.halva.implicit.AnimalCase.AnimalCase;
 public class TestContext
 {
     @Implicit public static final Animal animal = AnimalCase("dog", 4);
+
+    @Implicit public static final ExtraMethods extraMethods = new ExtraMethods()
+    {
+        @Override
+        public String getExtraString(int n)
+        {
+            return "n = " + n;
+        }
+
+        @Override
+        public long getTime()
+        {
+            return System.currentTimeMillis();
+        }
+    };
 }

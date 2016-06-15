@@ -205,11 +205,12 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
             .superclass(ClassName.get(typeElement))
             .addModifiers(typeElement.getModifiers().toArray(new Modifier[typeElement.getModifiers().size()]))
         ;
+        annotationReader.getClasses("implicitInterfaces").forEach(clazz -> templates.addImplicitInterface(builder, clazz, specs));
 
         spec.getItems().forEach(item -> {
             if ( item.isValid() )
             {
-                templates.addItem(builder, spec.getAnnotatedElement(), item.getExecutableElement(), specs);
+                templates.addItem(builder, item.getExecutableElement(), specs);
             }
         });
 

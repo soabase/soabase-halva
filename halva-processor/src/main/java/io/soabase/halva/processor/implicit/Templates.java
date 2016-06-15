@@ -21,7 +21,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.implicit.Implicit;
 import io.soabase.halva.tuple.Pair;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -31,6 +30,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,7 +47,50 @@ class Templates
         this.processingEnv = processingEnv;
     }
 
-    void addItem(TypeSpec.Builder builder, TypeElement implicitElement, ExecutableElement element, List<ContextSpec> specs)
+    void addImplicitInterface(TypeSpec.Builder builder, TypeMirror implicitInterface, List<ContextSpec> specs)
+    {
+        Pair<ContextSpec, Element> implicit = findImplicit(implicitInterface, specs);
+        if ( implicit == null )
+        {
+            return;
+        }
+
+        builder.addSuperinterface(ClassName.get(implicitInterface));
+        processingEnv.getTypeUtils().asElement(implicitInterface).getEnclosedElements().forEach(implicitElement -> {
+            if ( implicitElement.getKind() == ElementKind.METHOD )
+            {
+                ExecutableElement implicitMethod = (ExecutableElement)implicitElement;
+
+                CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
+                if ( implicitMethod.getReturnType().getKind() != TypeKind.VOID )
+                {
+                    codeBlockBuilder.add("return ");
+                }
+
+                applyImplicitParameter(codeBlockBuilder, implicit, specs);
+                codeBlockBuilder.add(".$L(", implicitMethod.getSimpleName());
+                boolean first = true;
+                for ( VariableElement parameter : implicitMethod.getParameters() )
+                {
+                    if ( first )
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        codeBlockBuilder.add(", ");
+                    }
+                    codeBlockBuilder.add(parameter.getSimpleName().toString());
+                }
+                codeBlockBuilder.addStatement(")");
+
+                MethodSpec methodSpec = MethodSpec.overriding(implicitMethod).addCode(codeBlockBuilder.build()).build();
+                builder.addMethod(methodSpec);
+            }
+        });
+    }
+
+    void addItem(TypeSpec.Builder builder, ExecutableElement element, List<ContextSpec> specs)
     {
         MethodSpec.Builder methodSpecBuilder = (element.getKind() == ElementKind.CONSTRUCTOR) ? MethodSpec.constructorBuilder() : MethodSpec.methodBuilder(element.getSimpleName().toString());
         methodSpecBuilder.addModifiers(element.getModifiers());
@@ -77,7 +120,8 @@ class Templates
             }
             if ( parameter.getAnnotation(Implicit.class) != null )
             {
-                findImplicit(codeBlockBuilder, parameter, specs);
+                Pair<ContextSpec, Element> implicit = findImplicit(parameter.asType(), specs);
+                applyImplicitParameter(codeBlockBuilder, implicit, specs);
             }
             else
             {
@@ -91,31 +135,16 @@ class Templates
         builder.addMethod(methodSpecBuilder.build());
     }
 
-    private void findImplicit(CodeBlock.Builder builder, VariableElement parameter, List<ContextSpec> specs)
+    private void applyImplicitParameter(CodeBlock.Builder builder, Pair<ContextSpec, Element> implicit, List<ContextSpec> specs)
     {
-        Any<ContextSpec> spec = Any.define(ContextSpec.class);
-        Any<ContextItem> item = Any.define(ContextItem.class);
-        List<Pair<ContextSpec, Element>> matchingSpecs = forComp(spec, specs)
-            .forComp(item, () -> spec.val().getItems())
-            .filter(() -> {
-                Element element = item.val().getElement();
-                if ( element.getKind() == ElementKind.FIELD )
-                {
-                    return processingEnv.getTypeUtils().isAssignable(element.asType(), parameter.asType());
-                }
-                return processingEnv.getTypeUtils().isAssignable(((ExecutableElement)element).getReturnType(), parameter.asType());
-            })
-            .yield(() -> Pair(spec.val(), item.val().getElement()));
-        if ( matchingSpecs.size() != 1 )
+        if ( implicit == null )
         {
-            String message = (matchingSpecs.size() == 0) ? "No matches found for implicit for " : "Multiple matches found for implicit for ";
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message + parameter, parameter);
             builder.add("null");
         }
         else
         {
-            TypeElement annotatedElement = matchingSpecs.get(0)._1.getAnnotatedElement();
-            Element element = matchingSpecs.get(0)._2;
+            TypeElement annotatedElement = implicit._1.getAnnotatedElement();
+            Element element = implicit._2;
             if ( element.getKind() == ElementKind.FIELD )
             {
                 builder.add("$T.$L", annotatedElement, element.getSimpleName());
@@ -130,10 +159,35 @@ class Templates
                     {
                         builder.add(", ");
                     }
-                    findImplicit(builder, methodParameter, specs);
+                    applyImplicitParameter(builder, findImplicit(methodParameter.asType(), specs), specs);
                     builder.add(")");
                 });
             }
         }
+    }
+
+    private Pair<ContextSpec, Element> findImplicit(TypeMirror implicitType, List<ContextSpec> specs)
+    {
+        Any<ContextSpec> spec = Any.define(ContextSpec.class);
+        Any<ContextItem> item = Any.define(ContextItem.class);
+        List<Pair<ContextSpec, Element>> matchingSpecs = forComp(spec, specs)
+            .forComp(item, () -> spec.val().getItems())
+            .filter(() -> {
+                Element element = item.val().getElement();
+                if ( element.getKind() == ElementKind.FIELD )
+                {
+                    return processingEnv.getTypeUtils().isAssignable(element.asType(), implicitType);
+                }
+                return processingEnv.getTypeUtils().isAssignable(((ExecutableElement)element).getReturnType(), implicitType);
+            })
+            .yield(() -> Pair(spec.val(), item.val().getElement()));
+        if ( matchingSpecs.size() == 1 )
+        {
+            return matchingSpecs.get(0);
+        }
+
+        String message = (matchingSpecs.size() == 0) ? "No matches found for implicit for " : "Multiple matches found for implicit for ";
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message + implicitType, processingEnv.getTypeUtils().asElement(implicitType));
+        return null;
     }
 }

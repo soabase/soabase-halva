@@ -21,17 +21,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class ImplicitSpec implements SpecBase
+class ContextSpec implements SpecBase
 {
     private final TypeElement typeElement;
-    private final List<ImplicitItem> items;
+    private final List<ContextItem> items;
 
-    ImplicitSpec()
+    public ContextSpec()
     {
         this(null, null);
     }
 
-    ImplicitSpec(TypeElement typeElement, List<ImplicitItem> items)
+    ContextSpec(TypeElement typeElement, List<ContextItem> items)
     {
         if ( items == null )
         {
@@ -41,19 +41,19 @@ class ImplicitSpec implements SpecBase
         this.items = Collections.unmodifiableList(new ArrayList<>(items));
     }
 
-    List<ImplicitItem> getItems()
-    {
-        return items;
-    }
-
     @Override
     public TypeElement getAnnotatedElement()
     {
         return typeElement;
     }
 
+    List<ContextItem> getItems()
+    {
+        return items;
+    }
+
     boolean isValid()
     {
-        return typeElement != null;
+        return (typeElement != null);
     }
 }

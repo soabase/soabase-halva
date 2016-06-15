@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  Marks an interface as a template for a Case Class
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
 public @interface CaseClass
 {

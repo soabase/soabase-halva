@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.implicit;
+package io.soabase.halva.processor.implicit;
 
-@ImplicitClass
-public class StoreShelf
+import javax.lang.model.element.Element;
+
+class ContextItem
 {
-    private final AnimalCage cage;
-    private final Feed feed;
+    private final Element element;
 
-    public StoreShelf(@Implicit AnimalCage cage, @Implicit Feed feed)
+    public ContextItem()
     {
-        this.cage = cage;
-        this.feed = feed;
+        this(null);
     }
 
-    public AnimalCage getCage()
+    ContextItem(Element element)
     {
-        return cage;
+        this.element = element;
     }
 
-    public Feed getFeed()
+    Element getElement()
     {
-        return feed;
+        return element;
+    }
+
+    boolean isValid()
+    {
+        return (element != null);
     }
 }

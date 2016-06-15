@@ -20,24 +20,35 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyDeclaration;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.implicit.Implicit;
-import io.soabase.halva.implicit.Implicits;
+import io.soabase.halva.tuple.Pair;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.type.DeclaredType;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
+import javax.tools.Diagnostic;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static io.soabase.halva.comprehension.For.For;
+import static io.soabase.halva.tuple.Tuple.Pair;
 
 class Templates
 {
-    void addItem(TypeSpec.Builder builder, ExecutableElement element)
-    {
-        ClassName implicitsClassName = ClassName.get(Implicits.class);
-        ClassName anyTypeClassName = ClassName.get(AnyType.class);
-        ClassName anyDeclarationClassName = ClassName.get(AnyDeclaration.class);
+    private final ProcessingEnvironment processingEnv;
 
+    Templates(ProcessingEnvironment processingEnv)
+    {
+        this.processingEnv = processingEnv;
+    }
+
+    void addItem(TypeSpec.Builder builder, TypeElement implicitElement, ExecutableElement element, List<ContextSpec> specs)
+    {
         MethodSpec.Builder methodSpecBuilder = (element.getKind() == ElementKind.CONSTRUCTOR) ? MethodSpec.constructorBuilder() : MethodSpec.methodBuilder(element.getSimpleName().toString());
         methodSpecBuilder.addModifiers(element.getModifiers());
         if ( element.getReturnType().getKind() != TypeKind.VOID )
@@ -66,14 +77,7 @@ class Templates
             }
             if ( parameter.getAnnotation(Implicit.class) != null )
             {
-                if ( ((DeclaredType)parameter.asType()).getTypeArguments().size() > 0 )
-                {
-                    codeBlockBuilder.add("$T.Implicits().getValue($T.of(new $T<$T>(){}))", implicitsClassName, anyDeclarationClassName, anyTypeClassName, parameter.asType());
-                }
-                else
-                {
-                    codeBlockBuilder.add("$T.Implicits().getValue($T.of($T.class))", implicitsClassName, anyDeclarationClassName, parameter.asType());
-                }
+                findImplicit(codeBlockBuilder, parameter, specs);
             }
             else
             {
@@ -85,5 +89,51 @@ class Templates
 
         methodSpecBuilder.addCode(codeBlockBuilder.add(");\n").build());
         builder.addMethod(methodSpecBuilder.build());
+    }
+
+    private void findImplicit(CodeBlock.Builder builder, VariableElement parameter, List<ContextSpec> specs)
+    {
+        Any<ContextSpec> spec = AnyDeclaration.of(ContextSpec.class).define();
+        Any<ContextItem> item = AnyDeclaration.of(ContextItem.class).define();
+        List<Pair<ContextSpec, Element>> matchingSpecs = For(spec, specs)
+            .and(item, () -> spec.val().getItems())
+            .when(() -> {
+                Element element = item.val().getElement();
+                if ( element.getKind() == ElementKind.FIELD )
+                {
+                    return processingEnv.getTypeUtils().isAssignable(element.asType(), parameter.asType());
+                }
+                return processingEnv.getTypeUtils().isAssignable(((ExecutableElement)element).getReturnType(), parameter.asType());
+            })
+            .yield(() -> Pair(spec.val(), item.val().getElement()));
+        if ( matchingSpecs.size() != 1 )
+        {
+            String message = (matchingSpecs.size() == 0) ? "No matches found for implicit for " : "Multiple matches found for implicit for ";
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message + parameter, parameter);
+            builder.add("null");
+        }
+        else
+        {
+            TypeElement annotatedElement = matchingSpecs.get(0)._1.getAnnotatedElement();
+            Element element = matchingSpecs.get(0)._2;
+            if ( element.getKind() == ElementKind.FIELD )
+            {
+                builder.add("$T.$L", annotatedElement, element.getSimpleName());
+            }
+            else
+            {
+                ExecutableElement method = (ExecutableElement)element;
+                builder.add("$T.$L(", annotatedElement, method.getSimpleName());
+                AtomicBoolean isFirst = new AtomicBoolean(false);
+                method.getParameters().forEach(methodParameter -> {
+                    if ( !isFirst.compareAndSet(false, true) )
+                    {
+                        builder.add(", ");
+                    }
+                    findImplicit(builder, methodParameter, specs);
+                    builder.add(")");
+                });
+            }
+        }
     }
 }

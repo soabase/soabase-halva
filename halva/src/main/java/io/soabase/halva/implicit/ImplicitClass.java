@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  Marks an interface as a template for a Case Class
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
 public @interface ImplicitClass
 {
@@ -43,4 +43,6 @@ public @interface ImplicitClass
      * @return string suffix to remove to produce the class name
      */
     String unsuffix() default "_";
+
+    Class[] implicitInterfaces() default {};
 }

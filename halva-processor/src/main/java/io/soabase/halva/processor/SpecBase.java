@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.implicit;
+package io.soabase.halva.processor;
 
-import io.soabase.halva.caseclass.CaseClass;
+import javax.lang.model.element.TypeElement;
 
-@CaseClass
-public interface Feed
+public interface SpecBase
 {
-    String type();
+    TypeElement getAnnotatedElement();
 }

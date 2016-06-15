@@ -15,8 +15,8 @@
  */
 package io.soabase.halva.processor.caseclass;
 
-import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseObject;
+import io.soabase.halva.processor.AnnotationReader;
 
 class InternalCaseClass
 {
@@ -26,22 +26,13 @@ class InternalCaseClass
     private final boolean json;
     private final String type;
 
-    InternalCaseClass(CaseObject caseObject)
+    InternalCaseClass(AnnotationReader annotationReader)
     {
-        this.isObject = true;
-        this.suffix = caseObject.suffix();
-        this.unsuffix = caseObject.unsuffix();
-        this.json = false;
-        type = CaseObject.class.getSimpleName();
-    }
-
-    InternalCaseClass(CaseClass caseClass)
-    {
-        this.isObject = false;
-        this.suffix = caseClass.suffix();
-        this.unsuffix = caseClass.unsuffix();
-        this.json = caseClass.json();
-        type = CaseClass.class.getSimpleName();
+        this.isObject = annotationReader.getName().equals(CaseObject.class.getSimpleName());
+        this.suffix = annotationReader.getString("suffix");
+        this.unsuffix = annotationReader.getString("unsuffix");
+        this.json = annotationReader.getBoolean("json");
+        type = annotationReader.getName();
     }
 
     String getType()

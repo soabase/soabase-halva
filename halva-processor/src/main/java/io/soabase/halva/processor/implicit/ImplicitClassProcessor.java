@@ -19,32 +19,89 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import io.soabase.halva.implicit.Implicit;
 import io.soabase.halva.implicit.ImplicitClass;
+import io.soabase.halva.implicit.ImplicitContext;
+import io.soabase.halva.processor.AnnotationReader;
 import io.soabase.halva.processor.ProcessorBase;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@SupportedAnnotationTypes("io.soabase.halva.implicit.ImplicitClass")
+@SupportedAnnotationTypes({"io.soabase.halva.implicit.ImplicitClass", "io.soabase.halva.implicit.ImplicitContext"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class ImplicitClassProcessor extends ProcessorBase<ImplicitSpec, Templates>
+public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Templates>
 {
     private static final ImplicitItem error = new ImplicitItem();
     private static final ImplicitItem ignore = new ImplicitItem();
+    private static final ContextItem ignoreContext = new ContextItem();
 
-    public ImplicitClassProcessor()
+    @Override
+    protected Collection<? extends TypeElement> sort(Set<? extends TypeElement> annotations)
     {
-        super(ImplicitClass.class);
+        return annotations.stream()
+            .sorted((a1, a2) -> a1.getSimpleName().toString().equals("ImplicitContext") ? -1 : 0) // ImplicitContexts first
+            .collect(Collectors.toList());
     }
 
     @Override
-    protected ImplicitSpec getItems(Element element)
+    protected ImplicitPairSpec getItems(AnnotationReader annotationReader, Element element)
+    {
+        if ( annotationReader.getName().equals(ImplicitContext.class.getSimpleName()) )
+        {
+            return new ImplicitPairSpec(getImplicitContextItems(element));
+        }
+
+        return new ImplicitPairSpec(getImplicitClassItems(element));
+    }
+
+    private ContextSpec getImplicitContextItems(Element element)
+    {
+        List<ContextItem> items = element.getEnclosedElements().stream()
+            .map(child -> {
+                if ( child.getAnnotation(Implicit.class) != null )
+                {
+                    if ( !child.getModifiers().contains(Modifier.PUBLIC) && !child.getModifiers().contains(Modifier.STATIC) )
+                    {
+                        error(element, "@Implicit providers must be public and static");
+                    }
+                    else if ( (child.getKind() != ElementKind.METHOD) && (child.getKind() != ElementKind.FIELD) )
+                    {
+                        error(element, "@Implicit providers must be either fields or methods");
+                    }
+                    else if ( (child.getKind() == ElementKind.METHOD) && !isValidProviderMethod((ExecutableElement)child) )
+                    {
+                        error(element, "@Implicit provider methods cannot contain non implicit parameters");
+                    }
+                    else
+                    {
+                        return new ContextItem(child);
+                    }
+                }
+                return ignoreContext;
+            })
+            .filter(ContextItem::isValid)
+            .collect(Collectors.toList())
+        ;
+        return new ContextSpec((TypeElement)element, items);
+    }
+
+    private boolean isValidProviderMethod(ExecutableElement method)
+    {
+        return method.getParameters().stream().allMatch(e -> e.getAnnotation(Implicit.class) == null);
+    }
+
+    private ImplicitSpec getImplicitClassItems(Element element)
     {
         //noinspection LoopStatementThatDoesntLoop
         do
@@ -107,18 +164,36 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitSpec, Template
     @Override
     protected Templates newTemplates()
     {
-        return new Templates();
+        return new Templates(processingEnv);
     }
 
     @Override
-    protected void buildClass(Templates templates, ImplicitSpec spec)
+    protected void buildClass(List<ImplicitPairSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, ImplicitPairSpec specPair)
+    {
+        if ( specPair.getImplicitSpec() != null )
+        {
+            buildImplicitClass(previousSpecs, templates, annotationReader, specPair.getImplicitSpec());
+        }
+    }
+
+    private void buildImplicitClass(List<ImplicitPairSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, ImplicitSpec spec)
     {
         if ( !spec.isValid() )
         {
             return;
         }
 
-        TypeElement typeElement = spec.getTypeElement();
+        TypeElement typeElement = spec.getAnnotatedElement();
+
+        ContextSpec thisContextSpec = getImplicitContextItems(typeElement);
+        List<ContextSpec> specs = new ArrayList<>();
+        if ( previousSpecs != null )
+        {
+            specs.addAll(previousSpecs.stream().map(ImplicitPairSpec::getContextSpec).collect(Collectors.toList()));
+        }
+        specs.add(getImplicitContextItems(typeElement));
+
+        Optional<? extends AnnotationMirror> implicitClassMirror = typeElement.getAnnotationMirrors().stream().filter(mirror -> mirror.getAnnotationType().toString().equals(ImplicitClass.class.getName())).findFirst();
         ImplicitClass implicitClass = typeElement.getAnnotation(ImplicitClass.class);
         String packageName = getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
@@ -134,7 +209,7 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitSpec, Template
         spec.getItems().forEach(item -> {
             if ( item.isValid() )
             {
-                templates.addItem(builder, item.getExecutableElement());
+                templates.addItem(builder, spec.getAnnotatedElement(), item.getExecutableElement(), specs);
             }
         });
 

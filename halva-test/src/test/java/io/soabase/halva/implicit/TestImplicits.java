@@ -15,39 +15,16 @@
  */
 package io.soabase.halva.implicit;
 
-import io.soabase.halva.any.AnyDeclaration;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static io.soabase.halva.implicit.FeedCase.FeedCase;
-import static io.soabase.halva.implicit.Implicits.Implicits;
-
 public class TestImplicits
 {
-    public static class Dog extends AnimalCase
-    {
-        public Dog()
-        {
-            super("Dog", 4);
-        }
-    }
-
-    public static class Spider extends AnimalCase
-    {
-        public Spider()
-        {
-            super("Spider", 8);
-        }
-    }
-
     @Test
     public void testInjection()
     {
-        Implicits().setValue(AnyDeclaration.of(Feed.class), FeedCase("rice"));
-        Implicits().setValue(AnyDeclaration.of(Animal.class), new Dog());
-        Implicits().setValue(AnyDeclaration.of(AnimalCage.class), new AnimalCageImpl());
-        StoreShelfImpl shelf = new StoreShelfImpl();
-        Assert.assertEquals("Dog", shelf.getCage().getAnimal().type());
-        Assert.assertEquals("rice", shelf.getFeed().type());
+        AnimalCage animalCage = new AnimalCageImpl();
+        Assert.assertEquals("dog", animalCage.getAnimal().type());
+        Assert.assertEquals(4, animalCage.getAnimal().numberOfLegs());
     }
 }

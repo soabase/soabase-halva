@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 /**
  Marks an interface as a template for a Case Class
  */
-@Retention(RetentionPolicy.CLASS)
-@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface Implicit
 {
 }

@@ -19,6 +19,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.soabase.halva.alias.TypeAlias;
+import io.soabase.halva.processor.AnnotationReader;
 import io.soabase.halva.processor.ProcessorBase;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -40,11 +41,11 @@ public class TypeAliasProcessor extends ProcessorBase<AliasSpec, Templates>
 {
     public TypeAliasProcessor()
     {
-        super(TypeAlias.class);
+        super();
     }
 
     @Override
-    protected AliasSpec getItems(Element element)
+    protected AliasSpec getItems(AnnotationReader annotationReader, Element element)
     {
         //noinspection LoopStatementThatDoesntLoop
         do
@@ -75,18 +76,17 @@ public class TypeAliasProcessor extends ProcessorBase<AliasSpec, Templates>
     }
 
     @Override
-    protected void buildClass(Templates templates, AliasSpec spec)
+    protected void buildClass(List<AliasSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, AliasSpec spec)
     {
         if ( !spec.isValid() )
         {
             return;
         }
 
-        TypeElement typeElement = spec.getElement();
-        TypeAlias typeAlias = typeElement.getAnnotation(TypeAlias.class);
+        TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName aliasQualifiedClassName = ClassName.get(packageName, getCaseClassSimpleName(typeElement, typeAlias.suffix(), typeAlias.unsuffix()));
+        ClassName aliasQualifiedClassName = ClassName.get(packageName, getCaseClassSimpleName(typeElement, annotationReader.getString("suffix"), annotationReader.getString("unsuffix")));
 
         log("Generating TypeAlias for " + templateQualifiedClassName + " as " + aliasQualifiedClassName);
 

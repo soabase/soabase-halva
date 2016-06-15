@@ -15,10 +15,10 @@
  */
 package io.soabase.halva.implicit;
 
-public class Caller
-{
-    public void call()
-    {
+import static io.soabase.halva.implicit.AnimalCase.AnimalCase;
 
-    }
+@ImplicitContext
+public class TestContext
+{
+    @Implicit public static final Animal animal = AnimalCase("dog", 4);
 }

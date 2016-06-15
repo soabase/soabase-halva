@@ -15,10 +15,11 @@
  */
 package io.soabase.halva.processor.alias;
 
+import io.soabase.halva.processor.SpecBase;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
-class AliasSpec
+class AliasSpec implements SpecBase
 {
     private final TypeElement typeElement;
     private final DeclaredType parameterizedType;
@@ -40,7 +41,7 @@ class AliasSpec
         return typeElement != null;
     }
 
-    TypeElement getElement()
+    public TypeElement getAnnotatedElement()
     {
         return typeElement;
     }

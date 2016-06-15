@@ -94,7 +94,7 @@ class Initializers
             CodeBlock.Builder builder = codeBuilder.beginControlFlow("if ( $L == null )", item.getName());
             if ( item.hasDefaultValue() )
             {
-                builder.addStatement("$L = $L.super.$L()", item.getName(), spec.getElement().getSimpleName(), item.getName());
+                builder.addStatement("$L = $L.super.$L()", item.getName(), spec.getAnnotatedElement().getSimpleName(), item.getName());
             }
             else do
             {

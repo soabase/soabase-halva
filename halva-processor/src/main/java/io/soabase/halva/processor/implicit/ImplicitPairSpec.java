@@ -17,43 +17,37 @@ package io.soabase.halva.processor.implicit;
 
 import io.soabase.halva.processor.SpecBase;
 import javax.lang.model.element.TypeElement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-class ImplicitSpec implements SpecBase
+class ImplicitPairSpec implements SpecBase
 {
-    private final TypeElement typeElement;
-    private final List<ImplicitItem> items;
-
-    ImplicitSpec()
-    {
-        this(null, null);
-    }
-
-    ImplicitSpec(TypeElement typeElement, List<ImplicitItem> items)
-    {
-        if ( items == null )
-        {
-            items = new ArrayList<>();
-        }
-        this.typeElement = typeElement;
-        this.items = Collections.unmodifiableList(new ArrayList<>(items));
-    }
-
-    List<ImplicitItem> getItems()
-    {
-        return items;
-    }
+    private final ImplicitSpec implicitSpec;
+    private final ContextSpec contextSpec;
 
     @Override
     public TypeElement getAnnotatedElement()
     {
-        return typeElement;
+        return (implicitSpec != null) ? implicitSpec.getAnnotatedElement() : contextSpec.getAnnotatedElement();
     }
 
-    boolean isValid()
+    ImplicitPairSpec(ImplicitSpec implicitSpec)
     {
-        return typeElement != null;
+        this.implicitSpec = implicitSpec;
+        contextSpec = null;
+    }
+
+    ImplicitPairSpec(ContextSpec contextSpec)
+    {
+        implicitSpec = null;
+        this.contextSpec = contextSpec;
+    }
+
+    ImplicitSpec getImplicitSpec()
+    {
+        return implicitSpec;
+    }
+
+    ContextSpec getContextSpec()
+    {
+        return contextSpec;
     }
 }

@@ -15,12 +15,13 @@
  */
 package io.soabase.halva.processor.caseclass;
 
+import io.soabase.halva.processor.SpecBase;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-class CaseClassSpec
+class CaseClassSpec implements SpecBase
 {
     private final Optional<TypeElement> element;
     private final List<CaseClassItem> items;
@@ -37,7 +38,8 @@ class CaseClassSpec
         this.items = items;
     }
 
-    TypeElement getElement()
+    @Override
+    public TypeElement getAnnotatedElement()
     {
         return element.orElseThrow(() -> new RuntimeException("Empty spec being used"));
     }

@@ -20,10 +20,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseClassMutable;
-import io.soabase.halva.caseclass.CaseObject;
+import io.soabase.halva.processor.AnnotationReader;
 import io.soabase.halva.processor.ProcessorBase;
 import io.soabase.halva.tuple.ClassTuplable;
 import io.soabase.halva.tuple.Tuplable;
@@ -42,20 +41,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@SupportedAnnotationTypes("io.soabase.halva.caseclass.CaseClass")
+@SupportedAnnotationTypes({"io.soabase.halva.caseclass.CaseClass", "io.soabase.halva.caseclass.CaseObject"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
 {
     private static final CaseClassItem errorItem = new CaseClassItem();
     private static final CaseClassItem ignoreItem = new CaseClassItem();
 
-    public CaseClassProcessor()
-    {
-        super(CaseClass.class, CaseObject.class);
-    }
-
     @Override
-    protected CaseClassSpec getItems(Element element)
+    protected CaseClassSpec getItems(AnnotationReader annotationReader, Element element)
     {
         CaseClassSpec spec = new CaseClassSpec();
         do
@@ -67,7 +61,7 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
             }
 
             TypeElement typeElement = (TypeElement)element;
-            InternalCaseClass caseClass = getInternalCaseClass(typeElement);
+            InternalCaseClass caseClass = new InternalCaseClass(annotationReader);
             List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
             List<CaseClassItem> items = enclosedElements.stream()
                 .map(child -> {
@@ -122,19 +116,19 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
     }
 
     @Override
-    protected void buildClass(Templates templates, CaseClassSpec spec)
+    protected void buildClass(List<CaseClassSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, CaseClassSpec spec)
     {
-        InternalCaseClass caseClass = getInternalCaseClass(spec.getElement());
-        String packageName = getPackage(spec.getElement());
-        ClassName originalQualifiedClassName = ClassName.get(packageName, spec.getElement().getSimpleName().toString());
+        InternalCaseClass caseClass = new InternalCaseClass(annotationReader);
+        String packageName = getPackage(spec.getAnnotatedElement());
+        ClassName originalQualifiedClassName = ClassName.get(packageName, spec.getAnnotatedElement().getSimpleName().toString());
         ClassName qualifiedClassName = ClassName.get(packageName, getCaseClassSimpleName(spec, caseClass));
 
         String annotationType = caseClass.getType();
         log("Generating " + annotationType + " for " + originalQualifiedClassName + " as " + qualifiedClassName);
 
-        Collection<Modifier> modifiers = getModifiers(spec.getElement());
+        Collection<Modifier> modifiers = getModifiers(spec.getAnnotatedElement());
 
-        TypeName baseType = TypeName.get(spec.getElement().asType());
+        TypeName baseType = TypeName.get(spec.getAnnotatedElement().asType());
         TypeSpec.Builder builder = TypeSpec.classBuilder(qualifiedClassName)
             .addSuperinterface(baseType)
             .addSuperinterface(Serializable.class)
@@ -143,9 +137,9 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
         Optional<List<TypeVariableName>> typeVariableNames;
-        if ( spec.getElement().getTypeParameters().size() > 0 )
+        if ( spec.getAnnotatedElement().getTypeParameters().size() > 0 )
         {
-            List<TypeVariableName> localTypeVariableNames = spec.getElement().getTypeParameters().stream()
+            List<TypeVariableName> localTypeVariableNames = spec.getAnnotatedElement().getTypeParameters().stream()
                 .map(TypeVariableName::get)
                 .collect(Collectors.toList());
             builder.addTypeVariables(localTypeVariableNames);
@@ -182,7 +176,7 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
         templates.addToString(spec, builder, qualifiedClassName);
         templates.addClassTuple(spec, builder, qualifiedClassName, caseClass.json());
 
-        createSourceFile(packageName, originalQualifiedClassName, qualifiedClassName, annotationType, builder, spec.getElement());
+        createSourceFile(packageName, originalQualifiedClassName, qualifiedClassName, annotationType, builder, spec.getAnnotatedElement());
     }
 
     @Override
@@ -191,18 +185,8 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
         return new Templates(processingEnv);
     }
 
-    private InternalCaseClass getInternalCaseClass(TypeElement element)
-    {
-        CaseClass caseClass = element.getAnnotation(CaseClass.class);
-        if ( caseClass != null )
-        {
-            return new InternalCaseClass(caseClass);
-        }
-        return new InternalCaseClass(element.getAnnotation(CaseObject.class));
-    }
-
     private String getCaseClassSimpleName(CaseClassSpec spec, InternalCaseClass caseClass)
     {
-        return getCaseClassSimpleName(spec.getElement(), caseClass.suffix(), caseClass.unsuffix());
+        return getCaseClassSimpleName(spec.getAnnotatedElement(), caseClass.suffix(), caseClass.unsuffix());
     }
 }

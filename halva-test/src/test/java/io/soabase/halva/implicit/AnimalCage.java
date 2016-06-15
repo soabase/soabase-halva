@@ -15,7 +15,6 @@
  */
 package io.soabase.halva.implicit;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @ImplicitClass
@@ -28,7 +27,7 @@ public class AnimalCage
         animal.set(firstAnimal);
     }
 
-    public void setAnimal(@Implicit Animal animal, @Implicit List<String> strings, int threshold)
+    public void setAnimal(@Implicit Animal animal)
     {
         this.animal.set(animal);
     }

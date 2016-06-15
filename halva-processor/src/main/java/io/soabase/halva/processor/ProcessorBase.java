@@ -28,36 +28,41 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class ProcessorBase<SpecType, TemplatesType> extends AbstractProcessor
+public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> extends AbstractProcessor
 {
-    private final List<Class<? extends Annotation>> annotations;
-
-    @SafeVarargs
-    protected ProcessorBase(Class<? extends Annotation>... annotations)
-    {
-        this.annotations = Arrays.asList(annotations);
-    }
-
     @Override
     public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
     {
         TemplatesType templates = newTemplates();
-        this.annotations.stream().forEach(annotation ->
-                environment.getElementsAnnotatedWith(annotation).stream()
-                    .map(this::getItems)
-                    .forEach(spec -> buildClass(templates, spec))
-        );
+        List<SpecType> previousSpecs = null;
+        for ( TypeElement annotation : sort(annotations) )
+        {
+            List<SpecType> specs = environment.getElementsAnnotatedWith(annotation).stream()
+                .map(e -> {
+                    AnnotationReader annotationReader = new AnnotationReader(processingEnv, e, annotation.getSimpleName().toString());
+                    return getItems(annotationReader, e);
+                }).collect(Collectors.toList());
+            for ( SpecType spec : specs )
+            {
+                AnnotationReader annotationReader = new AnnotationReader(processingEnv, spec.getAnnotatedElement(), annotation.getSimpleName().toString());
+                buildClass(previousSpecs, templates, annotationReader, spec);
+            }
+            previousSpecs = specs;
+        }
         return true;
     }
 
-    protected abstract void buildClass(TemplatesType templates, SpecType spec);
+    protected Collection<? extends TypeElement> sort(Set<? extends TypeElement> annotations)
+    {
+        return annotations;
+    }
+
+    protected abstract void buildClass(List<SpecType> previousSpecs, TemplatesType templates, AnnotationReader annotationReader, SpecType spec);
 
     protected Collection<Modifier> getModifiers(TypeElement element)
     {
@@ -93,7 +98,7 @@ public abstract class ProcessorBase<SpecType, TemplatesType> extends AbstractPro
 
     protected abstract TemplatesType newTemplates();
 
-    protected abstract SpecType getItems(Element element);
+    protected abstract SpecType getItems(AnnotationReader annotationReader, Element element);
 
     protected void error(Element element, String message, Throwable e)
     {

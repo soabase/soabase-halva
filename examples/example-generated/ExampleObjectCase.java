@@ -15,7 +15,7 @@ import java.lang.String;
 public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable, ClassTuplable {
     public static final ExampleObjectCase ExampleObjectCase = new ExampleObjectCase();
 
-    private static final Class classTuplableClass = ExampleObjectCaseT().getClass();
+    private static final Class classTuplableClass = ExampleObjectCaseTu().getClass();
 
     private ExampleObjectCase() {
     }
@@ -33,7 +33,7 @@ public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable,
 
     @Override
     public Tuple0 tuple() {
-        return Tuple.T();
+        return Tuple.Tu();
     }
 
     @Override
@@ -52,8 +52,8 @@ public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable,
         ')';
     }
 
-    public static ClassTuple ExampleObjectCaseT() {
-        return () -> Tuple.T();
+    public static ClassTuple ExampleObjectCaseTu() {
+        return () -> Tuple.Tu();
     }
 
     @Override

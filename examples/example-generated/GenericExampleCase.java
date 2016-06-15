@@ -13,7 +13,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = GenericExampleCaseT("", "").getClass();
+    private static final Class classTuplableClass = GenericExampleCaseTu("", "").getClass();
 
     private final A first;
 
@@ -72,7 +72,7 @@ public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializa
 
     @Override
     public Tuple2<A, B> tuple() {
-        return Tuple.T(first(), second());
+        return Tuple.Tu(first(), second());
     }
 
     @Override
@@ -97,8 +97,8 @@ public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializa
         ')';
     }
 
-    public static ClassTuple GenericExampleCaseT(Object _1, Object _2) {
-        return () -> Tuple.T(_1, _2);
+    public static ClassTuple GenericExampleCaseTu(Object _1, Object _2) {
+        return () -> Tuple.Tu(_1, _2);
     }
 
     @Override

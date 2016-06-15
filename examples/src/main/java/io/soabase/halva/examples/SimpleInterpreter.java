@@ -14,23 +14,23 @@ import java.util.function.Function;
 import static io.soabase.halva.any.Any.defineHeadAnyTail;
 import static io.soabase.halva.any.AnyDeclaration.anyInt;
 import static io.soabase.halva.any.AnyDeclaration.anyString;
-import static io.soabase.halva.comprehension.For.For;
+import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.examples.Add.Add;
-import static io.soabase.halva.examples.Add.AddT;
+import static io.soabase.halva.examples.Add.AddTu;
 import static io.soabase.halva.examples.App.App;
-import static io.soabase.halva.examples.App.AppT;
+import static io.soabase.halva.examples.App.AppTu;
 import static io.soabase.halva.examples.Con.Con;
-import static io.soabase.halva.examples.Con.ConT;
+import static io.soabase.halva.examples.Con.ConTu;
 import static io.soabase.halva.examples.Environment.Environment;
 import static io.soabase.halva.examples.Fun.Fun;
-import static io.soabase.halva.examples.Fun.FunT;
+import static io.soabase.halva.examples.Fun.FunTu;
 import static io.soabase.halva.examples.Lam.Lam;
-import static io.soabase.halva.examples.Lam.LamT;
+import static io.soabase.halva.examples.Lam.LamTu;
 import static io.soabase.halva.examples.M.M;
 import static io.soabase.halva.examples.Num.Num;
-import static io.soabase.halva.examples.Num.NumT;
+import static io.soabase.halva.examples.Num.NumTu;
 import static io.soabase.halva.examples.Var.Var;
-import static io.soabase.halva.examples.Var.VarT;
+import static io.soabase.halva.examples.Var.VarTu;
 import static io.soabase.halva.examples.Wrong.Wrong;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.Iterable;
@@ -88,7 +88,7 @@ class SimpleInterpreter
         Any<Integer> n = anyInt.define();
 
         return match(Pair(a, b)).
-            caseOf( Pair(NumT(m), NumT(n)), () -> unitM(Num(m.val() + n.val())) ).
+            caseOf( Pair(NumTu(m), NumTu(n)), () -> unitM(Num(m.val() + n.val())) ).
             caseOf( () -> unitM(Wrong) ).
         get();
     }
@@ -98,7 +98,7 @@ class SimpleInterpreter
         Any<Function<Value, M<Value>>> k = anyFun.define();
 
         return match(a).
-            caseOf( FunT(k), () -> k.val().apply(b) ).
+            caseOf( FunTu(k), () -> k.val().apply(b) ).
             caseOf( () -> unitM(Wrong) ).
         get();
     }
@@ -116,17 +116,17 @@ class SimpleInterpreter
         Any<M<Value>> c = anyM.define();
 
         return match(term).
-            caseOf( VarT(x), () -> lookup( x.val(), e) ).
-            caseOf( ConT(n), () -> unitM( Num(n.val())) ).
-            caseOf( AddT(l, r), () -> For(a, Iterable(interp(l.val(), e))).
-                                      and( b, () -> Iterable(interp(r.val(), e)) ).
-                                      and( c, () -> Iterable(add(a.val().value(), b.val().value())) ).
+            caseOf( VarTu(x), () -> lookup( x.val(), e) ).
+            caseOf( ConTu(n), () -> unitM( Num(n.val())) ).
+            caseOf( AddTu(l, r), () -> forComp(a, Iterable(interp(l.val(), e))).
+                                      forComp( b, () -> Iterable(interp(r.val(), e)) ).
+                                      forComp( c, () -> Iterable(add(a.val().value(), b.val().value())) ).
                                       yield1( c::val )
                    ).
-            caseOf( LamT(x, t), () -> unitM( Fun(arg -> interp(t.val(), Environment(cons(Pair(x.val(), arg), e))))) ).
-            caseOf( AppT(f, t), () -> For( a, Iterable(interp(f.val(), e)) ).
-                                      and( b, () -> Iterable(interp(t.val(), e)) ).
-                                      and( c, () -> Iterable(apply(a.val().value(), b.val().value())) ).
+            caseOf( LamTu(x, t), () -> unitM( Fun(arg -> interp(t.val(), Environment(cons(Pair(x.val(), arg), e))))) ).
+            caseOf( AppTu(f, t), () -> forComp( a, Iterable(interp(f.val(), e)) ).
+                                      forComp( b, () -> Iterable(interp(t.val(), e)) ).
+                                      forComp( c, () -> Iterable(apply(a.val().value(), b.val().value())) ).
                                       yield1( c::val )
                    ).
             get();

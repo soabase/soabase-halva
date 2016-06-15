@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = ExampleCaseT("", "", "", "", "").getClass();
+    private static final Class classTuplableClass = ExampleCaseTu("", "", "", "", "").getClass();
 
     private final String firstName;
 
@@ -114,7 +114,7 @@ public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplab
 
     @Override
     public Tuple5<String, String, Integer, Boolean, List<Date>> tuple() {
-        return Tuple.T(firstName(), lastName(), age(), active(), importantDates());
+        return Tuple.Tu(firstName(), lastName(), age(), active(), importantDates());
     }
 
     @Override
@@ -148,8 +148,8 @@ public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplab
         ')';
     }
 
-    public static ClassTuple ExampleCaseT(Object _1, Object _2, Object _3, Object _4, Object _5) {
-        return () -> Tuple.T(_1, _2, _3, _4, _5);
+    public static ClassTuple ExampleCaseTu(Object _1, Object _2, Object _3, Object _4, Object _5) {
+        return () -> Tuple.Tu(_1, _2, _3, _4, _5);
     }
 
     @Override

@@ -23,7 +23,7 @@ import java.lang.String;
         builder = Builder.class
 )
 public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = JsonTestCaseT("", "", "").getClass();
+    private static final Class classTuplableClass = JsonTestCaseTu("", "", "").getClass();
 
     @JsonProperty
     private final String firstName;
@@ -96,7 +96,7 @@ public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTupl
 
     @Override
     public Tuple3<String, String, Integer> tuple() {
-        return Tuple.T(firstName(), lastName(), age());
+        return Tuple.Tu(firstName(), lastName(), age());
     }
 
     @Override
@@ -124,8 +124,8 @@ public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTupl
         ')';
     }
 
-    public static ClassTuple JsonTestCaseT(Object _1, Object _2, Object _3) {
-        return () -> Tuple.T(_1, _2, _3);
+    public static ClassTuple JsonTestCaseTu(Object _1, Object _2, Object _3) {
+        return () -> Tuple.Tu(_1, _2, _3);
     }
 
     @Override

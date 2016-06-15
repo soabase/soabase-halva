@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = TestCaseT("", "", "", "", "", "", "", "", "", "", "", "").getClass();
+    private static final Class classTuplableClass = TestCaseTu("", "", "", "", "", "", "", "", "", "", "", "").getClass();
 
     private final String name;
 
@@ -221,7 +221,7 @@ public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
 
     @Override
     public Tuple12<String, Integer, List<Long>, Map<String, List<Date>>, ConcurrentMap<String, String>, Boolean, Date, Double, Float, Boolean, String, Charset> tuple() {
-        return Tuple.T(name(), date(), longList(), stringDateMap(), concurrentMap(), truth(), activation(), percent(), section(), isIt(), mutableValue(), charset());
+        return Tuple.Tu(name(), date(), longList(), stringDateMap(), concurrentMap(), truth(), activation(), percent(), section(), isIt(), mutableValue(), charset());
     }
 
     @Override
@@ -276,8 +276,8 @@ public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
         ')';
     }
 
-    public static ClassTuple TestCaseT(Object _1, Object _2, Object _3, Object _4, Object _5, Object _6, Object _7, Object _8, Object _9, Object _10, Object _11, Object _12) {
-        return () -> Tuple.T(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12);
+    public static ClassTuple TestCaseTu(Object _1, Object _2, Object _3, Object _4, Object _5, Object _6, Object _7, Object _8, Object _9, Object _10, Object _11, Object _12) {
+        return () -> Tuple.Tu(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12);
     }
 
     @Override

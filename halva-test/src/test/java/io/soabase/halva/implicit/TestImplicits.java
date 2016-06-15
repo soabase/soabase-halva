@@ -15,8 +15,11 @@
  */
 package io.soabase.halva.implicit;
 
+import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestImplicits
 {
@@ -35,5 +38,90 @@ public class TestImplicits
         BaseClassImpl base = new BaseClassImpl();
         Assert.assertEquals("dog: 10", base.getExtraString(10));
         Assert.assertEquals(System.currentTimeMillis() / 10000, base.getTime() / 10000);
+    }
+
+    // from http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
+
+    /*
+    abstract class SemiGroup[A] {
+  def add(x: A, y: A): A
+}
+abstract class Monoid[A] extends SemiGroup[A] {
+  def unit: A
+}
+     */
+
+    interface SemiGroup<A>
+    {
+        A add(A x, A y);
+    }
+
+    interface Monoid<A> extends SemiGroup<A>
+    {
+        A unit();
+    }
+
+    @ImplicitContext
+    public static class ImplicitTestContext
+    {
+        @Implicit public static final Monoid<String> stringMonoid = new Monoid<String>()
+        {
+            @Override
+            public String unit()
+            {
+                return "";
+            }
+
+            @Override
+            public String add(String x, String y)
+            {
+                return x.toUpperCase() + y.toUpperCase();
+            }
+        };
+
+        @Implicit public static final Monoid<Integer> intMonoid = new Monoid<Integer>()
+        {
+            @Override
+            public Integer unit()
+            {
+                return 0;
+            }
+
+            @Override
+            public Integer add(Integer x, Integer y)
+            {
+                return x + y;
+            }
+        };
+    }
+
+    @ImplicitClass
+    public static class Sum
+    {
+        public Integer sumInt(ConsList<Integer> xs, @Implicit Monoid<Integer> m)
+        {
+            return sum(xs, m);
+        }
+
+        public String sumString(ConsList<String> xs, @Implicit Monoid<String> m)
+        {
+            return sum(xs, m);
+        }
+
+        public <A> A sum(ConsList<A> xs, Monoid<A> m)
+        {
+            if ( xs.size() == 0 )
+            {
+                return m.unit();
+            }
+            return m.add(xs.head(), sum(xs.tail(), m));
+        }
+    }
+
+    @Test
+    public void testImplicitScalaLangTutorial()
+    {
+        Assert.assertEquals(new Integer(6), new SumImpl().sumInt(List(1, 2, 3)));
+        Assert.assertEquals("ABC", new SumImpl().sumString(List("a", "b", "c")));
     }
 }

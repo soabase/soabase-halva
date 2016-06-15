@@ -136,19 +136,7 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
             .addSuperinterface(ClassTuplable.class)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
-        Optional<List<TypeVariableName>> typeVariableNames;
-        if ( spec.getAnnotatedElement().getTypeParameters().size() > 0 )
-        {
-            List<TypeVariableName> localTypeVariableNames = spec.getAnnotatedElement().getTypeParameters().stream()
-                .map(TypeVariableName::get)
-                .collect(Collectors.toList());
-            builder.addTypeVariables(localTypeVariableNames);
-            typeVariableNames = Optional.of(localTypeVariableNames);
-        }
-        else
-        {
-            typeVariableNames = Optional.empty();
-        }
+        Optional<List<TypeVariableName>> typeVariableNames = addTypeVariableNames(builder, spec.getAnnotatedElement());
 
         if ( caseClass.json() )
         {

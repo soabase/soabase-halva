@@ -16,7 +16,10 @@
 package io.soabase.halva.processor.implicit;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.implicit.Implicit;
 import io.soabase.halva.implicit.ImplicitClass;
 import io.soabase.halva.implicit.ImplicitContext;
@@ -238,11 +241,21 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
 
         log("Generating ImplicitClass for " + templateQualifiedClassName + " as " + implicitQualifiedClassName);
 
+        List<Modifier> modifiers = typeElement.getModifiers().stream().filter(m -> m != Modifier.STATIC).collect(Collectors.toList());
         TypeSpec.Builder builder = TypeSpec.classBuilder(implicitQualifiedClassName)
-            .superclass(ClassName.get(typeElement))
-            .addModifiers(typeElement.getModifiers().toArray(new Modifier[typeElement.getModifiers().size()]))
+            .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]))
         ;
         annotationReader.getClasses("implicitInterfaces").forEach(clazz -> templates.addImplicitInterface(builder, clazz, specs));
+
+        Optional<List<TypeVariableName>> typeVariableNames = addTypeVariableNames(builder, spec.getAnnotatedElement());
+        if ( typeVariableNames.isPresent() )
+        {
+            builder.superclass(ParameterizedTypeName.get(ClassName.get(typeElement), typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()])));
+        }
+        else
+        {
+            builder.superclass(ClassName.get(typeElement));
+        }
 
         spec.getItems().forEach(item -> {
             if ( item.isValid() )

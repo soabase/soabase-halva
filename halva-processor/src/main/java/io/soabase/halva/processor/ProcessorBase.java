@@ -18,6 +18,7 @@ package io.soabase.halva.processor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
@@ -31,6 +32,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -95,6 +97,24 @@ public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> ex
         {
             error(element, "Could not create source file", e);
         }
+    }
+
+    protected Optional<List<TypeVariableName>> addTypeVariableNames(TypeSpec.Builder builder, TypeElement element)
+    {
+        Optional<List<TypeVariableName>> typeVariableNames;
+        if ( element.getTypeParameters().size() > 0 )
+        {
+            List<TypeVariableName> localTypeVariableNames = element.getTypeParameters().stream()
+                .map(TypeVariableName::get)
+                .collect(Collectors.toList());
+            builder.addTypeVariables(localTypeVariableNames);
+            typeVariableNames = Optional.of(localTypeVariableNames);
+        }
+        else
+        {
+            typeVariableNames = Optional.empty();
+        }
+        return typeVariableNames;
     }
 
     protected abstract TemplatesType newTemplates();

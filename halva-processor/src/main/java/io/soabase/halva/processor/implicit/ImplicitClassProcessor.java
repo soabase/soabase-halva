@@ -31,6 +31,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,13 +60,13 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
     {
         if ( annotationReader.getName().equals(ImplicitContext.class.getSimpleName()) )
         {
-            return new ImplicitPairSpec(getImplicitContextItems(element));
+            return new ImplicitPairSpec(getImplicitContextItems(element, annotationReader));
         }
 
         return new ImplicitPairSpec(getImplicitClassItems(element));
     }
 
-    private ContextSpec getImplicitContextItems(Element element)
+    private ContextSpec getImplicitContextItems(Element element, AnnotationReader annotationReader)
     {
         List<ContextItem> items = element.getEnclosedElements().stream()
             .map(child -> {
@@ -93,7 +94,7 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
             .filter(ContextItem::isValid)
             .collect(Collectors.toList())
         ;
-        return new ContextSpec((TypeElement)element, items);
+        return new ContextSpec((TypeElement)element, annotationReader, items);
     }
 
     private boolean isValidProviderMethod(ExecutableElement method)
@@ -176,6 +177,41 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
         }
     }
 
+    private boolean contextApplies(ContextSpec contextSpec, List<TypeMirror> limitContexts, TypeElement typeElement)
+    {
+        if ( contextSpec == null )
+        {
+            return false;
+        }
+
+        if ( limitContexts.size() > 0 )
+        {
+            if ( !limitContexts.stream().anyMatch(limit -> processingEnv.getTypeUtils().isSameType(contextSpec.getAnnotatedElement().asType(), typeElement.asType())) )
+            {
+                return false;
+            }
+        }
+
+        List<TypeMirror> limits = contextSpec.getAnnotationReader().getClasses("limits");
+        if ( limits.size() > 0 )
+        {
+            if ( !limits.stream().anyMatch(limit -> processingEnv.getTypeUtils().isSameType(limit, typeElement.asType())) )
+            {
+                return false;
+            }
+        }
+        List<TypeMirror> excludes = contextSpec.getAnnotationReader().getClasses("excludes");
+        if ( excludes.size() > 0 )
+        {
+            if ( excludes.stream().anyMatch(exclude -> processingEnv.getTypeUtils().isSameType(exclude, typeElement.asType())) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void buildImplicitClass(List<ImplicitPairSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, ImplicitSpec spec)
     {
         if ( !spec.isValid() )
@@ -185,13 +221,14 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
 
         TypeElement typeElement = spec.getAnnotatedElement();
 
-        ContextSpec thisContextSpec = getImplicitContextItems(typeElement);
+        ContextSpec thisContextSpec = getImplicitContextItems(typeElement, annotationReader);
         List<ContextSpec> specs = new ArrayList<>();
-        if ( previousSpecs != null )
-        {
-            specs.addAll(previousSpecs.stream().map(ImplicitPairSpec::getContextSpec).collect(Collectors.toList()));
-        }
-        specs.add(getImplicitContextItems(typeElement));
+        specs.addAll(previousSpecs.stream()
+            .filter(p -> contextApplies(p.getContextSpec(), annotationReader.getClasses("limitContexts"), spec.getAnnotatedElement()))
+            .map(ImplicitPairSpec::getContextSpec)
+            .collect(Collectors.toList())
+        );
+        specs.add(getImplicitContextItems(typeElement, annotationReader));
 
         Optional<? extends AnnotationMirror> implicitClassMirror = typeElement.getAnnotationMirrors().stream().filter(mirror -> mirror.getAnnotationType().toString().equals(ImplicitClass.class.getName())).findFirst();
         ImplicitClass implicitClass = typeElement.getAnnotation(ImplicitClass.class);

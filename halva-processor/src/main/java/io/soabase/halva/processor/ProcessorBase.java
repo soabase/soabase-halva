@@ -28,6 +28,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +40,7 @@ public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> ex
     public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
     {
         TemplatesType templates = newTemplates();
-        List<SpecType> previousSpecs = null;
+        List<SpecType> previousSpecs = new ArrayList<>();
         for ( TypeElement annotation : sort(annotations) )
         {
             List<SpecType> specs = environment.getElementsAnnotatedWith(annotation).stream()

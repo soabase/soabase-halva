@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.processor.implicit;
 
+import io.soabase.halva.processor.AnnotationReader;
 import io.soabase.halva.processor.SpecBase;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
@@ -25,14 +26,16 @@ class ContextSpec implements SpecBase
 {
     private final TypeElement typeElement;
     private final List<ContextItem> items;
+    private final AnnotationReader annotationReader;
 
-    public ContextSpec()
+    ContextSpec()
     {
-        this(null, null);
+        this(null, null, null);
     }
 
-    ContextSpec(TypeElement typeElement, List<ContextItem> items)
+    ContextSpec(TypeElement typeElement, AnnotationReader annotationReader, List<ContextItem> items)
     {
+        this.annotationReader = annotationReader;
         if ( items == null )
         {
             items = new ArrayList<>();
@@ -45,6 +48,11 @@ class ContextSpec implements SpecBase
     public TypeElement getAnnotatedElement()
     {
         return typeElement;
+    }
+
+    AnnotationReader getAnnotationReader()
+    {
+        return annotationReader;
     }
 
     List<ContextItem> getItems()

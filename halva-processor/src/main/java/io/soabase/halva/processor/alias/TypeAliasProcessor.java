@@ -45,7 +45,7 @@ public class TypeAliasProcessor extends ProcessorBase<AliasSpec, Templates>
     }
 
     @Override
-    protected AliasSpec getItems(AnnotationReader annotationReader, Element element)
+    protected AliasSpec getItems(Templates templates, AnnotationReader annotationReader, Element element)
     {
         //noinspection LoopStatementThatDoesntLoop
         do

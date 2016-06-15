@@ -20,15 +20,22 @@ import javax.lang.model.element.Element;
 class ContextItem
 {
     private final Element element;
+    private final boolean isSpecificTypesMapMatch;
 
-    public ContextItem()
+    ContextItem()
     {
-        this(null);
+        this(null, false);
     }
 
     ContextItem(Element element)
     {
+        this(element, false);
+    }
+
+    ContextItem(Element element, boolean isSpecificTypesMapMatch)
+    {
         this.element = element;
+        this.isSpecificTypesMapMatch = isSpecificTypesMapMatch;
     }
 
     Element getElement()
@@ -39,5 +46,10 @@ class ContextItem
     boolean isValid()
     {
         return (element != null);
+    }
+
+    boolean isSpecificTypesMapMatch()
+    {
+        return isSpecificTypesMapMatch;
     }
 }

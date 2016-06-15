@@ -30,16 +30,12 @@ class ContextSpec implements SpecBase
 
     ContextSpec()
     {
-        this(null, null, null);
+        this(null, null, new ArrayList<>());
     }
 
     ContextSpec(TypeElement typeElement, AnnotationReader annotationReader, List<ContextItem> items)
     {
         this.annotationReader = annotationReader;
-        if ( items == null )
-        {
-            items = new ArrayList<>();
-        }
         this.typeElement = typeElement;
         this.items = Collections.unmodifiableList(new ArrayList<>(items));
     }

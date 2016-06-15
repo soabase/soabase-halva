@@ -49,7 +49,7 @@ public class CaseClassProcessor extends ProcessorBase<CaseClassSpec, Templates>
     private static final CaseClassItem ignoreItem = new CaseClassItem();
 
     @Override
-    protected CaseClassSpec getItems(AnnotationReader annotationReader, Element element)
+    protected CaseClassSpec getItems(Templates templates, AnnotationReader annotationReader, Element element)
     {
         CaseClassSpec spec = new CaseClassSpec();
         do

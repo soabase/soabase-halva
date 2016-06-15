@@ -34,6 +34,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,17 +60,17 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
     }
 
     @Override
-    protected ImplicitPairSpec getItems(AnnotationReader annotationReader, Element element)
+    protected ImplicitPairSpec getItems(Templates templates, AnnotationReader annotationReader, Element element)
     {
         if ( annotationReader.getName().equals(ImplicitContext.class.getSimpleName()) )
         {
-            return new ImplicitPairSpec(getImplicitContextItems(element, annotationReader));
+            return new ImplicitPairSpec(getImplicitContextItems(templates, element, annotationReader));
         }
 
         return new ImplicitPairSpec(getImplicitClassItems(element));
     }
 
-    private ContextSpec getImplicitContextItems(Element element, AnnotationReader annotationReader)
+    private ContextSpec getImplicitContextItems(Templates templates, Element element, AnnotationReader annotationReader)
     {
         List<ContextItem> items = element.getEnclosedElements().stream()
             .map(child -> {
@@ -89,6 +90,11 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
                     }
                     else
                     {
+                        DeclaredType childType = (child.getKind() == ElementKind.METHOD) ? (DeclaredType)((ExecutableElement)child).getReturnType() : (DeclaredType)child.asType();
+                        if ( childType.getTypeArguments().size() > 0 )
+                        {
+                            templates.getSpecificTypeMap(childType).put(childType, child);
+                        }
                         return new ContextItem(child);
                     }
                 }
@@ -224,14 +230,14 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
 
         TypeElement typeElement = spec.getAnnotatedElement();
 
-        ContextSpec thisContextSpec = getImplicitContextItems(typeElement, annotationReader);
+        ContextSpec thisContextSpec = getImplicitContextItems(templates, typeElement, annotationReader);
         List<ContextSpec> specs = new ArrayList<>();
         specs.addAll(previousSpecs.stream()
             .filter(p -> contextApplies(p.getContextSpec(), annotationReader.getClasses("limitContexts"), spec.getAnnotatedElement()))
             .map(ImplicitPairSpec::getContextSpec)
             .collect(Collectors.toList())
         );
-        specs.add(getImplicitContextItems(typeElement, annotationReader));
+        specs.add(getImplicitContextItems(templates, typeElement, annotationReader));
 
         Optional<? extends AnnotationMirror> implicitClassMirror = typeElement.getAnnotationMirrors().stream().filter(mirror -> mirror.getAnnotationType().toString().equals(ImplicitClass.class.getName())).findFirst();
         ImplicitClass implicitClass = typeElement.getAnnotation(ImplicitClass.class);

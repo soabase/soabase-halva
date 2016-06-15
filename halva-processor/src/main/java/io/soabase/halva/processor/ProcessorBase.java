@@ -25,6 +25,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> extends AbstractProcessor
@@ -48,7 +50,7 @@ public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> ex
             List<SpecType> specs = environment.getElementsAnnotatedWith(annotation).stream()
                 .map(e -> {
                     AnnotationReader annotationReader = new AnnotationReader(processingEnv, e, annotation.getSimpleName().toString());
-                    return getItems(annotationReader, e);
+                    return getItems(templates, annotationReader, e);
                 }).collect(Collectors.toList());
             for ( SpecType spec : specs )
             {
@@ -99,15 +101,15 @@ public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> ex
         }
     }
 
-    protected Optional<List<TypeVariableName>> addTypeVariableNames(TypeSpec.Builder builder, TypeElement element)
+    public static Optional<List<TypeVariableName>> addTypeVariableNames(Consumer<List<TypeVariableName>> applier, List<? extends TypeParameterElement> elements)
     {
         Optional<List<TypeVariableName>> typeVariableNames;
-        if ( element.getTypeParameters().size() > 0 )
+        if ( elements.size() > 0 )
         {
-            List<TypeVariableName> localTypeVariableNames = element.getTypeParameters().stream()
+            List<TypeVariableName> localTypeVariableNames = elements.stream()
                 .map(TypeVariableName::get)
                 .collect(Collectors.toList());
-            builder.addTypeVariables(localTypeVariableNames);
+            applier.accept(localTypeVariableNames);
             typeVariableNames = Optional.of(localTypeVariableNames);
         }
         else
@@ -117,9 +119,14 @@ public abstract class ProcessorBase<SpecType extends SpecBase, TemplatesType> ex
         return typeVariableNames;
     }
 
+    protected Optional<List<TypeVariableName>> addTypeVariableNames(TypeSpec.Builder builder, TypeElement element)
+    {
+        return addTypeVariableNames(builder::addTypeVariables, element.getTypeParameters());
+    }
+
     protected abstract TemplatesType newTemplates();
 
-    protected abstract SpecType getItems(AnnotationReader annotationReader, Element element);
+    protected abstract SpecType getItems(TemplatesType templates, AnnotationReader annotationReader, Element element);
 
     protected void error(Element element, String message, Throwable e)
     {

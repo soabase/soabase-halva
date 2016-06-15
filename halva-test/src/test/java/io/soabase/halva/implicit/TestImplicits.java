@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.implicit;
 
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,15 +42,6 @@ public class TestImplicits
     }
 
     // from http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
-
-    /*
-    abstract class SemiGroup[A] {
-  def add(x: A, y: A): A
-}
-abstract class Monoid[A] extends SemiGroup[A] {
-  def unit: A
-}
-     */
 
     interface SemiGroup<A>
     {
@@ -98,17 +90,7 @@ abstract class Monoid[A] extends SemiGroup[A] {
     @ImplicitClass
     public static class Sum
     {
-        public Integer sumInt(ConsList<Integer> xs, @Implicit Monoid<Integer> m)
-        {
-            return sum(xs, m);
-        }
-
-        public String sumString(ConsList<String> xs, @Implicit Monoid<String> m)
-        {
-            return sum(xs, m);
-        }
-
-        public <A> A sum(ConsList<A> xs, Monoid<A> m)
+        public <A> A sum(ConsList<A> xs, @Implicit Monoid<A> m)
         {
             if ( xs.size() == 0 )
             {
@@ -121,7 +103,7 @@ abstract class Monoid[A] extends SemiGroup[A] {
     @Test
     public void testImplicitScalaLangTutorial()
     {
-        Assert.assertEquals(new Integer(6), new SumImpl().sumInt(List(1, 2, 3)));
-        Assert.assertEquals("ABC", new SumImpl().sumString(List("a", "b", "c")));
+        Assert.assertEquals(new Integer(6), new SumImpl().sum(List(1, 2, 3), new AnyType<Monoid<Integer>>(){}));
+        Assert.assertEquals("ABC", new SumImpl().sum(List("a", "b", "c"), new AnyType<Monoid<String>>(){}));
     }
 }

@@ -61,8 +61,8 @@ public int findAnyAge(Object obj)
     Any<String> s = anyString.define();
     Any<Integer> age = anyInt.define();
     return match(obj)
-        .caseOf(AnimalCaseT(s, age), age::val)
-        .caseOf(ChairCaseT(3, age), age::val)
+        .caseOf(AnimalCaseTu(s, age), age::val)
+        .caseOf(ChairCaseTu(3, age), age::val)
         .caseOf(() -> 0)
         .get();
 }

@@ -18,9 +18,9 @@ import static io.soabase.halva.tuple.Tuple.T;
 
 public class Foo {
     public void fooBar() {
-        System.out.println("My Tuple is: " + T("one", 2, new Date()));
+        System.out.println("My Tuple is: " + Tu("one", 2, new Date()));
     
-        Tuple2<String, Integer> myT2 = T("one", 2);
+        Tuple2<String, Integer> myT2 = Tu("one", 2);
         Tuple2<Integer, String> swapped = myT2.swap();
     }
 }
@@ -38,10 +38,10 @@ Tuples exist mainly for Halva's [For Comprehensions](../comprehension/README.md)
 public static class Tester implements Tuplable {
     @Override
     public Tuple tuple() {
-        return T(1, 2);
+        return Tu(1, 2);
     }
 }
 
 // this prints "true"
-System.out.println(T(1, 2).equals(new Tester()));
+System.out.println(Tu(1, 2).equals(new Tester()));
 ```

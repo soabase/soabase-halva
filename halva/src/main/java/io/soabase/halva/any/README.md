@@ -38,8 +38,8 @@ AnyDeclaration<Pair<String, Integer>> myDecl = AnyDeclaration.of(new AnyType<Pai
 List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
     Any<Pair<String, Integer>> foundPair = myDecl.define();
 
-    return For(foundPair, list)
-        .when(() -> foundPair.val()._1.equals(key))
+    return forComp(foundPair, list)
+        .filter(() -> foundPair.val()._1.equals(key))
         .yield(foundPair::val);
 }
 ```

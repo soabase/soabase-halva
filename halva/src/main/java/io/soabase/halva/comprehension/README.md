@@ -13,8 +13,8 @@ NOTE: If you are not familiar with Scala's for-comprehensions you should review 
 Halva adds support to Java for Scala's For Comprehensions feature with extraction. The syntax is as close as possible to Scala. The form is:
 
 ```
-List<Value> l = For(any-variable, an-iterable)
-    .and(any-variable, () -> produces-an-iterable)
+List<Value> l = forComp(any-variable, an-iterable)
+    .forComp(any-variable, () -> produces-an-iterable)
 ...
     .yield(() -> produces-a-value);
 ```
@@ -23,8 +23,8 @@ For-comprehensions can be thought of as nested for loops where each nesting prod
 
 The full list of methods that `For` supports is:
 
-* `<T, R> For and(Any<T> any, Supplier<Iterable<? extends R>> stream)` - the any is a variable that will hold the result of one iteration of the given iterable. i.e. the given iterable is iterated over storing the result each time into the supplied variable.
-* `For when(SimplePredicate test)` - adds a filter to the comprehension. The items flowing through the stream only continue to the next step if they pass the predicate test.
+* `<T, R> For forComp(Any<T> any, Supplier<Iterable<? extends R>> stream)` - the any is a variable that will hold the result of one iteration of the given iterable. i.e. the given iterable is iterated over storing the result each time into the supplied variable.
+* `For filter(SimplePredicate test)` - adds a filter to the comprehension. The items flowing through the stream only continue to the next step if they pass the predicate test.
 * `<T> For set(Runnable value)` - a simple method for setting variables at the current point in the execution.
 * `<T> List<T> yield(Supplier<T> yielder)` - causes the comprehension to execute. Each iteration of the various iterables will yield the value returned by the yielder lambda.
 * `void unit()` - alternate method of executing the comprehension but without returning/yielding any values.
@@ -50,13 +50,13 @@ List<Book> books = List(
     Any<Author> author = AnyDeclaration.of(Author.class).define();
     Any<Integer> year = anyInt.define();
 
-    List<Tuple> result = For(book, books)
-        .when(() -> book.val().authors().size() == 1)
-        .and(author, () -> book.val().authors())
-        .when(() -> author.val().name().startsWith("Ayn"))
-        .and(year, () -> author.val().years())
-        .yield(() -> T(book.val().title(), year.val()));
+    List<Tuple> result = forComp(book, books)
+        .filter(() -> book.val().authors().size() == 1)
+        .forComp(author, () -> book.val().authors())
+        .filter(() -> author.val().name().startsWith("Ayn"))
+        .forComp(year, () -> author.val().years())
+        .yield(() -> Tu(book.val().title(), year.val()));
 
-    Assert.assertEquals(List(T("Atlas Shrugged", 1940), T("Atlas Shrugged", 1950)), result);
+    Assert.assertEquals(List(Tu("Atlas Shrugged", 1940), Tu("Atlas Shrugged", 1950)), result);
 }
 ```

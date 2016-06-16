@@ -309,7 +309,7 @@ class Templates
             return matchingSpecs.get(0);
         }
 
-        if ( matchingSpecs.stream().allMatch(p -> p._2.isSpecificTypesMapMatch()) )
+        if ( (matchingSpecs.size() > 1) && matchingSpecs.stream().allMatch(p -> p._2.isSpecificTypesMapMatch()) )
         {
             return matchingSpecs.get(0);
         }

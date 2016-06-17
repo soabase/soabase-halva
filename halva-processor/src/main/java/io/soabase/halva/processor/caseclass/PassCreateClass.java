@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.processor.Pass;
 import io.soabase.halva.tuple.ClassTuplable;
@@ -15,13 +16,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-class Pass2CreateClass implements Pass
+class PassCreateClass implements Pass
 {
     private final Environment environment;
     private final List<CaseClassSpec> specs;
     private final Templates templates;
 
-    Pass2CreateClass(Environment environment, List<CaseClassSpec> specs)
+    PassCreateClass(Environment environment, List<CaseClassSpec> specs)
     {
         this.environment = environment;
         this.specs = specs;
@@ -52,8 +53,8 @@ class Pass2CreateClass implements Pass
             .addSuperinterface(ClassTuplable.class)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
-        Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder, spec.getAnnotatedElement());
-        boolean isCaseObject = spec.getAnnotationReader().getName().equals("CaseObject");
+        Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, spec.getAnnotatedElement().getTypeParameters());
+        boolean isCaseObject = spec.getAnnotationReader().getName().equals(CaseObject.class.getSimpleName());
         boolean json = spec.getAnnotationReader().getBoolean("json");
         if ( json )
         {

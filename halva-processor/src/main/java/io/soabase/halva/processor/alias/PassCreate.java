@@ -26,12 +26,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class Pass2Create implements Pass
+class PassCreate implements Pass
 {
     private final Environment environment;
     private final List<AliasSpec> specs;
 
-    Pass2Create(Environment environment, List<AliasSpec> specs)
+    PassCreate(Environment environment, List<AliasSpec> specs)
     {
         this.environment = environment;
         this.specs = specs;

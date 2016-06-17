@@ -2,6 +2,7 @@ package io.soabase.halva.processor.caseclass;
 
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseClassMutable;
+import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.processor.Pass;
 import io.soabase.halva.processor.WorkItem;
@@ -14,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-class Pass1Analyze implements Pass
+class PassAnalyze implements Pass
 {
     private final Environment environment;
     private final List<WorkItem> workItems;
 
-    Pass1Analyze(Environment environment, List<WorkItem> workItems)
+    PassAnalyze(Environment environment, List<WorkItem> workItems)
     {
         this.environment = environment;
         this.workItems = workItems;
@@ -39,7 +40,7 @@ class Pass1Analyze implements Pass
                     break;
                 }
 
-                List<CaseClassItem> caseClassItems = new ArrayList<CaseClassItem>();
+                List<CaseClassItem> caseClassItems = new ArrayList<>();
                 TypeElement typeElement = (TypeElement)element;
                 typeElement.getEnclosedElements().forEach(child -> {
                     do
@@ -57,16 +58,16 @@ class Pass1Analyze implements Pass
                                 break;
                             }
                             environment.error(element, "Non-CaseClass/CaseObject methods must have a default implementation");
-                            break;  // TODO
+                            break;
                         }
 
                         boolean mutable = (executable.getAnnotation(CaseClassMutable.class) != null);
-                        if ( item.getAnnotationReader().getName().equals("CaseObject") )
+                        if ( item.getAnnotationReader().getName().equals(CaseObject.class.getSimpleName()) )
                         {
                             if ( mutable )
                             {
                                 environment.error(element, "@CaseClassMutable cannot be used with @CaseObject");
-                                break;  // TODO
+                                break;
                             }
                             break;
                         }
@@ -75,7 +76,7 @@ class Pass1Analyze implements Pass
                             if ( executable.getReturnType().getKind() == TypeKind.VOID )
                             {
                                 environment.error(element, "@CaseClass/CaseObject methods cannot return void");
-                                break;  // TODO
+                                break;
                             }
                         }
 
@@ -87,6 +88,6 @@ class Pass1Analyze implements Pass
                 specs.add(new CaseClassSpec(typeElement, item.getAnnotationReader(), caseClassItems));
             } while ( false );
         });
-        return Optional.of(new Pass2CreateClass(environment, specs));
+        return Optional.of(new PassCreateClass(environment, specs));
     }
 }

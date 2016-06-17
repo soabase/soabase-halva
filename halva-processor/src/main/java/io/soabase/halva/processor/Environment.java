@@ -6,11 +6,14 @@ import com.squareup.javapoet.TypeVariableName;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public interface Environment
 {
@@ -32,5 +35,7 @@ public interface Environment
 
     void createSourceFile(String packageName, ClassName templateQualifiedClassName, ClassName generatedQualifiedClassName, String annotationType, TypeSpec.Builder builder, TypeElement element);
 
-    Optional<List<TypeVariableName>> addTypeVariableNames(TypeSpec.Builder builder, TypeElement element);
+    Optional<List<TypeVariableName>> addTypeVariableNames(Consumer<List<TypeVariableName>> applier, List<? extends TypeParameterElement> elements);
+
+    DeclaredType typeOfFieldOrMethod(Element element);
 }

@@ -23,9 +23,13 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -63,6 +67,7 @@ public abstract class Processor extends AbstractProcessor
         Optional<Pass> pass = passFactory.firstPass(internalEnvironment, workItems);
         while ( pass.isPresent() )
         {
+            internalEnvironment.debug(getClass().getSimpleName() + " " + pass.getClass().getSimpleName());
             pass = pass.get().process();
         }
         return true;
@@ -163,9 +168,9 @@ public abstract class Processor extends AbstractProcessor
             }
 
             @Override
-            public Optional<List<TypeVariableName>> addTypeVariableNames(TypeSpec.Builder builder, TypeElement element)
+            public Optional<List<TypeVariableName>> addTypeVariableNames(Consumer<List<TypeVariableName>> applier, List<? extends TypeParameterElement> elements)
             {
-                return Processor.addTypeVariableNames(builder::addTypeVariables, element.getTypeParameters());
+                return Processor.addTypeVariableNames(applier, elements);
             }
 
             @Override
@@ -195,6 +200,21 @@ public abstract class Processor extends AbstractProcessor
                     }
                     error(element, message);
                 }
+            }
+
+            @Override
+            public DeclaredType typeOfFieldOrMethod(Element element)
+            {
+                if ( element.getKind() == ElementKind.METHOD )
+                {
+                    return (DeclaredType)((ExecutableElement)element).getReturnType();
+                }
+                TypeMirror type = element.asType();
+                if ( type instanceof DeclaredType )
+                {
+                    return (DeclaredType)type;
+                }
+                throw new IllegalArgumentException("Cannot convert to DeclaredType: " + element);
             }
         };
     }

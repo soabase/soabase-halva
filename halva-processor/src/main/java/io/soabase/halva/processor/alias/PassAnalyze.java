@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-class Pass1Analyze implements Pass
+class PassAnalyze implements Pass
 {
     private final Environment environment;
     private final List<WorkItem> workItems;
 
-    Pass1Analyze(Environment environment, List<WorkItem> workItems)
+    PassAnalyze(Environment environment, List<WorkItem> workItems)
     {
         this.environment = environment;
         this.workItems = workItems;
@@ -53,6 +53,6 @@ class Pass1Analyze implements Pass
                 specs.add(new AliasSpec(typeElement, item.getAnnotationReader(), (DeclaredType)parentType));
             } while ( false );
         });
-        return Optional.of(new Pass2Create(environment, specs));
+        return Optional.of(new PassCreate(environment, specs));
     }
 }

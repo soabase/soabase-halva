@@ -12,6 +12,6 @@ class CaseClassPassFactory implements PassFactory
     @Override
     public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
     {
-        return Optional.of(new Pass1Analyze(environment, workItems));
+        return Optional.of(new PassAnalyze(environment, workItems));
     }
 }

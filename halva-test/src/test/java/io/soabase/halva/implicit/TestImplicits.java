@@ -42,7 +42,7 @@ public class TestImplicits
         Assert.assertEquals("dog: 10", base.getExtraString(10));
         Assert.assertEquals(System.currentTimeMillis() / 10000, base.getTime() / 10000);
     }
-
+/*
     // from http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html ........
 
     interface SemiGroup<A>
@@ -207,4 +207,5 @@ public class TestImplicits
     }
 
     // ......................
+*/
 }

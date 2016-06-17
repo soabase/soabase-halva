@@ -296,7 +296,7 @@ class Templates
                     {
                         if ( specificTypesMap.containsKey(getSpecificTypesMapKey(compareType)) )
                         {
-                            item.set(new ContextItem(element, true));
+                            item.set(new ContextItem(element, null, true));
                             return true;
                         }
                     }

@@ -17,7 +17,7 @@ package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import javax.annotation.processing.ProcessingEnvironment;
+import io.soabase.halva.processor.Environment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 class Initializers
 {
-    private final ProcessingEnvironment processingEnv;
+    private final Environment environment;
 
     private static class FormattedClassName
     {
@@ -82,9 +82,9 @@ class Initializers
         specials = Collections.unmodifiableMap(worker);
     }
 
-    Initializers(ProcessingEnvironment processingEnv)
+    Initializers(Environment environment)
     {
-        this.processingEnv = processingEnv;
+        this.environment = environment;
     }
 
     void addTo(CodeBlock.Builder codeBuilder, CaseClassSpec spec, CaseClassItem item)
@@ -106,7 +106,7 @@ class Initializers
 
                 try
                 {
-                    PrimitiveType unboxedType = processingEnv.getTypeUtils().unboxedType(item.getType());
+                    PrimitiveType unboxedType = environment.getTypeUtils().unboxedType(item.getType());
                     builder.addStatement("$L = $L", item.getName(), (unboxedType.getKind() == TypeKind.BOOLEAN) ? "false" : "0");
                     break;
                 }
@@ -115,7 +115,7 @@ class Initializers
                     // ignore
                 }
 
-                String erasedTypeName = processingEnv.getTypeUtils().erasure(item.getType()).toString();
+                String erasedTypeName = environment.getTypeUtils().erasure(item.getType()).toString();
                 FormattedClassName special = specials.get(erasedTypeName);
                 if ( special != null )
                 {
@@ -123,7 +123,7 @@ class Initializers
                 }
                 else
                 {
-                    Element element = processingEnv.getTypeUtils().asElement(item.getType());
+                    Element element = environment.getTypeUtils().asElement(item.getType());
                     if ( hasNoArgConstructor(element) )
                     {
                         builder.addStatement("$L = new $L()", item.getName(), element.getSimpleName());

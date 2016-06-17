@@ -16,7 +16,6 @@
 package io.soabase.halva.caseclass;
 
 import com.company.Example;
-import com.company.ExampleObjectCase;
 import org.junit.Assert;
 import org.junit.Test;
 

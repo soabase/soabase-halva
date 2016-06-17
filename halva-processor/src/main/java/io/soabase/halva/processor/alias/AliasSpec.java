@@ -15,35 +15,31 @@
  */
 package io.soabase.halva.processor.alias;
 
-import io.soabase.halva.processor.SpecBase;
+import io.soabase.halva.processor.AnnotationReader;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
-class AliasSpec implements SpecBase
+class AliasSpec
 {
     private final TypeElement typeElement;
+    private final AnnotationReader annotationReader;
     private final DeclaredType parameterizedType;
 
-    AliasSpec()
+    AliasSpec(TypeElement typeElement, AnnotationReader annotationReader, DeclaredType parameterizedType)
     {
-        this(null, null);
-    }
-
-    AliasSpec(TypeElement typeElement, DeclaredType parameterizedType)
-    {
-
         this.typeElement = typeElement;
+        this.annotationReader = annotationReader;
         this.parameterizedType = parameterizedType;
     }
 
-    boolean isValid()
-    {
-        return typeElement != null;
-    }
-
-    public TypeElement getAnnotatedElement()
+    TypeElement getAnnotatedElement()
     {
         return typeElement;
+    }
+
+    AnnotationReader getAnnotationReader()
+    {
+        return annotationReader;
     }
 
     DeclaredType getParameterizedType()

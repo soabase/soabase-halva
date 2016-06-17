@@ -1,18 +1,3 @@
-/**
- * Copyright 2016 Jordan Zimmerman
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.soabase.halva.processor.alias;
 
 import com.squareup.javapoet.ClassName;
@@ -23,9 +8,11 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.any.AnyType;
-import javax.annotation.processing.ProcessingEnvironment;
+import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.Pass;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -33,19 +20,52 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class Templates
+class Pass2Create implements Pass
 {
-    private final ProcessingEnvironment processingEnv;
+    private final Environment environment;
+    private final List<AliasSpec> specs;
 
-    Templates(ProcessingEnvironment processingEnv)
+    Pass2Create(Environment environment, List<AliasSpec> specs)
     {
-        this.processingEnv = processingEnv;
+        this.environment = environment;
+        this.specs = specs;
     }
 
-    void addTypeAliasType(TypeSpec.Builder builder, ClassName aliasClassName, DeclaredType parentType)
+    @Override
+    public Optional<Pass> process()
+    {
+        specs.forEach(this::buildFromSpec);
+        return Optional.empty();
+    }
+
+    private void buildFromSpec(AliasSpec spec)
+    {
+        TypeElement typeElement = spec.getAnnotatedElement();
+        String packageName = environment.getPackage(typeElement);
+        ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
+        ClassName aliasQualifiedClassName = ClassName.get(packageName, environment.getCaseClassSimpleName(typeElement, spec.getAnnotationReader()));
+
+        environment.log("Generating TypeAlias for " + templateQualifiedClassName + " as " + aliasQualifiedClassName);
+
+        Collection<Modifier> modifiers = environment.getModifiers(typeElement);
+        TypeName baseTypeName = ClassName.get(spec.getParameterizedType());
+
+        TypeSpec.Builder builder = TypeSpec.interfaceBuilder(aliasQualifiedClassName)
+            .addSuperinterface(baseTypeName)
+            .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
+
+        addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
+        addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
+        environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getSimpleName(), builder, typeElement);
+    }
+
+    private void addTypeAliasType(TypeSpec.Builder builder, ClassName aliasClassName, DeclaredType parentType)
     {
         TypeName parentTypeName = ClassName.get(parentType);
         ClassName typeAliasTypeName = ClassName.get(TypeAliasType.class);
@@ -92,7 +112,7 @@ class Templates
         TypeSpec.Builder builder = TypeSpec.anonymousClassBuilder("")
             .addSuperinterface(aliasClassName);
 
-        processingEnv.getElementUtils().getAllMembers((TypeElement)parentType.asElement()).forEach(element -> {
+        environment.getElementUtils().getAllMembers((TypeElement)parentType.asElement()).forEach(element -> {
             if ( element.getKind() == ElementKind.METHOD )
             {
                 ExecutableElement method = (ExecutableElement)element;
@@ -117,7 +137,7 @@ class Templates
                     {
                         codeBlockBuilder.addStatement("return instance.$L($L)", method.getSimpleName(), arguments);
                     }
-                    MethodSpec methodSpec = MethodSpec.overriding(method, parentType, processingEnv.getTypeUtils())
+                    MethodSpec methodSpec = MethodSpec.overriding(method, parentType, environment.getTypeUtils())
                         .addCode(codeBlockBuilder.build())
                         .build();
                     builder.addMethod(methodSpec);

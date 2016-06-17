@@ -16,26 +16,34 @@
 package io.soabase.halva.processor.implicit;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.type.DeclaredType;
 
 class ContextItem
 {
     private final Element element;
+    private final DeclaredType type;
     private final boolean isSpecificTypesMapMatch;
 
     ContextItem()
     {
-        this(null, false);
+        this(null, null, false);
     }
 
-    ContextItem(Element element)
+    ContextItem(Element element, DeclaredType type)
     {
-        this(element, false);
+        this(element, type, false);
     }
 
-    ContextItem(Element element, boolean isSpecificTypesMapMatch)
+    ContextItem(Element element, DeclaredType type, boolean isSpecificTypesMapMatch)
     {
         this.element = element;
+        this.type = type;
         this.isSpecificTypesMapMatch = isSpecificTypesMapMatch;
+    }
+
+    DeclaredType getType()
+    {
+        return type;
     }
 
     Element getElement()

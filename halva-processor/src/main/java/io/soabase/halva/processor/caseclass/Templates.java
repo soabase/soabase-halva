@@ -17,10 +17,10 @@ package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
 import io.soabase.halva.processor.Constants;
+import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 import java.util.List;
@@ -32,9 +32,9 @@ class Templates
 {
     private final Initializers initializers;
 
-    Templates(ProcessingEnvironment processingEnv)
+    Templates(Environment environment)
     {
-        initializers = new Initializers(processingEnv);
+        initializers = new Initializers(environment);
     }
 
     void addField(CaseClassItem item, TypeSpec.Builder builder, TypeName type, boolean makeFinal, boolean makeVolatile, boolean json)

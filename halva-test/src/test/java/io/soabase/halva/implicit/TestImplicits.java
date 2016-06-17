@@ -20,6 +20,8 @@ import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static com.sun.tools.javac.jvm.ByteCodes.ret;
+import static com.sun.tools.javac.main.Option.G;
 import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestImplicits
@@ -41,7 +43,7 @@ public class TestImplicits
         Assert.assertEquals(System.currentTimeMillis() / 10000, base.getTime() / 10000);
     }
 
-    // from http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
+    // from http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html ........
 
     interface SemiGroup<A>
     {
@@ -56,6 +58,24 @@ public class TestImplicits
     @ImplicitContext
     public static class ImplicitTestContext
     {
+        @Implicit public static Monoid<Double> getDoubleMonoid(@Implicit Monoid<String> m)
+        {
+            return new Monoid<Double>()
+            {
+                @Override
+                public Double unit()
+                {
+                    return 0.0;
+                }
+
+                @Override
+                public Double add(Double x, Double y)
+                {
+                    return null;    // TBD
+                }
+            };
+        }
+
         @Implicit public static final Monoid<String> stringMonoid = new Monoid<String>()
         {
             @Override
@@ -106,4 +126,85 @@ public class TestImplicits
         Assert.assertEquals(new Integer(6), new SumImpl().sum(List(1, 2, 3), new AnyType<Monoid<Integer>>(){}));
         Assert.assertEquals("ABC", new SumImpl().sum(List("a", "b", "c"), new AnyType<Monoid<String>>(){}));
     }
+
+    // ......................
+
+    // from https://github.com/kralikba/scala-implicits - Representing data with types ...........
+
+    interface Joshua{}
+    interface Joe{}
+    interface Johann{}
+    interface Joshi{}
+
+    interface Son<S, F>{}
+
+    @ImplicitContext
+    public static class KralikbaContext
+    {
+        @Implicit public static final Son<Joshua, Joe> s0 = new Son<Joshua, Joe>(){};
+        @Implicit public static final Son<Joe, Johann> s1 = new Son<Joe, Johann>(){};
+        @Implicit public static final Son<Johann, Joshi> s2 = new Son<Johann, Joshi>(){};
+    }
+
+    @ImplicitClass
+    public static class Kralikba
+    {
+        // def sonOf[S,F](implicit ev : Son[S,F]) = ev
+        public <S, F> Son<S, F> sonOf(@Implicit Son<S, F> ev)
+        {
+            return ev;
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testKralikba()
+    {
+        KralikbaImpl kralikba = new KralikbaImpl();
+        Son<Joshua, Joe> joshuaJoeSon = kralikba.sonOf(new AnyType<Son<Joshua, Joe>>(){});
+        Assert.assertEquals(KralikbaContext.s0, joshuaJoeSon);
+        kralikba.sonOf(new AnyType<Son<Johann, Joe>>(){});  // throws NPE
+    }
+
+    // ......................
+
+    // from https://github.com/kralikba/scala-implicits - Composing implicits ...........
+
+    interface Father<F, S>{}
+
+    @ImplicitContext
+    public static class FatherContext
+    {
+        @Implicit public static <F, S> Father<F, S> father_evidence(@Implicit Son<S, F> ev)
+        {
+            return new Father<F, S>(){};
+        }
+    }
+
+    interface Grandfather<F, S>{}
+
+    @ImplicitContext
+    public static class GrandfatherContext
+    {
+        @Implicit public static <S, F, G> Grandfather<S, G> grandfather_evidence(@Implicit Father<F, S> ev_f, @Implicit Son<F, G> ev_s)
+        {
+            return new Grandfather<S, G>(){};
+        }
+    }
+
+    @ImplicitClass
+    public static class KralikbaComposing
+    {
+        public <S, G> Grandfather<S, G> sonOf(@Implicit Grandfather<S, G> ev)
+        {
+            return ev;
+        }
+    }
+
+    @Test
+    public void testKralikbaComposing()
+    {
+
+    }
+
+    // ......................
 }

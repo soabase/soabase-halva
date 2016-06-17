@@ -28,7 +28,6 @@ import io.soabase.halva.processor.ProcessorBase;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -95,7 +94,7 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
                         {
                             templates.getSpecificTypeMap(childType).put(childType, child);
                         }
-                        return new ContextItem(child);
+                        return new ContextItem(child, childType);
                     }
                 }
                 return ignoreContext;
@@ -180,7 +179,11 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
     @Override
     protected void buildClass(List<ImplicitPairSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, ImplicitPairSpec specPair)
     {
-        if ( specPair.getImplicitSpec() != null )
+        if ( specPair.getContextSpec() != null )
+        {
+            buildContextClass(templates, annotationReader, specPair.getContextSpec());
+        }
+        else
         {
             buildImplicitClass(previousSpecs, templates, annotationReader, specPair.getImplicitSpec());
         }
@@ -221,6 +224,24 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
         return true;
     }
 
+    private void buildContextClass(Templates templates, AnnotationReader annotationReader, ContextSpec spec)
+    {
+        if ( !spec.isValid() )
+        {
+            return;
+        }
+
+        if ( !spec.getItems().stream().anyMatch(item -> item.getType().getTypeArguments().size() > 0) )
+        {
+            return; // no generic implicits
+        }
+
+        TypeElement typeElement = spec.getAnnotatedElement();
+        String packageName = getPackage(typeElement);
+        ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
+        ClassName implicitQualifiedClassName = ClassName.get(packageName, getCaseClassSimpleName(typeElement, annotationReader.getString("suffix"), annotationReader.getString("unsuffix")));
+    }
+
     private void buildImplicitClass(List<ImplicitPairSpec> previousSpecs, Templates templates, AnnotationReader annotationReader, ImplicitSpec spec)
     {
         if ( !spec.isValid() )
@@ -239,11 +260,9 @@ public class ImplicitClassProcessor extends ProcessorBase<ImplicitPairSpec, Temp
         );
         specs.add(getImplicitContextItems(templates, typeElement, annotationReader));
 
-        Optional<? extends AnnotationMirror> implicitClassMirror = typeElement.getAnnotationMirrors().stream().filter(mirror -> mirror.getAnnotationType().toString().equals(ImplicitClass.class.getName())).findFirst();
-        ImplicitClass implicitClass = typeElement.getAnnotation(ImplicitClass.class);
         String packageName = getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName implicitQualifiedClassName = ClassName.get(packageName, getCaseClassSimpleName(typeElement, implicitClass.suffix(), implicitClass.unsuffix()));
+        ClassName implicitQualifiedClassName = ClassName.get(packageName, getCaseClassSimpleName(typeElement, annotationReader.getString("suffix"), annotationReader.getString("unsuffix")));
 
         log("Generating ImplicitClass for " + templateQualifiedClassName + " as " + implicitQualifiedClassName);
 

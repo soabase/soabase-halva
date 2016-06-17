@@ -26,12 +26,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class ImplicitValue
 {
     private final Environment environment;
+    private final GenericMapContext genericMapContext;
     private final List<ContextItem> contextItems;
     private final FoundImplicit foundImplicit;
 
-    ImplicitValue(Environment environment, List<ContextItem> contextItems, FoundImplicit foundImplicit)
+    ImplicitValue(Environment environment, GenericMapContext genericMapContext, List<ContextItem> contextItems, FoundImplicit foundImplicit)
     {
         this.environment = environment;
+        this.genericMapContext = genericMapContext;
         this.contextItems = contextItems;
         this.foundImplicit = foundImplicit;
     }
@@ -68,7 +70,7 @@ class ImplicitValue
         {
             ExecutableElement method = (ExecutableElement)element;
             AtomicBoolean isFirst = new AtomicBoolean(false);
-            CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build();
+            CodeBlock methodCode = new ImplicitMethod(environment, genericMapContext, method, contextItems).build();
             builder.add("$T.$L(", element.getEnclosingElement().asType(), element.getSimpleName());
             builder.add(methodCode);
             builder.add(")");

@@ -19,7 +19,6 @@ import io.soabase.halva.processor.AnnotationReader;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 class ContextItem
 {
@@ -27,7 +26,6 @@ class ContextItem
     private final AnnotationReader annotationReader;
     private final Element element;
     private final DeclaredType elementType;
-    private final AtomicBoolean mapClassBuilt = new AtomicBoolean(false);
 
     ContextItem(TypeElement classElement, AnnotationReader annotationReader, Element element, DeclaredType elementType)
     {
@@ -55,10 +53,5 @@ class ContextItem
     DeclaredType getElementType()
     {
         return elementType;
-    }
-
-    boolean mapClassNeedsBuilding()
-    {
-        return mapClassBuilt.compareAndSet(false, true);
     }
 }

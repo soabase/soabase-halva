@@ -44,7 +44,5 @@ public @interface ImplicitClass
      */
     String unsuffix() default "_";
 
-    Class[] implicitInterfaces() default {};
-
     Class[] limitContexts() default {};
 }

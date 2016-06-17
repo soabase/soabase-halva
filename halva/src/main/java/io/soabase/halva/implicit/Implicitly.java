@@ -15,9 +15,6 @@
  */
 package io.soabase.halva.implicit;
 
-import java.util.ArrayList;
-
-@ImplicitClass
-public class BaseClass extends ArrayList<String> implements Implicitly<ExtraMethods>
+public interface Implicitly<T>
 {
 }

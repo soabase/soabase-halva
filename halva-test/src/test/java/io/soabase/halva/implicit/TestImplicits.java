@@ -15,14 +15,8 @@
  */
 package io.soabase.halva.implicit;
 
-import io.soabase.halva.any.AnyType;
-import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static com.sun.tools.javac.jvm.ByteCodes.ret;
-import static com.sun.tools.javac.main.Option.G;
-import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestImplicits
 {

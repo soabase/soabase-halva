@@ -24,6 +24,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.implicit.ImplicitClass;
+import io.soabase.halva.implicit.Implicitly;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.processor.Pass;
 import javax.lang.model.element.Element;
@@ -31,6 +32,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.List;
@@ -70,7 +72,22 @@ class PassCreate implements Pass
         TypeSpec.Builder builder = TypeSpec.classBuilder(implicitQualifiedClassName)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]))
             ;
-        spec.getAnnotationReader().getClasses("implicitInterfaces").forEach(clazz -> addImplicitInterface(builder, clazz));
+
+        TypeMirror implicitlyType = environment.getTypeUtils().erasure(environment.getElementUtils().getTypeElement(Implicitly.class.getName()).asType());
+        typeElement.getInterfaces().forEach(iface -> {
+            if ( environment.getTypeUtils().isSameType(environment.getTypeUtils().erasure(iface), implicitlyType) )
+            {
+                DeclaredType declaredType = (DeclaredType)iface;
+                if ( declaredType.getTypeArguments().size() == 1 )
+                {
+                    addImplicitInterface(builder, declaredType.getTypeArguments().get(0));
+                }
+                else
+                {
+                    environment.error(typeElement, "Implicitly<> must have a type parameter");
+                }
+            }
+        });
 
         Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, spec.getAnnotatedElement().getTypeParameters());
         if ( typeVariableNames.isPresent() )
@@ -102,7 +119,7 @@ class PassCreate implements Pass
                 ExecutableElement implicitMethod = (ExecutableElement)implicitElement;
                 if ( foundImplicit.getElement().isPresent() )
                 {
-                    addImplicitItem(builder, foundImplicit, implicitMethod);
+                    addImplicitItem(builder, foundImplicit, implicitInterface, implicitMethod);
                 }
                 else
                 {
@@ -112,9 +129,18 @@ class PassCreate implements Pass
         });
     }
 
-    private void addImplicitItem(TypeSpec.Builder builder, FoundImplicit foundImplicit, ExecutableElement method)
+    private void addImplicitItem(TypeSpec.Builder builder, FoundImplicit foundImplicit, TypeMirror implicitInterface, ExecutableElement method)
     {
         MethodSpec.Builder methodSpecBuilder = MethodSpec.overriding(method);
+        if ( method.getReturnType().getKind() == TypeKind.TYPEVAR )
+        {
+            DeclaredType declaredType = (DeclaredType)implicitInterface;
+            if ( declaredType.getTypeArguments().size() == 1 )
+            {
+                methodSpecBuilder.returns(ClassName.get(declaredType.getTypeArguments().get(0)));
+            }
+        }
+
         CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
         if ( method.getReturnType().getKind() != TypeKind.VOID )
         {

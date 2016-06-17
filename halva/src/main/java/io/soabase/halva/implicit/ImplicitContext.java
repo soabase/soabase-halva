@@ -27,23 +27,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface ImplicitContext
 {
-    /**
-     * Suffix for the Implicit Context generic map. i.e. if the template is "Foo" the class is
-     * named "FooCase" (or whatever the suffix is)
-     *
-     * @return suffix
-     */
-    String suffix() default "Map";
-
-    /**
-     * If a non-empty string, is used instead of {@link #suffix()}. The
-     * Implicit Context generic map name is the name of the template <em>minus</em> the value
-     * of this attribute.
-     *
-     * @return string suffix to remove to produce the class name
-     */
-    String unsuffix() default "_";
-
     Class[] limits() default {};
     Class[] excludes() default {};
 }

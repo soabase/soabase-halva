@@ -33,45 +33,26 @@ class ConsListImpl<T> implements ConsList<T>
 
     ConsListImpl()
     {
-        this(Collections.unmodifiableList(new ArrayList<>()), null);
+        this(new ArrayList<>(), false);
     }
 
-    ConsListImpl(List<T> list)
+    ConsListImpl(List<T> list, boolean copy)
     {
-        this(wrapList(list), null);
+        this.list = wrapList(list, copy);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> List<T> wrapList(List<T> list)
+    private static <T> List<T> wrapList(List<T> list, boolean copy)
     {
         if ( list instanceof ConsListImpl )
         {
             return ((ConsListImpl)list).list;
         }
-        return Collections.unmodifiableList(new ArrayList<>(list));
-    }
-
-    ConsListImpl(Iterator<T> list)
-    {
-        this(null, list);
-    }
-
-    private ConsListImpl(List<T> list, Iterator<T> iterator)
-    {
-        if ( list == null )
+        if ( copy )
         {
-            if ( iterator == null )
-            {
-                throw new IllegalArgumentException("both list and iterator cannot be null");
-            }
-            List<T> worker = new ArrayList<>();
-            while ( iterator.hasNext() )
-            {
-                worker.add(iterator.next());
-            }
-            list = Collections.unmodifiableList(new ArrayList<>(worker));
+            list = new ArrayList<>(list);
         }
-        this.list = list;
+        return list;
     }
 
     @Override
@@ -79,7 +60,7 @@ class ConsListImpl<T> implements ConsList<T>
     {
         ArrayList<T> worker = new ArrayList<>(list);
         worker.addAll(rhs);
-        return new ConsListImpl<>(worker, null);
+        return new ConsListImpl<>(worker, false);
     }
 
     @Override
@@ -88,7 +69,7 @@ class ConsListImpl<T> implements ConsList<T>
         ArrayList<T> worker = new ArrayList<>();
         worker.add(newHead);
         worker.addAll(list);
-        return new ConsListImpl<>(worker, null);
+        return new ConsListImpl<>(worker, false);
     }
 
     @Override
@@ -106,7 +87,7 @@ class ConsListImpl<T> implements ConsList<T>
     @Override
     public ConsList<T> tail()
     {
-        return new ConsListImpl<>(list.subList(1, size()), null);
+        return new ConsListImpl<>(list.subList(1, size()), false);
     }
 
     @Override
@@ -340,7 +321,7 @@ class ConsListImpl<T> implements ConsList<T>
     @Override
     public List<T> subList(int fromIndex, int toIndex)
     {
-        return new ConsListImpl<>(list.subList(fromIndex, toIndex));
+        return new ConsListImpl<>(list.subList(fromIndex, toIndex), false);
     }
 
     @Override

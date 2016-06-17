@@ -32,6 +32,19 @@ public class Sugar
         return lhs.concat(rhs);
     }
 
+    public static <T> ConsList<T> concat(T lhs, ConsList<T> rhs)
+    {
+        ArrayList<T> list = new ArrayList<>();
+        list.add(lhs);
+        list.addAll(rhs);
+        return new ConsListImpl<T>(list, false);
+    }
+
+    public static <T> ConsList<T> ConsList(List<T> list)
+    {
+        return new ConsListImpl<>(list, true);
+    }
+
     @SafeVarargs
     public static <T> ConsList<T> List(T... a)
     {
@@ -39,7 +52,7 @@ public class Sugar
         {
             return new ConsListImpl<>();
         }
-        return new ConsListImpl<>(Arrays.asList(a));
+        return new ConsListImpl<>(Arrays.asList(a), false);
     }
 
     @SafeVarargs

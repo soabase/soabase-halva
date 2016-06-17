@@ -31,14 +31,12 @@ import java.util.Optional;
 class PassProcessImplicits implements Pass
 {
     private final Environment environment;
-    private final GenericMapContext genericMapContext;
     private final List<WorkItem> implicitClassItems;
     private final List<ContextItem> contextItems;
 
-    PassProcessImplicits(Environment environment, GenericMapContext genericMapContext, List<WorkItem> implicitClassItems, List<ContextItem> contextItems)
+    PassProcessImplicits(Environment environment, List<WorkItem> implicitClassItems, List<ContextItem> contextItems)
     {
         this.environment = environment;
-        this.genericMapContext = genericMapContext;
         this.implicitClassItems = implicitClassItems;
         this.contextItems = contextItems;
     }
@@ -96,6 +94,6 @@ class PassProcessImplicits implements Pass
                 specs.add(new ImplicitSpec(typeElement, item.getAnnotationReader(), items));
             } while ( false );
         });
-        return Optional.of(new PassCreate(environment, genericMapContext, specs, contextItems));
+        return Optional.of(new PassCreate(environment, specs, contextItems));
     }
 }

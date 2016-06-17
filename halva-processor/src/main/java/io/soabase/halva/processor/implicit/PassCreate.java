@@ -43,14 +43,12 @@ import java.util.stream.Collectors;
 class PassCreate implements Pass
 {
     private final Environment environment;
-    private final GenericMapContext genericMapContext;
     private final List<ImplicitSpec> specs;
     private final List<ContextItem> contextItems;
 
-    PassCreate(Environment environment, GenericMapContext genericMapContext, List<ImplicitSpec> specs, List<ContextItem> contextItems)
+    PassCreate(Environment environment, List<ImplicitSpec> specs, List<ContextItem> contextItems)
     {
         this.environment = environment;
-        this.genericMapContext = genericMapContext;
         this.specs = specs;
         this.contextItems = contextItems;
     }
@@ -107,7 +105,7 @@ class PassCreate implements Pass
 
     private void addImplicitInterface(TypeSpec.Builder builder, TypeMirror implicitInterface)
     {
-        FoundImplicit foundImplicit = new ImplicitSearcher(environment, genericMapContext, contextItems).find(implicitInterface);
+        FoundImplicit foundImplicit = new ImplicitSearcher(environment, contextItems).find(implicitInterface);
         if ( foundImplicit == null )
         {
             return;
@@ -119,13 +117,13 @@ class PassCreate implements Pass
             if ( implicitElement.getKind() == ElementKind.METHOD )
             {
                 ExecutableElement implicitMethod = (ExecutableElement)implicitElement;
-                if ( foundImplicit.getElement().isPresent() )
+                if ( foundImplicit.isMultiItem() )
                 {
-                    addImplicitItem(builder, foundImplicit, implicitInterface, implicitMethod);
+                    environment.error(implicitElement, "No specific type found for Implicitly implemented interface: " + implicitInterface);
                 }
                 else
                 {
-                    environment.error(implicitElement, "No specific type found for Implicitly implemented interface: " + implicitInterface);
+                    addImplicitItem(builder, foundImplicit, implicitInterface, implicitMethod);
                 }
             }
         });
@@ -148,7 +146,8 @@ class PassCreate implements Pass
         {
             codeBlockBuilder.add("return ");
         }
-        codeBlockBuilder.add(new ImplicitValue(environment, genericMapContext, contextItems, foundImplicit).build());
+        ImplicitValue implicitValue = new ImplicitValue(environment, contextItems, foundImplicit);
+        codeBlockBuilder.add(implicitValue.build(method));
         codeBlockBuilder.add(".$L(", method.getSimpleName());
 
         AtomicBoolean isFirst = new AtomicBoolean(true);
@@ -167,7 +166,20 @@ class PassCreate implements Pass
     private void addItem(TypeSpec.Builder builder, ImplicitItem item)
     {
         ExecutableElement method = item.getExecutableElement();
-        MethodSpec.Builder methodSpecBuilder = (method.getKind() == ElementKind.CONSTRUCTOR) ? MethodSpec.constructorBuilder() : MethodSpec.methodBuilder(method.getSimpleName().toString());
+        ImplicitMethod implicitMethod = new ImplicitMethod(environment, method, contextItems);
+        if ( implicitMethod.hasMultiGenericMethods() )
+        {
+            implicitMethod.buildMultiGenericMethods().forEach(generic -> addStandardItem(builder, method, generic));
+        }
+        else
+        {
+            addStandardItem(builder, method, implicitMethod);
+        }
+    }
+
+    private void addStandardItem(TypeSpec.Builder builder, ExecutableElement method, ImplicitMethod implicitMethod)
+    {
+        MethodSpec.Builder methodSpecBuilder = (method.getKind() == ElementKind.CONSTRUCTOR) ? MethodSpec.constructorBuilder() : MethodSpec.methodBuilder(implicitMethod.getMethodName());
         methodSpecBuilder.addModifiers(method.getModifiers().stream().filter(m -> m != Modifier.ABSTRACT).collect(Collectors.toList()));
         if ( method.getReturnType().getKind() != TypeKind.VOID )
         {
@@ -189,10 +201,11 @@ class PassCreate implements Pass
             codeBlockBuilder.add("return super.$L(", method.getSimpleName());
         }
 
-        CodeBlock methodCode = new ImplicitMethod(environment, genericMapContext, method, contextItems).build(parameter -> {
-            ParameterSpec.Builder parameterSpec = ParameterSpec.builder(ClassName.get(parameter.asType()), parameter.getSimpleName().toString(), parameter.getModifiers().toArray(new javax.lang.model.element.Modifier[parameter.getModifiers().size()]));
+        implicitMethod.getNonImplicitParameters().forEach(parameter -> {
+            ParameterSpec.Builder parameterSpec = ParameterSpec.builder(ClassName.get(parameter.asType()), parameter.getSimpleName().toString(), parameter.getModifiers().toArray(new Modifier[parameter.getModifiers().size()]));
             methodSpecBuilder.addParameter(parameterSpec.build());
         });
+        CodeBlock methodCode = implicitMethod.build();
         codeBlockBuilder.add(methodCode);
         methodSpecBuilder.addCode(codeBlockBuilder.addStatement(")").build());
         builder.addMethod(methodSpecBuilder.build());

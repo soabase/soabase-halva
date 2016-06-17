@@ -33,13 +33,11 @@ import java.util.Optional;
 class PassProcessContexts implements Pass
 {
     private final Environment environment;
-    private final GenericMapContext genericMapContext;
     private final List<WorkItem> workItems;
 
-    PassProcessContexts(Environment environment, GenericMapContext genericMapContext, List<WorkItem> workItems)
+    PassProcessContexts(Environment environment, List<WorkItem> workItems)
     {
         this.environment = environment;
-        this.genericMapContext = genericMapContext;
         this.workItems = workItems;
     }
 
@@ -60,7 +58,7 @@ class PassProcessContexts implements Pass
         });
 
         List<ContextItem> contextItems = processContextItems(implicitContextItems);
-        return Optional.of(new PassProcessImplicits(environment, genericMapContext, implicitClassItems, contextItems));
+        return Optional.of(new PassProcessImplicits(environment, implicitClassItems, contextItems));
     }
 
     private List<ContextItem> processContextItems(List<WorkItem> implicitContextItems)

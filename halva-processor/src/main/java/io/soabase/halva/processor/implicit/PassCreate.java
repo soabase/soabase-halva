@@ -1,8 +1,9 @@
-package io.soabase.halva.processor.implicit2;
+package io.soabase.halva.processor.implicit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -10,13 +11,16 @@ import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.implicit.ImplicitClass;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.processor.Pass;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 class PassCreate implements Pass
@@ -51,7 +55,7 @@ class PassCreate implements Pass
         TypeSpec.Builder builder = TypeSpec.classBuilder(implicitQualifiedClassName)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]))
             ;
-        //spec.getAnnotationReader().getClasses("implicitInterfaces").forEach(clazz -> templates.addImplicitInterface(builder, clazz, specs));
+        spec.getAnnotationReader().getClasses("implicitInterfaces").forEach(clazz -> addImplicitInterface(builder, clazz));
 
         Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, spec.getAnnotatedElement().getTypeParameters());
         if ( typeVariableNames.isPresent() )
@@ -67,18 +71,67 @@ class PassCreate implements Pass
         environment.createSourceFile(packageName, templateQualifiedClassName, implicitQualifiedClassName, ImplicitClass.class.getSimpleName(), builder, typeElement);
     }
 
+    private void addImplicitInterface(TypeSpec.Builder builder, TypeMirror implicitInterface)
+    {
+        FoundImplicit foundImplicit = new ImplicitSearcher(environment, contextItems).find(implicitInterface);
+        if ( foundImplicit == null )
+        {
+            return;
+        }
+
+        builder.addSuperinterface(ClassName.get(implicitInterface));
+        Element classElement = environment.getTypeUtils().asElement(implicitInterface);
+        classElement.getEnclosedElements().forEach(implicitElement -> {
+            if ( implicitElement.getKind() == ElementKind.METHOD )
+            {
+                ExecutableElement implicitMethod = (ExecutableElement)implicitElement;
+                if ( foundImplicit.getElement().isPresent() )
+                {
+                    addImplicitItem(builder, foundImplicit, implicitMethod);
+                }
+                else
+                {
+                    // TODO
+                }
+            }
+        });
+    }
+
+    private void addImplicitItem(TypeSpec.Builder builder, FoundImplicit foundImplicit, ExecutableElement method)
+    {
+        MethodSpec.Builder methodSpecBuilder = MethodSpec.overriding(method);
+        CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
+        if ( method.getReturnType().getKind() != TypeKind.VOID )
+        {
+            codeBlockBuilder.add("return ");
+        }
+        codeBlockBuilder.add(new ImplicitValue(environment, contextItems, foundImplicit).build());
+        codeBlockBuilder.add(".$L(", method.getSimpleName());
+
+        AtomicBoolean isFirst = new AtomicBoolean(true);
+        method.getParameters().forEach(parameter -> {
+            if ( !isFirst.compareAndSet(true, false) )
+            {
+                codeBlockBuilder.add(", ");
+            }
+            codeBlockBuilder.add(parameter.getSimpleName().toString());
+        });
+
+        methodSpecBuilder.addCode(codeBlockBuilder.addStatement(")").build());
+        builder.addMethod(methodSpecBuilder.build());
+    }
+
     private void addItem(TypeSpec.Builder builder, ImplicitItem item)
     {
         ExecutableElement method = item.getExecutableElement();
         MethodSpec.Builder methodSpecBuilder = (method.getKind() == ElementKind.CONSTRUCTOR) ? MethodSpec.constructorBuilder() : MethodSpec.methodBuilder(method.getSimpleName().toString());
-        methodSpecBuilder.addModifiers(method.getModifiers());
+        methodSpecBuilder.addModifiers(method.getModifiers().stream().filter(m -> m != Modifier.ABSTRACT).collect(Collectors.toList()));
         if ( method.getReturnType().getKind() != TypeKind.VOID )
         {
             methodSpecBuilder.returns(ClassName.get(method.getReturnType()));
         }
-        environment.addTypeVariableNames(methodSpecBuilder::addTypeVariables, method.getTypeParameters());
-        CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
 
+        CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
         if ( method.getKind() == ElementKind.CONSTRUCTOR )
         {
             codeBlockBuilder.add("super(");
@@ -91,10 +144,13 @@ class PassCreate implements Pass
         {
             codeBlockBuilder.add("return super.$L(", method.getSimpleName());
         }
-        CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build();
+
+        CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build(parameter -> {
+            ParameterSpec.Builder parameterSpec = ParameterSpec.builder(ClassName.get(parameter.asType()), parameter.getSimpleName().toString(), parameter.getModifiers().toArray(new javax.lang.model.element.Modifier[parameter.getModifiers().size()]));
+            methodSpecBuilder.addParameter(parameterSpec.build());
+        });
         codeBlockBuilder.add(methodCode);
         methodSpecBuilder.addCode(codeBlockBuilder.addStatement(")").build());
-
         builder.addMethod(methodSpecBuilder.build());
     }
 }

@@ -1,9 +1,6 @@
-package io.soabase.halva.processor.implicit2;
+package io.soabase.halva.processor.implicit;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.ParameterSpec;
-import io.soabase.halva.implicit.Implicit;
 import io.soabase.halva.processor.Environment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;

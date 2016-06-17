@@ -1,4 +1,4 @@
-package io.soabase.halva.processor.implicit2;
+package io.soabase.halva.processor.implicit;
 
 import javax.lang.model.element.Element;
 import java.util.HashSet;

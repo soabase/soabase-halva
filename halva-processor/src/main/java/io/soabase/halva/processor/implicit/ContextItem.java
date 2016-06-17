@@ -15,35 +15,36 @@
  */
 package io.soabase.halva.processor.implicit;
 
+import io.soabase.halva.processor.AnnotationReader;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class ContextItem
 {
+    private final TypeElement classElement;
+    private final AnnotationReader annotationReader;
     private final Element element;
-    private final DeclaredType type;
-    private final boolean isSpecificTypesMapMatch;
+    private final DeclaredType elementType;
+    private final AtomicBoolean mapClassBuilt = new AtomicBoolean(false);
 
-    ContextItem()
+    ContextItem(TypeElement classElement, AnnotationReader annotationReader, Element element, DeclaredType elementType)
     {
-        this(null, null, false);
-    }
-
-    ContextItem(Element element, DeclaredType type)
-    {
-        this(element, type, false);
-    }
-
-    ContextItem(Element element, DeclaredType type, boolean isSpecificTypesMapMatch)
-    {
+        this.classElement = classElement;
+        this.annotationReader = annotationReader;
         this.element = element;
-        this.type = type;
-        this.isSpecificTypesMapMatch = isSpecificTypesMapMatch;
+        this.elementType = elementType;
     }
 
-    DeclaredType getType()
+    TypeElement getClassElement()
     {
-        return type;
+        return classElement;
+    }
+
+    AnnotationReader getAnnotationReader()
+    {
+        return annotationReader;
     }
 
     Element getElement()
@@ -51,13 +52,13 @@ class ContextItem
         return element;
     }
 
-    boolean isValid()
+    DeclaredType getElementType()
     {
-        return (element != null);
+        return elementType;
     }
 
-    boolean isSpecificTypesMapMatch()
+    boolean mapClassNeedsBuilding()
     {
-        return isSpecificTypesMapMatch;
+        return mapClassBuilt.compareAndSet(false, true);
     }
 }

@@ -1,4 +1,4 @@
-package io.soabase.halva.processor.implicit2;
+package io.soabase.halva.processor.implicit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -66,12 +66,14 @@ class ImplicitSearcher
             {
                 foundImplicits.add(new FoundImplicit(mapped));
             }
+            return null;
         }
 
         if ( foundImplicits.size() != 1 )
         {
             String message = (foundImplicits.size() == 0) ? "No matches found for implicit for " : "Multiple matches found for implicit for ";
             environment.error(environment.getTypeUtils().asElement(type), message + type);
+            return null;
         }
 
         return foundImplicits.get(0);

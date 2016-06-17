@@ -1,4 +1,4 @@
-package io.soabase.halva.processor.implicit2;
+package io.soabase.halva.processor.implicit;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -6,8 +6,10 @@ import com.squareup.javapoet.ParameterSpec;
 import io.soabase.halva.implicit.Implicit;
 import io.soabase.halva.processor.Environment;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 class ImplicitMethod
 {
@@ -24,6 +26,11 @@ class ImplicitMethod
 
     CodeBlock build()
     {
+        return build(p -> {});
+    }
+
+    CodeBlock build(Consumer<VariableElement> parameterAdded)
+    {
         CodeBlock.Builder builder = CodeBlock.builder();
         AtomicBoolean isFirst = new AtomicBoolean(false);
         method.getParameters().forEach(parameter -> {
@@ -39,8 +46,7 @@ class ImplicitMethod
             }
             else
             {
-                ParameterSpec.Builder parameterSpec = ParameterSpec.builder(ClassName.get(parameter.asType()), parameter.getSimpleName().toString(), parameter.getModifiers().toArray(new javax.lang.model.element.Modifier[parameter.getModifiers().size()]));
-                //  builder.addParameter(parameterSpec.build()); TODO
+                parameterAdded.accept(parameter);
                 builder.add(parameter.getSimpleName().toString());
             }
         });

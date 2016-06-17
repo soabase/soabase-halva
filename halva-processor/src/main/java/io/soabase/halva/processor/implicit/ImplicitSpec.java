@@ -15,30 +15,28 @@
  */
 package io.soabase.halva.processor.implicit;
 
-import io.soabase.halva.processor.SpecBase;
+import io.soabase.halva.processor.AnnotationReader;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class ImplicitSpec implements SpecBase
+class ImplicitSpec
 {
     private final TypeElement typeElement;
+    private final AnnotationReader annotationReader;
     private final List<ImplicitItem> items;
 
-    ImplicitSpec()
+    ImplicitSpec(TypeElement typeElement, AnnotationReader annotationReader, List<ImplicitItem> items)
     {
-        this(null, null);
+        this.typeElement = typeElement;
+        this.annotationReader = annotationReader;
+        this.items = Collections.unmodifiableList(new ArrayList<>(items));
     }
 
-    ImplicitSpec(TypeElement typeElement, List<ImplicitItem> items)
+    AnnotationReader getAnnotationReader()
     {
-        if ( items == null )
-        {
-            items = new ArrayList<>();
-        }
-        this.typeElement = typeElement;
-        this.items = Collections.unmodifiableList(new ArrayList<>(items));
+        return annotationReader;
     }
 
     List<ImplicitItem> getItems()
@@ -46,14 +44,8 @@ class ImplicitSpec implements SpecBase
         return items;
     }
 
-    @Override
-    public TypeElement getAnnotatedElement()
+    TypeElement getAnnotatedElement()
     {
         return typeElement;
-    }
-
-    boolean isValid()
-    {
-        return typeElement != null;
     }
 }

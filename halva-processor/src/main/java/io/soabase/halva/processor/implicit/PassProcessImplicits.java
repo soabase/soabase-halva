@@ -1,4 +1,4 @@
-package io.soabase.halva.processor.implicit2;
+package io.soabase.halva.processor.implicit;
 
 import io.soabase.halva.implicit.Implicit;
 import io.soabase.halva.processor.Environment;

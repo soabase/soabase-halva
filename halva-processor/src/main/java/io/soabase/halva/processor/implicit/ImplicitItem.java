@@ -15,29 +15,32 @@
  */
 package io.soabase.halva.processor.implicit;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 
 class ImplicitItem
 {
     private final ExecutableElement executableElement;
-
-    ImplicitItem()
-    {
-        this(null);
-    }
+    private final FoundImplicit foundImplicit;
 
     ImplicitItem(ExecutableElement executableElement)
     {
+        this(null, executableElement);
+    }
+
+    ImplicitItem(FoundImplicit foundImplicit, ExecutableElement executableElement)
+    {
+        this.foundImplicit = foundImplicit;
         this.executableElement = executableElement;
+    }
+
+    FoundImplicit getFoundImplicit()
+    {
+        return foundImplicit;
     }
 
     ExecutableElement getExecutableElement()
     {
         return executableElement;
-    }
-
-    boolean isValid()
-    {
-        return executableElement != null;
     }
 }

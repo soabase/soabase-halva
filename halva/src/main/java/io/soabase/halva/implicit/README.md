@@ -15,7 +15,7 @@ Halva supports Scala's Implicit injections, though with important differences. I
 
 In Scala, implicits are injected at the *call site* - the Scala compiler statically analyzes the code and if an implicit is required, the current scope is checked for an available implicit. If one is available, the Scala compiler re-writes the call site to use the implicit value. Halva cannot support this without bytecode writing of some kind. As Halva is committed to using "plain old" Java a different method was chosen.
 
-Halva uses context based implicits and generated implicit classes. A class that is to receive implicits is annotated with `@ImplicitClass`. Parameters can then me annotated with `@Implicit` to receive implicit injections at compile time. Your ImplicitClass can also implement `Implicitly<T>` to have an implicit interface applied. The Halva Annotation Processor generates an implementation that contains the implicit injections. Candidate injections come from classes annotated with `@ImplicitContext`. 
+Halva uses context based implicits and generated implicit classes. A class that is to receive implicits is annotated with `@ImplicitClass`. Parameters can then be annotated with `@Implicit` to receive implicit injections at compile time. Your ImplicitClass can also implement `Implicitly<T>` to have an implicit interface applied. The Halva Annotation Processor generates an implementation that contains the implicit injections. Candidate injections come from classes annotated with `@ImplicitContext`. 
 
 ### Definitions
 
@@ -60,7 +60,7 @@ This template informs Halva that the generated class should implement `Supplier<
 
 #### ImplicitContext
 
-Classes annotated with `@ImplicitContext` provide the potential implicit injections for `@ImplicitClass`es. A class annotated with `@ImplicitContext` can contain public static fields or methods that are annotated with `@Implicit`. When an implicit parameter or interface is needed of a specific type, the Implicit Contexts are searched for candidates. E.g.
+Classes annotated with `@ImplicitContext` provide the potential implicit injections for `@ImplicitClass` templates. A class annotated with `@ImplicitContext` can contain public static fields or methods that are annotated with `@Implicit`. When an implicit parameter or interface is needed of a specific type, the Implicit Contexts are searched for candidates. E.g.
 
 ```java
 @ImplicitContext
@@ -75,9 +75,10 @@ The above implicit context defines an instance of `SomeOtherClass`. If an Implic
 
 #### Limits/Includes/Excludes
 
-Because Halva does not use call-site implicits, another method is provided to limit the scope of which implicits are applied. The `@ImplicitClass` annotation has the `limitContexts` attribute and the `@ImplicitContext` annotation has the `limits` and `excludes` annotations. These combine to control injection candidates. The attributes only apply when they are non empty (the default).
+Because Halva does not use call-site implicits, another method is provided to limit the scope of which implicits are applied. The `@ImplicitClass` annotation has the `limitContexts` and `excludeContexts` attributes and the `@ImplicitContext` annotation has the `limits` and `excludes` attributes. These combine to control injection candidates. The attributes only apply when they are non empty (the default).
 
 * ImplicitClass.limitContexts - only the listed context classes will be considered when searching for implicit injections
+* ImplicitClass.excludeContexts - all *but* the listed context classes will be considered when searching for implicit injections
 * ImplicitContext.limits - the context only applies to the listed implicit classes
 * ImplicitContext.excludes - the context applies to all *but* the listed implicit classes
 
@@ -135,7 +136,7 @@ public class MyClassImpl implements Supplier<List<String>> {
     ...
     
     public List<String> get() {
-        return InterfaceProvider.stringSupplier;
+        return InterfaceProvider.stringSupplier.get();
     }
 }
 ```

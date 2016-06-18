@@ -68,3 +68,14 @@ public void MyImplicits {
 ```
 
 The above implicit context defines an instance of `SomeOtherClass`. If an Implicit Class requires an implicit instance of `SomeOtherClass`, a reference to `MyImplicits.implicitSomeOtherClass` will be injected.
+
+### Details
+
+#### Limits/Includes/Excludes
+
+Because Halva does not use call-site implicits, another method is provided to limit the scope of which implicits are applied. The `@ImplicitClass` annotation has the `limitContexts` attribute and the `@ImplicitContext` annotation has the `limits` and `excludes` annotations. These combine to control injection candidates. The attributes only apply when they are non empty (the default).
+
+* ImplicitClass.limitContexts - only the listed class will be considered for implicit injection
+* ImplicitContext.limits - the context only applies to the listed implicit classes
+* ImplicitContext.excludes - the context applies to all *but* the listed implicit classes
+

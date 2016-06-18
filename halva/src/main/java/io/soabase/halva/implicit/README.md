@@ -75,9 +75,10 @@ The above implicit context defines an instance of `SomeOtherClass`. If an Implic
 
 #### Limits/Includes/Excludes
 
-Because Halva does not use call-site implicits, another method is provided to limit the scope of which implicits are applied. The `@ImplicitClass` annotation has the `limitContexts` attribute and the `@ImplicitContext` annotation has the `limits` and `excludes` annotations. These combine to control injection candidates. The attributes only apply when they are non empty (the default).
+Because Halva does not use call-site implicits, another method is provided to limit the scope of which implicits are applied. The `@ImplicitClass` annotation has the `limitContexts` and `excludeContexts` attributes and the `@ImplicitContext` annotation has the `limits` and `excludes` attributes. These combine to control injection candidates. The attributes only apply when they are non empty (the default).
 
 * ImplicitClass.limitContexts - only the listed context classes will be considered when searching for implicit injections
+* ImplicitClass.excludeContexts - all *but* the listed context classes will be considered when searching for implicit injections
 * ImplicitContext.limits - the context only applies to the listed implicit classes
 * ImplicitContext.excludes - the context applies to all *but* the listed implicit classes
 

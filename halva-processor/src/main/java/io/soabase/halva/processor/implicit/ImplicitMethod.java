@@ -27,14 +27,12 @@ import java.util.function.Consumer;
 class ImplicitMethod
 {
     private final Environment environment;
-    private final GenericMapContext genericMapContext;
     private final ExecutableElement method;
     private final List<ContextItem> contextItems;
 
-    ImplicitMethod(Environment environment, GenericMapContext genericMapContext, ExecutableElement method, List<ContextItem> contextItems)
+    ImplicitMethod(Environment environment, ExecutableElement method, List<ContextItem> contextItems)
     {
         this.environment = environment;
-        this.genericMapContext = genericMapContext;
         this.method = method;
         this.contextItems = contextItems;
     }
@@ -55,8 +53,8 @@ class ImplicitMethod
             }
             if ( parameter.getAnnotation(Implicit.class) != null )
             {
-                FoundImplicit foundImplicit = new ImplicitSearcher(environment, genericMapContext, contextItems).find(parameter.asType());
-                CodeBlock value = new ImplicitValue(environment, genericMapContext, contextItems, foundImplicit).build();
+                FoundImplicit foundImplicit = new ImplicitSearcher(environment, contextItems).find(parameter.asType());
+                CodeBlock value = new ImplicitValue(environment, contextItems, foundImplicit).build();
                 builder.add(value);
             }
             else

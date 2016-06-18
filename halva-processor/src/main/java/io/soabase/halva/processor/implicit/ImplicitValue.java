@@ -26,14 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class ImplicitValue
 {
     private final Environment environment;
-    private final GenericMapContext genericMapContext;
     private final List<ContextItem> contextItems;
     private final FoundImplicit foundImplicit;
 
-    ImplicitValue(Environment environment, GenericMapContext genericMapContext, List<ContextItem> contextItems, FoundImplicit foundImplicit)
+    ImplicitValue(Environment environment, List<ContextItem> contextItems, FoundImplicit foundImplicit)
     {
         this.environment = environment;
-        this.genericMapContext = genericMapContext;
         this.contextItems = contextItems;
         this.foundImplicit = foundImplicit;
     }
@@ -43,14 +41,7 @@ class ImplicitValue
         CodeBlock.Builder builder = CodeBlock.builder();
         if ( foundImplicit != null )
         {
-            if ( foundImplicit.getElement().isPresent() )
-            {
-                addDirectValue(builder);
-            }
-            else
-            {
-                // TODO
-            }
+            addDirectValue(builder);
         }
         else
         {
@@ -61,7 +52,7 @@ class ImplicitValue
 
     private void addDirectValue(CodeBlock.Builder builder)
     {
-        Element element = foundImplicit.getElement().get();
+        Element element = foundImplicit.getElement();
         if ( element.getKind() == ElementKind.FIELD )
         {
             builder.add("$T.$L", element.getEnclosingElement().asType(), element.getSimpleName());
@@ -70,7 +61,7 @@ class ImplicitValue
         {
             ExecutableElement method = (ExecutableElement)element;
             AtomicBoolean isFirst = new AtomicBoolean(false);
-            CodeBlock methodCode = new ImplicitMethod(environment, genericMapContext, method, contextItems).build();
+            CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build();
             builder.add("$T.$L(", element.getEnclosingElement().asType(), element.getSimpleName());
             builder.add(methodCode);
             builder.add(")");

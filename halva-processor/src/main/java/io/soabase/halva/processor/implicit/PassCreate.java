@@ -43,14 +43,12 @@ import java.util.stream.Collectors;
 class PassCreate implements Pass
 {
     private final Environment environment;
-    private final GenericMapContext genericMapContext;
     private final List<ImplicitSpec> specs;
     private final List<ContextItem> contextItems;
 
-    PassCreate(Environment environment, GenericMapContext genericMapContext, List<ImplicitSpec> specs, List<ContextItem> contextItems)
+    PassCreate(Environment environment, List<ImplicitSpec> specs, List<ContextItem> contextItems)
     {
         this.environment = environment;
-        this.genericMapContext = genericMapContext;
         this.specs = specs;
         this.contextItems = contextItems;
     }
@@ -107,7 +105,7 @@ class PassCreate implements Pass
 
     private void addImplicitInterface(TypeSpec.Builder builder, TypeMirror implicitInterface)
     {
-        FoundImplicit foundImplicit = new ImplicitSearcher(environment, genericMapContext, contextItems).find(implicitInterface);
+        FoundImplicit foundImplicit = new ImplicitSearcher(environment, contextItems).find(implicitInterface);
         if ( foundImplicit == null )
         {
             return;
@@ -119,14 +117,7 @@ class PassCreate implements Pass
             if ( implicitElement.getKind() == ElementKind.METHOD )
             {
                 ExecutableElement implicitMethod = (ExecutableElement)implicitElement;
-                if ( foundImplicit.getElement().isPresent() )
-                {
-                    addImplicitItem(builder, foundImplicit, implicitInterface, implicitMethod);
-                }
-                else
-                {
-                    environment.error(implicitElement, "No specific type found for Implicitly implemented interface: " + implicitInterface);
-                }
+                addImplicitItem(builder, foundImplicit, implicitInterface, implicitMethod);
             }
         });
     }
@@ -148,7 +139,7 @@ class PassCreate implements Pass
         {
             codeBlockBuilder.add("return ");
         }
-        codeBlockBuilder.add(new ImplicitValue(environment, genericMapContext, contextItems, foundImplicit).build());
+        codeBlockBuilder.add(new ImplicitValue(environment, contextItems, foundImplicit).build());
         codeBlockBuilder.add(".$L(", method.getSimpleName());
 
         AtomicBoolean isFirst = new AtomicBoolean(true);
@@ -189,7 +180,7 @@ class PassCreate implements Pass
             codeBlockBuilder.add("return super.$L(", method.getSimpleName());
         }
 
-        CodeBlock methodCode = new ImplicitMethod(environment, genericMapContext, method, contextItems).build(parameter -> {
+        CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build(parameter -> {
             ParameterSpec.Builder parameterSpec = ParameterSpec.builder(ClassName.get(parameter.asType()), parameter.getSimpleName().toString(), parameter.getModifiers().toArray(new javax.lang.model.element.Modifier[parameter.getModifiers().size()]));
             methodSpecBuilder.addParameter(parameterSpec.build());
         });

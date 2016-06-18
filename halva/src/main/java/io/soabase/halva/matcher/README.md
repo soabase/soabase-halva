@@ -36,7 +36,7 @@ The full list of methods that `match` supports is:
 
 ### Extraction
 
-As the matcher executes, [Any](../any/) variables get loaded with exctracted values so that the proceeding lambdas can access them.
+As the matcher executes, [Any](../any/) variables get loaded with extracted values so that the proceeding lambdas can access them.
     
 E.g.
 
@@ -57,6 +57,7 @@ E.g.
 ```java
 @CaseClass public interface Animal{String name(); int age();}
 @CaseClass public interface Chair{int legQty(); int age();}
+@CaseClass public interface Person{String name(); int age();}
 
 public int findAnyAge(Object obj)
 {
@@ -72,6 +73,7 @@ public int findAnyAge(Object obj)
 findAnyAge(AnimalCase("Bobby", 14)) -- 14
 findAnyAge(ChairCase(2, 5)) -- 0 - not enough legs
 findAnyAge(ChairCase(3, 5)) -- 5
+findAnyAge(Person("Tom", 90)) -- 0 - not a chair or animal
 ```
 
 ### Partials

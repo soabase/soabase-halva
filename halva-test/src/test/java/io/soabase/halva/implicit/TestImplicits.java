@@ -15,8 +15,11 @@
  */
 package io.soabase.halva.implicit;
 
+import com.company.ExampleImplicitInterfaceImpl;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestImplicits
 {
@@ -35,5 +38,12 @@ public class TestImplicits
         BaseClassImpl base = new BaseClassImpl();
         Assert.assertEquals("dog: 10", base.getExtraString(10));
         Assert.assertEquals(System.currentTimeMillis() / 10000, base.getTime() / 10000);
+    }
+
+    @Test
+    public void testImplictlyPimpled()
+    {
+        ExampleImplicitInterfaceImpl example = new ExampleImplicitInterfaceImpl();
+        Assert.assertEquals(List("one", "two", "three"), example.get());
     }
 }

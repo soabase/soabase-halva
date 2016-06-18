@@ -43,4 +43,4 @@ From http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
 
 > A method with implicit parameters can be applied to arguments just like a normal method. In this case the implicit label has no effect. However, if such a method misses arguments for its implicit parameters, such arguments will be automatically provided.
 
-Implicits in Scala are a form of [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) that is statically done at compile time. Parameters, conversions and even Traits (interfaces) can be injected via implicits.
+Implicits in Scala are a form of [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) that is statically at compile time. Parameters, conversions and even Traits (interfaces) can be injected via implicits.

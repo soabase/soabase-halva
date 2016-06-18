@@ -20,7 +20,7 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 ### Features
 
 * [Case Classes and Case Objects](../../tree/master/halva/src/main/java/io/soabase/halva/caseclass/README.md)
-* [Pattern matching and extraction](../../tree/master/halva/src/main/java/io/soabase/halva/matcher/README.md)
+* [Pattern Matching and Extraction](../../tree/master/halva/src/main/java/io/soabase/halva/matcher/README.md)
 * [For Comprehensions](../../tree/master/halva/src/main/java/io/soabase/halva/comprehension/README.md)
 * [Implicits](../../tree/master/halva/src/main/java/io/soabase/halva/implicit/README.md)
 * [Type Aliases](../../tree/master/halva/src/main/java/io/soabase/halva/alias/README.md)

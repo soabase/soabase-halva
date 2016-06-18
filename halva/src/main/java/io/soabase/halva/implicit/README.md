@@ -108,3 +108,32 @@ public class MyClass {
 }
 ```
 
+#### Implicit Context for Implicit Interfaces
+
+When `Implicitly` is used to declare an implicit interface, the implementation is provided by searching applicable Implict Contexts. E.g.
+
+```java
+@ImplictContext
+public class InterfaceProvider {
+    @Implicit public static final Supplier<List<String>> stringSupplier = ...
+}
+
+...
+
+@ImplicitClass
+public class MyClass implements Implicitly<Supplier<List<String>>> {
+    ...
+}
+```
+
+Halva will generate a class named `MyClassImpl` that implements `Supplier<List<String>>`. The overloaded method will proxy to `InterfaceProvider`. The generated class will loosely look like this:
+
+```java
+public class MyClassImpl implements Supplier<List<String>> {
+    ...
+    
+    public List<String> get() {
+        return InterfaceProvider.stringSupplier;
+    }
+}
+```

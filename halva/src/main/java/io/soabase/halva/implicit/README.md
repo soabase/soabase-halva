@@ -15,11 +15,11 @@ In Scala, implicits are injection at the *call site* - the Scala compiler static
 
 Halva uses context based implicits and generated implicit classes. A class that is to receive implicits is annotated with `@ImplicitClass`. Parameters can then me annotated with `@Implicit` to receive implicit injections at compile time. Your ImplicitClass can also implement `Implicitly<T>` to have an implicit interface applied. The Halva Annotation Processor generates an implementation that contains the implicit injections. Candidate injections come from classes annotated with `@ImplicitContext`. 
 
-### Details
+### Definitions
 
 Implicits should be thought of as a simple compile-time dependency injection system. In Halva, annotations control the injection process.
 
-#### @ImplicitClass
+#### ImplicitClass
 
 To inject implicit parameters and/or implicitly implement an interface you first define an Implict Class template. This is a class that is annotated with `@ImplicitClass`. The class can extend or implement any other classes/interfaces as needed. The methods of the class (include methods of the constructor) can be annotation with `@Implicit` to declare that that parameter should be implicitly injected. The Halva Annotation Processor will generated a new class with all of the injections applied. The name of the generated class will be *OriginalName*Impl. However, if you were to name the annotated source class ending with an underscore _, the generated class wouild be named *OriginalName* (i.e. the original name minus the underscore). You can change these defaults with the ImplicitClass attributes suffix() and unsuffix().
 
@@ -58,4 +58,13 @@ This template informs Halva that the generated class should implement `Supplier<
 
 #### ImplicitContext
 
-TBD
+Classes annotated with `@ImplicitContext` provide the potential implicit injections for `@ImplicitClass`es. A class annotated with `@ImplicitContext` can contain public static fields or methods that are annotated with `@Implicit`. When an implicit parameter or interface is needed of a specific type, the Implicit Contexts are searched for candidates. E.g.
+
+```java
+@ImplicitContext
+public void MyImplicits {
+    @Implicit public static final SomeOtherClass implicitSomeOtherClass = new SomeOtherClass();
+}
+```
+
+The above implicit context defines an instance of `SomeOtherClass`. If an Implicit Class requires an implicit instance of `SomeOtherClass`, a reference to `MyImplicits.implicitSomeOtherClass` will be injected.

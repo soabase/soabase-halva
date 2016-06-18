@@ -17,7 +17,7 @@ In Scala, implicits are injected at the *call site* - the Scala compiler statica
 
 Halva uses context based implicits and generated implicit classes. A class that is to receive implicits is annotated with `@ImplicitClass`. Parameters can then be annotated with `@Implicit` to receive implicit injections at compile time. Your ImplicitClass can also implement `Implicitly<T>` to have an implicit interface applied. The Halva Annotation Processor generates an implementation that contains the implicit injections. Candidate injections come from classes annotated with `@ImplicitContext`. 
 
-### Definitions
+### Reference
 
 Implicits should be thought of as a simple compile-time dependency injection system. In Halva, annotations control the injection process.
 

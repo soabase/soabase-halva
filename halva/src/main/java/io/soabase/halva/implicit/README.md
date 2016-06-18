@@ -79,3 +79,32 @@ Because Halva does not use call-site implicits, another method is provided to li
 * ImplicitContext.limits - the context only applies to the listed implicit classes
 * ImplicitContext.excludes - the context applies to all *but* the listed implicit classes
 
+#### Field vs Method Implicit Contexts
+
+Implicit Contexts can define implicit injections either by public static field or public static method. A field is straightforward. A method, however, can itself request implicit injection. Like any other implicit injection all applicable contexts are searched for candidates. The new candidate can also be a method with injections and so on. E.g.
+
+```java
+@ImplicitContext
+public class MainInjections {
+    @Implicit public static final Supplier<List<String>> stringSupplier = ...
+}
+
+...
+
+@ImplicitContext
+public class MoreInjections {
+    @Implicit public static MyObject getMyObject(@Implict Supplier<List<String>> supplier) {
+        ...
+    }
+}
+
+...
+
+@ImplicitClass
+public class MyClass {
+    public MyClass(@Implicit MyObject myObject) {
+        ...
+    }
+}
+```
+

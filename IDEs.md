@@ -1,6 +1,6 @@
 ### Java Annotation Processing
 
-Halva's `@CaseClass`, `@CaseObject`, `@TypeAlias`, and `@ImplicitClass` are implemented as [Java Annotation Processing](http://docs.oracle.com/javase/7/docs/technotes/guides/apt/) tools. Depending on your development environment, you may need to enable annotation processing. Here are links to how to do this for commonly used development tools:
+Halva's `@CaseClass`, `@CaseObject`, `@TypeAlias`, and `@ImplicitClass` generate classes using the [Java Annotation Processing](http://docs.oracle.com/javase/7/docs/technotes/guides/apt/) tools. Depending on your development environment, you may need to enable annotation processing. Here are links to how to do this for commonly used development tools:
 
 * [IntelliJ IDEA](https://www.jetbrains.com/help/idea/2016.1/configuring-annotation-processing.html)
 * [Eclipse](https://www.eclipse.org/jdt/apt/introToAPT.php)

@@ -18,7 +18,7 @@ The annotated interface may not contain any content - no methods, fields, etc. H
 @TypeAlias interface PairList implements ConsList<Pair<String, Integer>>{}
 ```
 
-The generated class will be named `PairListAlias`. However, if you were to name the annotated source interface `PairListAlias_`, the generated class wouild be named `PairListAlias`. You can change these defaults with the TypeAlias attributes `suffix()` and `unsuffix()`.
+The generated class will be named `PairListAlias`. However, if you were to name the annotated source interface `PairList_`, the generated class wouild be named `PairList`. You can change these defaults with the TypeAlias attributes `suffix()` and `unsuffix()`.
 
 #### Using the Generated Class 
 

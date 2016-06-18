@@ -2,7 +2,7 @@
 
 ## Halva
 
-**Welcome to Halva - Idiomatic Scala... in Java!**
+**Welcome to Halva - _Idiomatic Scala... in Java!_**
 
 Halva's goal is to bring as many features from Scala to Java as is possible _without_ byte code generation 
 or magic. Using the features in Java should be as close as possibile to how the features are used in Scala.

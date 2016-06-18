@@ -5,7 +5,7 @@ comprehension or matching is occurring. Scala will define these variables for yo
 
 ```scala
 x match {
-    case Pair(x, y) => println("It's got an " + x + " and a " + y ")
+    case Pair(x, y) => println(s"It's got an $x and a $y")
 }
 ```
 

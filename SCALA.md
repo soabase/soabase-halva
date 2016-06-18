@@ -27,7 +27,7 @@ From http://docs.scala-lang.org/tutorials/tour/pattern-matching
 
 > Scala has a built-in general pattern matching mechanism. It allows to match on any sort of data with a first-match policy.
 
-Pattern matching is like a Java case statement where the cases can contain expressions and variables. As the case clauses are evaluated the variables are filled with matching values that can then be used as part of the case evaluation. The case caluse, if it matches, can also emit a result.
+Pattern matching is like a Java case statement where the cases can contain expressions and variables. As the case clauses are evaluated the variables are filled with matching values that can then be used as part of the case evaluation. The case clause, if it matches, can also emit a result.
 
 ### For-Comprehensions
 
@@ -43,4 +43,4 @@ From http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
 
 > A method with implicit parameters can be applied to arguments just like a normal method. In this case the implicit label has no effect. However, if such a method misses arguments for its implicit parameters, such arguments will be automatically provided.
 
-Implicits in Scala are a form of [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) that is statically at compile time. Parameters, conversions and even Traits (interfaces) can be injected via implicits.
+Implicits in Scala are a form of [Dependency Injection](https://en.wikipedia.org/wiki/Dependency_injection) that occurs statically at compile time. Parameters, conversions and even Traits (interfaces) can be injected via implicits.

@@ -36,24 +36,19 @@ class ConsListImpl<T> implements ConsList<T>
         this(Collections.unmodifiableList(new ArrayList<>()), null);
     }
 
-    ConsListImpl(List<T> list)
+    ConsListImpl(List<T> list, boolean copy)
     {
-        this(wrapList(list), null);
+        this(wrapList(list, copy), null);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> List<T> wrapList(List<T> list)
+    private static <T> List<T> wrapList(List<T> list, boolean copy)
     {
         if ( list instanceof ConsListImpl )
         {
             return ((ConsListImpl)list).list;
         }
-        return Collections.unmodifiableList(new ArrayList<>(list));
-    }
-
-    ConsListImpl(Iterator<T> list)
-    {
-        this(null, list);
+        return Collections.unmodifiableList(copy ? new ArrayList<>(list) : list);
     }
 
     private ConsListImpl(List<T> list, Iterator<T> iterator)
@@ -69,7 +64,7 @@ class ConsListImpl<T> implements ConsList<T>
             {
                 worker.add(iterator.next());
             }
-            list = Collections.unmodifiableList(new ArrayList<>(worker));
+            list = Collections.unmodifiableList(worker);
         }
         this.list = list;
     }
@@ -340,7 +335,7 @@ class ConsListImpl<T> implements ConsList<T>
     @Override
     public List<T> subList(int fromIndex, int toIndex)
     {
-        return new ConsListImpl<>(list.subList(fromIndex, toIndex));
+        return new ConsListImpl<>(list.subList(fromIndex, toIndex), true);
     }
 
     @Override

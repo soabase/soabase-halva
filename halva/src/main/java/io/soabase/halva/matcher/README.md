@@ -73,7 +73,7 @@ public int findAnyAge(Object obj)
 findAnyAge(AnimalCase("Bobby", 14)) -- 14
 findAnyAge(ChairCase(2, 5)) -- 0 - not enough legs
 findAnyAge(ChairCase(3, 5)) -- 5
-findAnyAge(Person("Tom", 90)) -- 0 - not a chair or animal
+findAnyAge(PersonCase("Tom", 90)) -- 0 - not a chair or animal
 ```
 
 ### Partials

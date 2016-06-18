@@ -28,12 +28,14 @@ class ImplicitMethod
 {
     private final Environment environment;
     private final ExecutableElement method;
+    private final ImplicitSpec implicitClassSpec;
     private final List<ContextItem> contextItems;
 
-    ImplicitMethod(Environment environment, ExecutableElement method, List<ContextItem> contextItems)
+    ImplicitMethod(Environment environment, ExecutableElement method, ImplicitSpec implicitClassSpec, List<ContextItem> contextItems)
     {
         this.environment = environment;
         this.method = method;
+        this.implicitClassSpec = implicitClassSpec;
         this.contextItems = contextItems;
     }
 
@@ -53,8 +55,8 @@ class ImplicitMethod
             }
             if ( parameter.getAnnotation(Implicit.class) != null )
             {
-                FoundImplicit foundImplicit = new ImplicitSearcher(environment, contextItems).find(parameter.asType());
-                CodeBlock value = new ImplicitValue(environment, contextItems, foundImplicit).build();
+                FoundImplicit foundImplicit = new ImplicitSearcher(environment, implicitClassSpec, contextItems).find(parameter.asType());
+                CodeBlock value = new ImplicitValue(environment, implicitClassSpec, contextItems, foundImplicit).build();
                 builder.add(value);
             }
             else

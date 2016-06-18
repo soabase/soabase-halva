@@ -80,7 +80,7 @@ class PassCreate implements Pass
                 DeclaredType declaredType = (DeclaredType)iface;
                 if ( declaredType.getTypeArguments().size() == 1 )
                 {
-                    addImplicitInterface(builder, declaredType.getTypeArguments().get(0));
+                    addImplicitInterface(builder, spec, declaredType.getTypeArguments().get(0));
                 }
                 else
                 {
@@ -99,13 +99,13 @@ class PassCreate implements Pass
             builder.superclass(ClassName.get(typeElement));
         }
 
-        spec.getItems().forEach(item -> addItem(builder, item));
+        spec.getItems().forEach(item -> addItem(builder, spec, item));
         environment.createSourceFile(packageName, templateQualifiedClassName, implicitQualifiedClassName, ImplicitClass.class.getSimpleName(), builder, typeElement);
     }
 
-    private void addImplicitInterface(TypeSpec.Builder builder, TypeMirror implicitInterface)
+    private void addImplicitInterface(TypeSpec.Builder builder, ImplicitSpec spec, TypeMirror implicitInterface)
     {
-        FoundImplicit foundImplicit = new ImplicitSearcher(environment, contextItems).find(implicitInterface);
+        FoundImplicit foundImplicit = new ImplicitSearcher(environment, spec, contextItems).find(implicitInterface);
         if ( foundImplicit == null )
         {
             return;
@@ -117,12 +117,12 @@ class PassCreate implements Pass
             if ( implicitElement.getKind() == ElementKind.METHOD )
             {
                 ExecutableElement implicitMethod = (ExecutableElement)implicitElement;
-                addImplicitItem(builder, foundImplicit, implicitInterface, implicitMethod);
+                addImplicitItem(builder, spec, foundImplicit, implicitInterface, implicitMethod);
             }
         });
     }
 
-    private void addImplicitItem(TypeSpec.Builder builder, FoundImplicit foundImplicit, TypeMirror implicitInterface, ExecutableElement method)
+    private void addImplicitItem(TypeSpec.Builder builder, ImplicitSpec spec, FoundImplicit foundImplicit, TypeMirror implicitInterface, ExecutableElement method)
     {
         MethodSpec.Builder methodSpecBuilder = MethodSpec.overriding(method);
         if ( method.getReturnType().getKind() == TypeKind.TYPEVAR )
@@ -139,7 +139,7 @@ class PassCreate implements Pass
         {
             codeBlockBuilder.add("return ");
         }
-        codeBlockBuilder.add(new ImplicitValue(environment, contextItems, foundImplicit).build());
+        codeBlockBuilder.add(new ImplicitValue(environment, spec, contextItems, foundImplicit).build());
         codeBlockBuilder.add(".$L(", method.getSimpleName());
 
         AtomicBoolean isFirst = new AtomicBoolean(true);
@@ -155,7 +155,7 @@ class PassCreate implements Pass
         builder.addMethod(methodSpecBuilder.build());
     }
 
-    private void addItem(TypeSpec.Builder builder, ImplicitItem item)
+    private void addItem(TypeSpec.Builder builder, ImplicitSpec spec, ImplicitItem item)
     {
         ExecutableElement method = item.getExecutableElement();
         MethodSpec.Builder methodSpecBuilder = (method.getKind() == ElementKind.CONSTRUCTOR) ? MethodSpec.constructorBuilder() : MethodSpec.methodBuilder(method.getSimpleName().toString());
@@ -180,7 +180,7 @@ class PassCreate implements Pass
             codeBlockBuilder.add("return super.$L(", method.getSimpleName());
         }
 
-        CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build(parameter -> {
+        CodeBlock methodCode = new ImplicitMethod(environment, method, spec, contextItems).build(parameter -> {
             ParameterSpec.Builder parameterSpec = ParameterSpec.builder(ClassName.get(parameter.asType()), parameter.getSimpleName().toString(), parameter.getModifiers().toArray(new javax.lang.model.element.Modifier[parameter.getModifiers().size()]));
             methodSpecBuilder.addParameter(parameterSpec.build());
         });

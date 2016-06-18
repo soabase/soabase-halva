@@ -24,18 +24,40 @@ import java.util.List;
 class ImplicitSearcher
 {
     private final Environment environment;
+    private final ImplicitSpec implicitClassSpec;
     private final List<ContextItem> contextItems;
 
-    ImplicitSearcher(Environment environment, List<ContextItem> contextItems)
+    ImplicitSearcher(Environment environment, ImplicitSpec implicitClassSpec, List<ContextItem> contextItems)
     {
         this.environment = environment;
+        this.implicitClassSpec = implicitClassSpec;
         this.contextItems = contextItems;
     }
 
     FoundImplicit find(TypeMirror type)
     {
         List<FoundImplicit> foundImplicits = new ArrayList<>();
-        contextItems.forEach(item -> {
+        contextItems.stream().filter(item -> {
+            List<TypeMirror> limitContexts = implicitClassSpec.getAnnotationReader().getClasses("limitContexts");
+            List<TypeMirror> limits = item.getAnnotationReader().getClasses("limits");
+            List<TypeMirror> excludes = item.getAnnotationReader().getClasses("excludes");
+
+            if ( !contains(limitContexts, item.getClassElement().asType(), true) )
+            {
+                return false;
+            }
+            if ( !contains(limits, implicitClassSpec.getAnnotatedElement().asType(), true) )
+            {
+                return false;
+            }
+            //noinspection RedundantIfStatement
+            if ( contains(excludes, implicitClassSpec.getAnnotatedElement().asType(), false) )
+            {
+                return false;
+            }
+
+            return true;
+        }).forEach(item -> {
             Element element = item.getElement();
             TypeMirror compareType = environment.typeOfFieldOrMethod(element);
             if ( environment.getTypeUtils().isAssignable(compareType, type) )
@@ -52,5 +74,15 @@ class ImplicitSearcher
         }
 
         return foundImplicits.get(0);
+    }
+
+    private boolean contains(List<TypeMirror> limitContexts, TypeMirror checkType, boolean defaultResult)
+    {
+        TypeMirror erasedType = environment.getTypeUtils().erasure(checkType);
+        if ( limitContexts.size() > 0 )
+        {
+            return limitContexts.stream().anyMatch(type -> environment.getTypeUtils().isSameType(type, erasedType));
+        }
+        return defaultResult;
     }
 }

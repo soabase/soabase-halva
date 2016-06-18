@@ -81,6 +81,10 @@ class PassProcessContexts implements Pass
                     {
                         environment.error(element, "@Implicit provider methods cannot contain non implicit parameters");
                     }
+                    else if ( (item.getAnnotationReader().getClasses("limits").size() > 0) && (item.getAnnotationReader().getClasses("excludes").size() > 0) )
+                    {
+                        environment.error(element, "@ImplicitContext cannot container both limits and excludes");
+                    }
                     else
                     {
                         DeclaredType childType = environment.typeOfFieldOrMethod(child);

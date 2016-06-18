@@ -20,18 +20,21 @@ import io.soabase.halva.processor.Environment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class ImplicitValue
 {
     private final Environment environment;
+    private final ImplicitSpec implicitClassSpec;
     private final List<ContextItem> contextItems;
     private final FoundImplicit foundImplicit;
 
-    ImplicitValue(Environment environment, List<ContextItem> contextItems, FoundImplicit foundImplicit)
+    ImplicitValue(Environment environment, ImplicitSpec implicitClassSpec, List<ContextItem> contextItems, FoundImplicit foundImplicit)
     {
         this.environment = environment;
+        this.implicitClassSpec = implicitClassSpec;
         this.contextItems = contextItems;
         this.foundImplicit = foundImplicit;
     }
@@ -61,7 +64,7 @@ class ImplicitValue
         {
             ExecutableElement method = (ExecutableElement)element;
             AtomicBoolean isFirst = new AtomicBoolean(false);
-            CodeBlock methodCode = new ImplicitMethod(environment, method, contextItems).build();
+            CodeBlock methodCode = new ImplicitMethod(environment, method, implicitClassSpec, contextItems).build();
             builder.add("$T.$L(", element.getEnclosingElement().asType(), element.getSimpleName());
             builder.add(methodCode);
             builder.add(")");

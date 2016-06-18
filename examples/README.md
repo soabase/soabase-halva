@@ -71,4 +71,4 @@ variables to be "defined" before being used.
 * Note that when comprehension/pattern variables are used, they have to be "unboxed" via the val() method.
 * In the interp() method, some variables used in the original Scala program had to be renamed because Halva's comprehension/pattern variables are all in the same scope.
 * Due to the lack of covariance in Java, some class wrapping needs to be done. E.g. the Iterable() wrap and Environment() wrap in interp().
-* Other than the variable definitions, the interp() method looks very much like the Scala version. **This is highly idiomatic Scala - but in Java**.
+* Other than the variable definitions, the interp() method looks very much like the Scala version. **_This is highly idiomatic Scala - but in Java_**.

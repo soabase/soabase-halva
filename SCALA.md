@@ -37,7 +37,7 @@ From http://docs.scala-lang.org/tutorials/tour/sequence-comprehensions
 
 A for-comprehension is like a list of nested Java "for" statements where each nested statement generates a stream that the next statement iterates over. Finally, a "yield" statement emits an item for each iteration and all these items are collected as the result of the comprehension. Technically, a for-comprehension is a series of flatMap() streams ending with a map() stream.
 
-##### Implicits
+### Implicits
 
 From http://docs.scala-lang.org/tutorials/tour/implicit-parameters.html
 

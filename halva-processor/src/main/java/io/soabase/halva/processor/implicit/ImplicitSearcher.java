@@ -39,10 +39,15 @@ class ImplicitSearcher
         List<FoundImplicit> foundImplicits = new ArrayList<>();
         contextItems.stream().filter(item -> {
             List<TypeMirror> limitContexts = implicitClassSpec.getAnnotationReader().getClasses("limitContexts");
+            List<TypeMirror> excludeContexts = implicitClassSpec.getAnnotationReader().getClasses("excludeContexts");
             List<TypeMirror> limits = item.getAnnotationReader().getClasses("limits");
             List<TypeMirror> excludes = item.getAnnotationReader().getClasses("excludes");
 
             if ( !contains(limitContexts, item.getClassElement().asType(), true) )
+            {
+                return false;
+            }
+            if ( contains(excludeContexts, item.getClassElement().asType(), false) )
             {
                 return false;
             }
@@ -76,12 +81,12 @@ class ImplicitSearcher
         return foundImplicits.get(0);
     }
 
-    private boolean contains(List<TypeMirror> limitContexts, TypeMirror checkType, boolean defaultResult)
+    private boolean contains(List<TypeMirror> checks, TypeMirror checkType, boolean defaultResult)
     {
         TypeMirror erasedType = environment.getTypeUtils().erasure(checkType);
-        if ( limitContexts.size() > 0 )
+        if ( checks.size() > 0 )
         {
-            return limitContexts.stream().anyMatch(type -> environment.getTypeUtils().isSameType(type, erasedType));
+            return checks.stream().anyMatch(type -> environment.getTypeUtils().isSameType(type, erasedType));
         }
         return defaultResult;
     }

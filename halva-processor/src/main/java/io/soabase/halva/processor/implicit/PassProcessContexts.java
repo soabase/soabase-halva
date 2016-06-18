@@ -83,7 +83,11 @@ class PassProcessContexts implements Pass
                     }
                     else if ( (item.getAnnotationReader().getClasses("limits").size() > 0) && (item.getAnnotationReader().getClasses("excludes").size() > 0) )
                     {
-                        environment.error(element, "@ImplicitContext cannot container both limits and excludes");
+                        environment.error(element, "@ImplicitContext cannot have both limits and excludes");
+                    }
+                    else if ( (item.getAnnotationReader().getClasses("limitContexts").size() > 0) && (item.getAnnotationReader().getClasses("excludeContexts").size() > 0) )
+                    {
+                        environment.error(element, "@ImplicitClass cannot have both limitContexts and excludeContexts");
                     }
                     else
                     {

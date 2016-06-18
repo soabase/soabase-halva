@@ -45,4 +45,5 @@ public @interface ImplicitClass
     String unsuffix() default "_";
 
     Class[] limitContexts() default {};
+    Class[] excludeContexts() default {};
 }

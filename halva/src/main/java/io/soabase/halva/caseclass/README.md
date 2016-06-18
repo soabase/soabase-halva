@@ -1,3 +1,5 @@
+### *PREVIEW - ALPHA*
+
 ### Case Classes and Case Objects
 
 NOTE: If you are not familiar with Scala's Case Classes and Case Objects you should review [Scala for Java Programmers](../../../../../../../../SCALA.md) first.

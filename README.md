@@ -26,6 +26,10 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 * [Type Aliases](../../tree/master/halva/src/main/java/io/soabase/halva/alias/README.md)
 * [Tuples](../../tree/master/halva/src/main/java/io/soabase/halva/tuple/README.md)
 * [Constructor Sugars](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/README.md)
+* 
+### Example Generated Files
+
+Many [Example Generated Files](../../tree/master/examples/example-generated/README.md) are shown here.
 
 ### Using Halva
 

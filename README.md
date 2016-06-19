@@ -29,7 +29,7 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 
 ### Example Generated Files
 
-Many [Example Generated Files](../../tree/master/examples/example-generated/README.md) are shown here.
+Many [example generated files](../../tree/master/examples/example-generated/README.md) are shown here.
 
 ### Using Halva
 

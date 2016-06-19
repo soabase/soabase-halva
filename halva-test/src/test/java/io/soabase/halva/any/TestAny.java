@@ -21,11 +21,8 @@ import io.soabase.halva.tuple.Pair;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.List;
 
-import static io.soabase.halva.any.Any.defineHeadAnyTail;
-import static io.soabase.halva.any.AnyDeclaration.anyInt;
-import static io.soabase.halva.any.AnyDeclaration.anyString;
+import static io.soabase.halva.any.StringList.StringList;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static org.junit.Assert.assertEquals;
@@ -35,7 +32,7 @@ public class TestAny
     @Test
     public void testAny()
     {
-        Any<Object> any = AnyDeclaration.of(Object.class).define();
+        Any<Object> any = new AnyType<Object>(){};
         assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"));
         assertEquals(Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"), Tuple.Tu("a", any, "b"));
         assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", any, "b"));
@@ -46,15 +43,15 @@ public class TestAny
     @Test
     public void testAnyWithAlias()
     {
-        AnyDeclaration<ConsList<String>> anyStringListReal = AnyDeclaration.of(new AnyType<ConsList<String>>(){});
-        AnyDeclaration<StringList> anyStringList = AnyDeclaration.ofTypeAlias(StringList.TypeAliasType);
+        Any<ConsList<String>> real = new AnyType<ConsList<String>>(){};
+        Any<StringList> alias = Any.typeAlias(StringList.TypeAliasType);
 
-        Any<ConsList<String>> real = anyStringListReal.define();
-        Any<StringList> alias = anyStringList.define();
-
-        List<String> strings = List("A", "B", "C");
-        Assert.assertTrue(real.set(strings));
-        Assert.assertTrue(alias.set(strings));
+        ConsList<String> strings = List("A", "B", "C");
+        StringList wrapped = StringList(strings);
+        Assert.assertTrue(real.canSet(strings));
+        Assert.assertTrue(alias.canSet(wrapped));
+        real.set(strings);
+        alias.set(wrapped);
         Assert.assertEquals(strings, real.val());
         Assert.assertEquals(strings, alias.val());
     }
@@ -64,13 +61,11 @@ public class TestAny
     @Test
     public void testAliasedCons()
     {
-        Any<ConsList<String>> stringList = AnyDeclaration.of(new AnyType<ConsList<String>>(){}).define();
-        Any<String> s = anyString.define();
-        Any<Integer> v = anyInt.define();
-        Any<Environment> e = AnyDeclaration.ofTypeAlias(Environment.TypeAliasType).define();
-        Any<Void> cons = defineHeadAnyTail(Pair(s, v), e);
+        Any<String> s = new AnyType<String>(){};
+        Any<Integer> v = new AnyType<Integer>(){};
+        Any<Environment> e = Any.typeAlias(Environment.TypeAliasType);
+        AnyList cons = Any.headAnyTail(Pair(s, v), e);
 
-        Assert.assertTrue(cons.set(List(Pair("10", 10), Pair("20", 20), Pair("30", 30))));
-        Assert.assertEquals(List(Pair("20", 20), Pair("30", 30)), e.val());
+        Assert.assertTrue(cons.canSet(List(Pair("10", 10), Pair("20", 20), Pair("30", 30))));
     }
 }

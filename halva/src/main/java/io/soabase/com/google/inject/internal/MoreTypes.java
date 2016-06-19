@@ -20,13 +20,11 @@ package io.soabase.com.google.inject.internal;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static io.soabase.com.google.inject.Checks.checkArgument;
@@ -190,82 +188,6 @@ public class MoreTypes
 
   public static String typeToString(Type type) {
     return type instanceof Class ? ((Class) type).getName() : type.toString();
-  }
-
-  /**
-   * Returns the generic supertype for {@code type}. For example, given a class {@code IntegerSet},
-   * the result for when supertype is {@code Set.class} is {@code Set<Integer>} and the result
-   * when the supertype is {@code Collection.class} is {@code Collection<Integer>}.
-   */
-  public static Type getGenericSupertype(Type type, Class<?> rawType, Class<?> toResolve) {
-    if (toResolve == rawType) {
-      return type;
-    }
-
-    // we skip searching through interfaces if unknown is an interface
-    if (toResolve.isInterface()) {
-      Class[] interfaces = rawType.getInterfaces();
-      for (int i = 0, length = interfaces.length; i < length; i++) {
-        if (interfaces[i] == toResolve) {
-          return rawType.getGenericInterfaces()[i];
-        } else if (toResolve.isAssignableFrom(interfaces[i])) {
-          return getGenericSupertype(rawType.getGenericInterfaces()[i], interfaces[i], toResolve);
-        }
-      }
-    }
-
-    // check our supertypes
-    if (!rawType.isInterface()) {
-      while (rawType != Object.class) {
-        Class<?> rawSupertype = rawType.getSuperclass();
-        if (rawSupertype == toResolve) {
-          return rawType.getGenericSuperclass();
-        } else if (toResolve.isAssignableFrom(rawSupertype)) {
-          return getGenericSupertype(rawType.getGenericSuperclass(), rawSupertype, toResolve);
-        }
-        rawType = rawSupertype;
-      }
-    }
-
-    // we can't resolve this further
-    return toResolve;
-  }
-
-  public static Type resolveTypeVariable(Type type, Class<?> rawType, TypeVariable unknown) {
-    Class<?> declaredByRaw = declaringClassOf(unknown);
-
-    // we can't reduce this further
-    if (declaredByRaw == null) {
-      return unknown;
-    }
-
-    Type declaredBy = getGenericSupertype(type, rawType, declaredByRaw);
-    if (declaredBy instanceof ParameterizedType) {
-      int index = indexOf(declaredByRaw.getTypeParameters(), unknown);
-      return ((ParameterizedType) declaredBy).getActualTypeArguments()[index];
-    }
-
-    return unknown;
-  }
-
-  private static int indexOf(Object[] array, Object toFind) {
-    for (int i = 0; i < array.length; i++) {
-      if (toFind.equals(array[i])) {
-        return i;
-      }
-    }
-    throw new NoSuchElementException();
-  }
-
-  /**
-   * Returns the declaring class of {@code typeVariable}, or {@code null} if it was not declared by
-   * a class.
-   */
-  private static Class<?> declaringClassOf(TypeVariable typeVariable) {
-    GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
-    return genericDeclaration instanceof Class
-        ? (Class<?>) genericDeclaration
-        : null;
   }
 
   public static class ParameterizedTypeImpl

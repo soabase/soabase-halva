@@ -16,9 +16,9 @@
 
 package io.soabase.halva.nettests;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.function.Predicate;
@@ -38,8 +38,6 @@ import static io.soabase.halva.tuple.Tuple.Tu;
 // https://kerflyn.wordpress.com/2011/02/14/playing-with-scalas-pattern-matching/
 public class TestPlayingWithScalaPatternMatching
 {
-    private static final AnyDeclaration<Expression> anyExpression = AnyDeclaration.of(Expression.class);
-
     /*
         def toYesOrNo(choice: Int): String = choice match {
             case 1 => "yes"
@@ -109,7 +107,7 @@ public class TestPlayingWithScalaPatternMatching
      */
     public String parseArgument(String arg)
     {
-        Any<String> argAny = AnyDeclaration.of(String.class).define();
+        Any<String> argAny = new AnyType<String>(){};
         return match(arg)
             .caseOfTest((s) -> s.equals("-h") || s.equals("--help"), () -> "displayHelp")
             .caseOfTest((s) -> s.equals("-v") || s.equals("--version"), () -> "displayVersion")
@@ -137,9 +135,9 @@ public class TestPlayingWithScalaPatternMatching
      */
     String f(Object x)
     {
-        Any<Integer> i = AnyDeclaration.of(Integer.class).define();
-        Any<Double> d = AnyDeclaration.of(Double.class).define();
-        Any<String> s = AnyDeclaration.of(String.class).define();
+        Any<Integer> i = new AnyType<Integer>(){};
+        Any<Double> d = new AnyType<Double>(){};
+        Any<String> s = new AnyType<String>(){};
         return match(x)
             .caseOf(i, () -> "integer: " + i.val())
             .caseOf(d, () -> "a double")
@@ -163,7 +161,7 @@ public class TestPlayingWithScalaPatternMatching
      */
     int fact(int n)
     {
-        Any<Integer> i = AnyDeclaration.of(Integer.class).define();
+        Any<Integer> i = new AnyType<Integer>(){};
         return match(n)
             .caseOf(0, () -> 1)
             .caseOf(i, () -> {
@@ -196,9 +194,9 @@ public class TestPlayingWithScalaPatternMatching
         Predicate<String> oOrOptim = s -> s.equals("-o") || s.equals("--optim");
         Predicate<String> hOrHelp = s -> s.equals("-h") || s.equals("--help");
 
-        Any<Integer> n = AnyDeclaration.of(Integer.class).define();
-        Any<String> s = AnyDeclaration.of(String.class).define();
-        Any<String> v = AnyDeclaration.of(String.class).define();
+        Any<Integer> n = new AnyType<Integer>(){};
+        Any<String> s = new AnyType<String>(){};
+        Any<String> v = new AnyType<String>(){};
         return match(Tu(arg, value))
             .caseOf(Tu("-l", s), () -> "setLanguageTo(" + s.val() + ")")
             .caseOf(Tu(oOrOptim, n), () -> ((0 < n.val()) && (n.val() <= 5)), () -> "setOptimizationLevelTo(" + n.val() + ")")
@@ -275,12 +273,12 @@ public class TestPlayingWithScalaPatternMatching
      */
     int eval(Expression expression, int xValue)
     {
-        Any<Integer> cst = AnyDeclaration.anyInt.define();
-        Any<Expression> addLeft = anyExpression.define();
-        Any<Expression> addRight = anyExpression.define();
-        Any<Expression> multLeft = anyExpression.define();
-        Any<Expression> multRight = anyExpression.define();
-        Any<Expression> expr = anyExpression.define();
+        Any<Integer> cst = new AnyType<Integer>(){};
+        Any<Expression> addLeft = new AnyType<Expression>(){};
+        Any<Expression> addRight = new AnyType<Expression>(){};
+        Any<Expression> multLeft = new AnyType<Expression>(){};
+        Any<Expression> multRight = new AnyType<Expression>(){};
+        Any<Expression> expr = new AnyType<Expression>(){};
 
         return match(expression)
             .caseOf(X(), () -> xValue)
@@ -302,12 +300,12 @@ public class TestPlayingWithScalaPatternMatching
      */
     Expression deriv(Expression expression)
     {
-        Any<Integer> cst = AnyDeclaration.anyInt.define();
-        Any<Expression> addLeft = anyExpression.define();
-        Any<Expression> addRight = anyExpression.define();
-        Any<Expression> multLeft = anyExpression.define();
-        Any<Expression> multRight = anyExpression.define();
-        Any<Expression> expr = anyExpression.define();
+        Any<Integer> cst = new AnyType<Integer>(){};
+        Any<Expression> addLeft = new AnyType<Expression>(){};
+        Any<Expression> addRight = new AnyType<Expression>(){};
+        Any<Expression> multLeft = new AnyType<Expression>(){};
+        Any<Expression> multRight = new AnyType<Expression>(){};
+        Any<Expression> expr = new AnyType<Expression>(){};
 
         return match(expression)
             .caseOf(X(), () -> Const(1))

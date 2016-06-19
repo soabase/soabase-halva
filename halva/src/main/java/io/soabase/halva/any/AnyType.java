@@ -15,31 +15,38 @@
  */
 package io.soabase.halva.any;
 
-import io.soabase.com.google.inject.TypeLiteral;
+import io.soabase.com.google.inject.internal.MoreTypes;
+
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class AnyType<T> extends TypeLiteral<T>
-{
-    /**
-     * Gets type literal for the given {@code Type} instance.
-     */
-    public static AnyType<?> get(Type type) {
-        return new AnyType<>(type);
-    }
+import static io.soabase.com.google.inject.internal.MoreTypes.canonicalize;
 
-    /**
-     * Gets type literal for the given {@code Class} instance.
-     */
-    public static <T> AnyType<T> get(Class<T> type) {
-        return new AnyType<>(type);
-    }
+public abstract class AnyType<T> extends AnyImpl<T, T>
+{
+    private final Class<? super T> rawType;
 
     protected AnyType()
     {
+        this.rawType = getRawType(getClass());
     }
 
-    private AnyType(Type type)
+    @Override
+    public final Class<? super T> getRawType()
     {
-        super(type);
+        return rawType;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<? super T> getRawType(Class<? extends AnyType> superType)
+    {
+        Type superclass = superType.getGenericSuperclass();
+        if ( superclass instanceof Class )
+        {
+            throw new RuntimeException("Missing type parameter.");
+        }
+        ParameterizedType parameterized = (ParameterizedType) superclass;
+        Type type = canonicalize(parameterized.getActualTypeArguments()[0]);
+        return (Class<? super T>)MoreTypes.getRawType(type);
     }
 }

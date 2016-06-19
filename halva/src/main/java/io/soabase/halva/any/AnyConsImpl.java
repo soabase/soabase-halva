@@ -17,25 +17,19 @@ package io.soabase.halva.any;
 
 import io.soabase.halva.sugar.ConsList;
 
-class AnyConsImpl<T> implements Any<Void>
+class AnyConsImpl extends AnyList
 {
     private final Object head;
-    private final Any<T> anyHead;
-    private final ConsList<?> tail;
-    private final Any<? extends ConsList<T>> anyTail;
+    private final Any anyHead;
+    private final ConsList tail;
+    private final Any anyTail;
 
-    AnyConsImpl(Object head, Any<T> anyHead, ConsList<?> tail, Any<? extends ConsList<T>> anyTail)
+    AnyConsImpl(Object head, Any anyHead, ConsList tail, Any anyTail)
     {
         this.head = head;
         this.anyHead = anyHead;
         this.tail = tail;
         this.anyTail = anyTail;
-    }
-
-    @Override
-    public AnyDeclaration<Void> getDeclaration()
-    {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -47,7 +41,7 @@ class AnyConsImpl<T> implements Any<Void>
     @Override
     public String toString()
     {
-        return "AnyConsImpl{" +
+        return "BoxConsImpl{" +
             "head=" + head +
             ", anyHead=" + anyHead +
             ", tail=" + tail +
@@ -57,7 +51,7 @@ class AnyConsImpl<T> implements Any<Void>
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean set(Object value)
+    public boolean canSet(Object value)
     {
         //noinspection LoopStatementThatDoesntLoop
         while ( value instanceof ConsList )
@@ -73,7 +67,7 @@ class AnyConsImpl<T> implements Any<Void>
             {
                 break;
             }
-            if ( (anyHead != null) && !anyHead.set(listHead) )
+            if ( (anyHead != null) && !anyHead.canSet(listHead) )
             {
                 break;
             }
@@ -81,7 +75,7 @@ class AnyConsImpl<T> implements Any<Void>
             {
                 break;
             }
-            if ( (anyTail != null) && !anyTail.set(listTail) )
+            if ( (anyTail != null) && !anyTail.canSet(listTail) )
             {
                 break;
             }
@@ -89,5 +83,25 @@ class AnyConsImpl<T> implements Any<Void>
             return true;
         }
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void set(Object value)
+    {
+        if ( value instanceof ConsList )
+        {
+            ConsList list = (ConsList)value;
+            Object listHead = list.head();
+            ConsList<Object> listTail = list.tail();
+            if ( anyHead != null )
+            {
+                anyHead.set(listHead);
+            }
+            if ( anyTail != null )
+            {
+                anyTail.set(listTail);
+            }
+        }
     }
 }

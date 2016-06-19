@@ -16,7 +16,7 @@
 package io.soabase.halva.tuple;
 
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
+import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
@@ -56,13 +56,13 @@ public class TestTuple
 
     private String extractFunc(ConsList<Pair<String, Integer>> list)
     {
-        Any<Pair<String, Integer>> p = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){}).define();
-        Any<ConsList<Pair<String, Integer>>> t = AnyDeclaration.of(new AnyType<ConsList<Pair<String, Integer>>>(){}).define();
+        AnyType<Pair<String, Integer>> p = new AnyType<Pair<String, Integer>>(){};
+        AnyType<ConsList<? extends Pair<String, Integer>>> t = new AnyType<ConsList<? extends Pair<String, Integer>>>(){};
 
-        Any<Void> a = Any.defineHeadAnyTail(Pair("10", 10), t);
-        Any<Void> b = Any.defineHeadTail(Pair("-10", -10), List(Pair("20", 20)));
-        Any<Void> c = Any.defineAnyHeadTail(p, List(Pair("20", 20), Pair("30", 30)));
-        Any<Void> d = Any.defineAnyHeadAnyTail(p, t);
+        AnyList a = Any.headAnyTail(Pair("10", 10), t);
+        AnyList b = Any.headTail(Pair("-10", -10), List(Pair("20", 20)));
+        AnyList c = Any.anyHeadTail(p, List(Pair("20", 20), Pair("30", 30)));
+        AnyList d = Any.anyHeadAnyTail(p, t);
 
         return match(list)
             .caseOf(List(), () -> "empty")

@@ -20,44 +20,39 @@ import io.soabase.halva.sugar.ConsList;
 
 public interface Any<T>
 {
-    static <T> Any<Void> defineHeadTail(Object head, ConsList<T> tail)
+    static <T> AnyVal<T> make()
     {
-        return new AnyConsImpl<>(head, null, tail, null);
+        return new AnyVal<>();
     }
 
-    static <T> Any<Void> defineHeadAnyTail(Object head, Any<? extends ConsList<T>> tail)
+    static <T> AnyList headTail(T head, ConsList<T> tail)
     {
-        return new AnyConsImpl<>(head, null, null, tail);
+        return new AnyConsImpl(head, null, tail, null);
     }
 
-    static <T> Any<Void> defineAnyHeadTail(Any<T> head, ConsList<?> tail)
+    static <T> AnyList headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
     {
-        return new AnyConsImpl<>(null, head, tail, null);
+        return new AnyConsImpl(head, null, null, tail);
     }
 
-    static <T> Any<Void> defineAnyHeadAnyTail(Any<T> head, Any<? extends ConsList<T>> tail)
+    static <T> AnyList anyHeadTail(Any<T> head, ConsList<T> tail)
     {
-        return new AnyConsImpl<>(null, head, null, tail);
+        return new AnyConsImpl(null, head, tail, null);
     }
 
-    static <T> Any<T> define(Class<T> clazz)
+    static <T> AnyList anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
     {
-        return AnyDeclaration.of(clazz).define();
+        return new AnyConsImpl(null, head, null, tail);
     }
 
-    static <T> Any<T> define(AnyType<T> typeLiteral)
+    static <T extends REAL, REAL> Any<T> typeAlias(TypeAliasType<REAL, T> typeAliasType)
     {
-        return AnyDeclaration.of(typeLiteral).define();
+        return new AnyImpl<>(null, typeAliasType);
     }
-
-    static <T extends REAL, REAL> Any<T> defineTypeAlias(TypeAliasType<REAL, T> typeAliasType)
-    {
-        return AnyDeclaration.ofTypeAlias(typeAliasType).define();
-    }
-
-    AnyDeclaration<T> getDeclaration();
 
     T val();
 
-    boolean set(Object value);
+    void set(T value);
+
+    boolean canSet(T value);
 }

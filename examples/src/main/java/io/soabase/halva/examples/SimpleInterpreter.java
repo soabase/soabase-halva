@@ -1,19 +1,18 @@
 package io.soabase.halva.examples;
 
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseObject;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
 import java.util.function.Function;
 
-import static io.soabase.halva.any.Any.defineHeadAnyTail;
-import static io.soabase.halva.any.AnyDeclaration.anyInt;
-import static io.soabase.halva.any.AnyDeclaration.anyString;
+import static io.soabase.halva.any.Any.headAnyTail;
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.examples.Add.Add;
 import static io.soabase.halva.examples.Add.AddTu;
@@ -72,20 +71,20 @@ class SimpleInterpreter
     @TypeAlias interface Environment_ extends ConsList<Pair<String, Value>>{}
 
     static M<Value> lookup(String x, Environment e) {
-        Any<String> y = anyString.define();
-        Any<Value> b = anyValue.define();
-        Any<Environment> e1 = anyEnvironment.define();
+        Any<String> y = new AnyType<String>(){};
+        Any<Value> b = new AnyType<Value>(){};
+        Any<Environment> e1 = Any.typeAlias(Environment.TypeAliasType);
 
         return match(e).
             caseOf( List(), () -> unitM(Wrong) ).
-            caseOf( defineHeadAnyTail(Pair(y, b), e1), () -> x.equals(y.val()) ? unitM(b.val()) : lookup(x, e1.val()) ).
+            caseOf( Any.headAnyTail(Pair(y, b), e1), () -> x.equals(y.val()) ? unitM(b.val()) : lookup(x, e1.val()) ).
         get();
     }
 
     static M<Value> add(Value a, Value b)
     {
-        Any<Integer> m = anyInt.define();
-        Any<Integer> n = anyInt.define();
+        Any<Integer> m = new AnyType<Integer>(){};
+        Any<Integer> n = new AnyType<Integer>(){};
 
         return match(Pair(a, b)).
             caseOf( Pair(NumTu(m), NumTu(n)), () -> unitM(Num(m.val() + n.val())) ).
@@ -95,7 +94,7 @@ class SimpleInterpreter
 
     static M<Value> apply(Value a, Value b)
     {
-        Any<Function<Value, M<Value>>> k = anyFun.define();
+        Any<Function<Value, M<Value>>> k = new AnyType<Function<Value, M<Value>>>(){};
 
         return match(a).
             caseOf( FunTu(k), () -> k.val().apply(b) ).
@@ -105,15 +104,16 @@ class SimpleInterpreter
 
     static M<Value> interp(Term term, Environment e)
     {
-        Any<String> x = anyString.define();
-        Any<Integer> n = anyInt.define();
-        Any<Term> l = anyTerm.define();
-        Any<Term> r = anyTerm.define();
-        Any<Term> t = anyTerm.define();
-        Any<Term> f = anyTerm.define();
-        Any<M<Value>> a = anyM.define();
-        Any<M<Value>> b = anyM.define();
-        Any<M<Value>> c = anyM.define();
+        Any<String> x = new AnyType<String>(){};
+        Any<Integer> n = new AnyType<Integer>(){};
+        Any<Term> l = new AnyType<Term>(){};
+        Any<Term> r = new AnyType<Term>(){};
+        Any<Term> t = new AnyType<Term>(){};
+        Any<Term> f = new AnyType<Term>(){};
+
+        AnyVal<M<Value>> a = Any.make();
+        AnyVal<M<Value>> b = Any.make();
+        AnyVal<M<Value>> c = Any.make();
 
         return match(term).
             caseOf( VarTu(x), () -> lookup( x.val(), e) ).
@@ -145,14 +145,4 @@ class SimpleInterpreter
         System.out.println(test(term0));
         System.out.println(test(term1));
     }
-
-    // any declarations
-
-    private static AnyDeclaration<Environment> anyEnvironment = AnyDeclaration.ofTypeAlias(Environment.TypeAliasType);
-    private static AnyDeclaration<Term> anyTerm = AnyDeclaration.of(Term.class);
-    private static AnyDeclaration<Value> anyValue = AnyDeclaration.of(new AnyType<Value>(){});
-    private static AnyDeclaration<M<Value>> anyM = AnyDeclaration.of(new AnyType<M<Value>>(){});
-    private static AnyDeclaration<Function<Value, M<Value>>> anyFun = AnyDeclaration.of(new AnyType<Function<Value, M<Value>>>(){});
-    private static AnyDeclaration<Add> anyAdd = AnyDeclaration.of(Add.class);
-    private static AnyDeclaration<Con> anyConstant = AnyDeclaration.of(Con.class);
 }

@@ -16,10 +16,9 @@
 
 package io.soabase.halva.nettests;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -79,9 +78,8 @@ public class TestScalaCaseClassesInDepth
         logValue(v) // prints We have a value here: 42
         logValue(v_1) // prints I'm sorry, no value
      */
-    public <T> String logValue(Maybe<T> value, AnyType<T> typeLiteral)
+    public <T> String logValue(Maybe<T> value, Any<T> v)
     {
-        Any<T> v = AnyDeclaration.of(typeLiteral).define();
         return match(value)
             .caseOf(ValueCaseTu(v), () -> "We have a value here: " + v.val())
             .caseOf(() -> "I'm sorry, no value")
@@ -93,7 +91,7 @@ public class TestScalaCaseClassesInDepth
     {
         Maybe<Integer> v = ValueCase.<Integer>builder().value(42).build();
         Maybe<Integer> v1 = new NoValue<Integer>(){};
-        AnyType<Integer> typeLiteral = AnyType.get(Integer.class);
+        Any<Integer> typeLiteral = new AnyType<Integer>(){};
         Assert.assertEquals("We have a value here: 42", logValue(v, typeLiteral));
         Assert.assertEquals("I'm sorry, no value", logValue(v1, typeLiteral));
     }

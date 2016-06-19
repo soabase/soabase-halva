@@ -16,10 +16,9 @@
 
 package io.soabase.halva.nettests;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.matcher.Partial;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
@@ -159,7 +158,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
                 case ironMan => "anyone!"
               }
          */
-        Any<Integer> anyAge = AnyDeclaration.of(Integer.class).define();
+        Any<Integer> anyAge = new AnyType<Integer>(){};
         String result = match(Guy("Dr. Who", Integer.MAX_VALUE))
             .caseOf(GuyTu("Dr. Who", anyAge), () -> "Exactly!")
             .caseOf(() -> "anyone!")
@@ -169,8 +168,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     Optional<List<Power>> getPowers(Character person)
     {
-        Any<String> anyName = AnyDeclaration.of(String.class).define();
-        Any<List<Power>> anyPowers = AnyDeclaration.of(new AnyType<List<Power>>(){}).define();
+        Any<String> anyName = new AnyType<String>(){};
+        Any<List<Power>> anyPowers = new AnyType<List<Power>>(){};
         return match(person)
             .caseOf(SuperHeroTu(anyName, anyPowers, Optional.of(TonyStark)), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
@@ -209,8 +208,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     String whatIsThis4(Object obj)
     {
-        Any<Integer> n = AnyDeclaration.of(Integer.class).define();
-        Any<java.lang.Character> c = AnyDeclaration.of(java.lang.Character.class).define();
+        Any<Integer> n = new AnyType<Integer>(){};
+        Any<java.lang.Character> c = new AnyType<java.lang.Character>(){};
         return match(obj)
             .caseOf(n, () -> "aah, a number")
             .caseOf(c, () -> "it's " + c.val())
@@ -237,8 +236,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     String fromTuple(Tuple aPair)
     {
-        Any<Villain> anyVillain = AnyDeclaration.of(Villain.class).define();
-        Any<Object> any = AnyDeclaration.of(Object.class).define();
+        Any<Villain> anyVillain = new AnyType<Villain>(){};
+        Any<Object> any = new AnyType<Object>(){};
         return match(aPair)
             .caseOf(Tuple.Tu(42, Math.PI, any), () -> "magic numbers + anything")
             .caseOf(Tuple.Tu(IronMan, Mandarin), () -> "hate each other")
@@ -261,8 +260,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     String getStatus(Character person)
     {
-        Any<String> anyName = AnyDeclaration.of(String.class).define();
-        Any<Wealth> anyWealth = AnyDeclaration.of(Wealth.class).define();
+        Any<String> anyName = new AnyType<String>(){};
+        Any<Wealth> anyWealth = new AnyType<Wealth>(){};
         return match(person)
             .caseOf(Tuple.Tu(anyName, anyWealth), () -> anyWealth.val().n() >= 10000, () -> "Rich guy")
             .caseOf(() -> "anybody else")
@@ -283,7 +282,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     @Test
     public void testPartials()
     {
-        Any<Integer> anyInt = AnyDeclaration.of(Integer.class).define();
+        Any<Integer> anyInt = new AnyType<Integer>(){};
         Partial<Integer> partial = partial(Integer.class)
             .caseOf(8, () -> "eight")
             .caseOf(anyInt, () -> "Number " + anyInt.val());

@@ -16,9 +16,9 @@
 
 package io.soabase.halva.nettests;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Arrays;
@@ -91,7 +91,7 @@ public class TestScalaPatternMatchingTutorialsPoint
 
     public Object matchTest2(Object obj)
     {
-        Any<Integer> i = AnyDeclaration.of(Integer.class).define();
+        Any<Integer> i = new AnyType<Integer>(){};
         return match(obj)
             .caseOf(1, () -> "one")
             .caseOf("two", () -> 2)
@@ -145,8 +145,8 @@ public class TestScalaPatternMatchingTutorialsPoint
         PersonTP bob = PersonTPCase("Bob", 32);
         PersonTP charlie = PersonTPCase("Charlie", 32);
 
-        Any<String> anyName = AnyDeclaration.of(String.class).define();
-        Any<Integer> anyAge = AnyDeclaration.of(Integer.class).define();
+        Any<String> anyName = new AnyType<String>(){};
+        Any<Integer> anyAge = new AnyType<Integer>(){};
         List<String> messages = Arrays.asList(alice, bob, charlie).stream()
             .map(person -> match(person)
                         .caseOf(PersonTPCase("Alice", 25), () -> "Hi Alice!")

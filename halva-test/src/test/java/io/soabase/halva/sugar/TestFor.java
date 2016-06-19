@@ -15,17 +15,15 @@
  */
 package io.soabase.halva.sugar;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
-import io.soabase.halva.any.AnyType;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static io.soabase.halva.any.AnyDeclaration.*;
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.sugar.Author.Author;
 import static io.soabase.halva.sugar.Book.Book;
@@ -53,8 +51,8 @@ val result = for {
         String two = "java rocks";
         List<String> sentences = List(one, two);
         List<String> dict = List("scala", "sbt", "patterns");
-        Any<String> sentence = anyString.define();
-        Any<Boolean> does = anyBoolean.define();
+        AnyVal<String> sentence = Any.make();
+        AnyVal<Boolean> does = Any.make();
 
         List<Tuple> ts = forComp(sentence, sentences)
             .set(() -> does.set(dict.contains(sentence.val())))
@@ -69,9 +67,9 @@ val result = for {
         List<List<?>> lists2 = List(List(4, 5, 6), List("D", "E", "F"));
         List<List<List<?>>> big = List(lists1, lists2);
 
-        Any<List<List<?>>> lol = AnyDeclaration.of(new AnyType<List<List<?>>>(){}).define();
-        Any<List<?>> l = AnyDeclaration.of(new AnyType<List<?>>(){}).define();
-        Any<Object> o = AnyDeclaration.of(Object.class).define();
+        AnyVal<List<List<?>>> lol = Any.make();
+        AnyVal<List<?>> l = Any.make();
+        AnyVal<Object> o = Any.make();
         List<String> s = forComp(lol, big)
               .forComp(l, lol::val)
               .forComp(o, l::val)
@@ -105,9 +103,9 @@ val result = for {
         } yield (book.title, year)
      */
         {
-            Any<Book> book = AnyDeclaration.of(Book.class).define();
-            Any<Author> author = AnyDeclaration.of(Author.class).define();
-            Any<Integer> year = AnyDeclaration.of(Integer.class).define();
+            AnyVal<Book> book = Any.make();
+            AnyVal<Author> author = Any.make();
+            AnyVal<Integer> year = Any.make();
 
             List<Tuple> result = forComp(book, books)
                 .filter(() -> book.val().authors().size() == 1)
@@ -126,7 +124,7 @@ val result = for {
     */
     List<Integer> even(int from, int to)
     {
-        Any<Integer> i = AnyDeclaration.of(Integer.class).define();
+        AnyVal<Integer> i = Any.make();
         return forComp(i, IntStream.range(from, to))
             .filter(() -> i.val() % 2 == 0)
             .yield(i::val);
@@ -146,8 +144,8 @@ val result = for {
      */
     List<Tuple> foo(int n, int v)
     {
-        Any<Integer> i = AnyDeclaration.of(Integer.class).define();
-        Any<Integer> j = AnyDeclaration.of(Integer.class).define();
+        AnyVal<Integer> i = Any.make();
+        AnyVal<Integer> j = Any.make();
         return forComp(i, IntStream.range(0, n))
             .forCompInt(j, () -> IntStream.range(i.val(), n))
             .filter(() -> i.val() + j.val() == v)
@@ -169,8 +167,8 @@ val result = for {
     @Test
     public void testUnit()
     {
-        Any<Integer> i = AnyDeclaration.of(Integer.class).define();
-        Any<Integer> j = AnyDeclaration.of(Integer.class).define();
+        AnyVal<Integer> i = Any.make();
+        AnyVal<Integer> j = Any.make();
         StringBuilder str = new StringBuilder();
         forComp(i, IntStream.range(0, 20))
             .forCompInt(j, () -> IntStream.range(i.val(), 20))
@@ -182,9 +180,9 @@ val result = for {
     @Test
     public void testIntStream()
     {
-        Any<Integer> i = anyInt.define();
-        Any<Integer> j = anyInt.define();
-        Any<Integer> from = anyInt.define();
+        AnyVal<Integer> i = Any.make();
+        AnyVal<Integer> j = Any.make();
+        AnyVal<Integer> from = Any.make();
         List<Integer> result = forComp(i, IntStream.rangeClosed(1, 3))
             .set(() -> from.set(4 - i.val()))
             .forCompInt(j, () -> IntStream.rangeClosed(from.val(), 3))

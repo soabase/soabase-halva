@@ -16,6 +16,7 @@
 package io.soabase.halva.comprehension;
 
 import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyVal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -48,7 +49,7 @@ class ForImpl implements For
     {
         if ( any == null )
         {
-            throw new IllegalArgumentException("any cannot be null");
+            throw new IllegalArgumentException("box cannot be null");
         }
         if ( stream == null )
         {
@@ -58,11 +59,11 @@ class ForImpl implements For
     }
 
     @Override
-    public <T, R> For forComp(Any<T> any, Supplier<Iterable<? extends R>> stream)
+    public <T, R> For forComp(AnyVal<T> any, Supplier<Iterable<? extends R>> stream)
     {
         if ( any == null )
         {
-            throw new IllegalArgumentException("any cannot be null");
+            throw new IllegalArgumentException("box cannot be null");
         }
         if ( stream == null )
         {
@@ -75,21 +76,21 @@ class ForImpl implements For
     }
 
     @Override
-    public <T> For forCompInt(Any<T> any, Supplier<IntStream> stream)
+    public <T> For forCompInt(AnyVal<T> any, Supplier<IntStream> stream)
     {
         return forComp(any, () -> () -> stream.get().iterator());
     }
 
     @Override
-    public <T> For forCompLong(Any<T> any, Supplier<LongStream> stream)
+    public <T> For forCompLong(AnyVal<T> any, Supplier<LongStream> stream)
     {
         return forComp(any, () -> () -> stream.get().iterator());
     }
 
     @Override
-    public <T> For forCompDouble(Any<T> any, Supplier<DoubleStream> stream)
+    public <T> For forCompDouble(AnyVal<T> Any, Supplier<DoubleStream> stream)
     {
-        return forComp(any, () -> () -> stream.get().iterator());
+        return forComp(Any, () -> () -> stream.get().iterator());
     }
 
     @Override

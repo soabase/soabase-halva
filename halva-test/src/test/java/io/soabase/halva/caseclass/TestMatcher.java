@@ -17,8 +17,9 @@ package io.soabase.halva.caseclass;
 
 import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
+import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
@@ -27,8 +28,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
-import static io.soabase.halva.any.AnyDeclaration.anyInt;
-import static io.soabase.halva.any.AnyDeclaration.anyString;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseTu;
 import static io.soabase.halva.caseclass.ChairCase.ChairCase;
@@ -46,18 +45,18 @@ public class TestMatcher
     @Test
     public void testBasic()
     {
-        Any<Integer> anyInt = AnyDeclaration.of(Integer.class).define();
+        Any<Integer> i = new AnyType<Integer>(){};
 
         GenericExampleCase<String, Integer> generic = GenericExampleCase("hey", 100);
         int value = match(generic)
-            .caseOf(Tu("hey", anyInt), anyInt::val)
+            .caseOf(Tu("hey", i), i::val)
             .caseOf(() -> 0)
             .get();
         Assert.assertEquals(100, value);
 
         String s = match(generic)
-            .caseOf(Tu("hey", anyInt), () -> anyInt.val() > 100, () -> "too big")
-            .caseOf(Tu("hey", anyInt), () -> "It's " + anyInt.val())
+            .caseOf(Tu("hey", i), () -> i.val() > 100, () -> "too big")
+            .caseOf(Tu("hey", i), () -> "It's " + i.val())
             .get();
         Assert.assertEquals("It's 100", s);
     }
@@ -66,8 +65,8 @@ public class TestMatcher
 
     int subtract(Value a, Value b)
     {
-        Any<Integer> m = anyInt.define();
-        Any<Integer> n = anyInt.define();
+        Any<Integer> m = new AnyType<Integer>(){};
+        Any<Integer> n = new AnyType<Integer>(){};
 
         return match(Pair(a, b))
             .caseOf( Pair(ValueTu(m), ValueTu(n)), () -> m.val() - n.val())
@@ -82,10 +81,8 @@ public class TestMatcher
         Assert.assertEquals(-3, subtract(Value(3), Value(6)));
     }
 
-    static AnyDeclaration<Pair<String, Integer>> myDecl = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){});
-
     static List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
-        Any<Pair<String, Integer>> foundPair = myDecl.define();
+        AnyVal<Pair<String, Integer>> foundPair = Any.make();
 
         return forComp(foundPair, list)
             .filter(() -> foundPair.val()._1.equals(key))
@@ -102,10 +99,9 @@ public class TestMatcher
     public void testListExtraction()
     {
         ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
-        Any<Pair<String, Integer>> anyStringIntPair = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){}).define();
-        Any<ConsList<Pair<String, Integer>>> anyPairList = AnyDeclaration.of(new AnyType<ConsList<Pair<String, Integer>>>(){}).define();
 
-        Any<Void> patternMatcher = Any.defineAnyHeadAnyTail(anyStringIntPair, anyPairList);
+        AnyType<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
+        AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair<String, Integer>>(){}, anyPairList);
         String str = match(list)
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
             .get();
@@ -117,8 +113,8 @@ public class TestMatcher
 
     public int findAnyAge(Object obj)
     {
-        Any<String> s = anyString.define();
-        Any<Integer> age = anyInt.define();
+        Any<String> s = new AnyType<String>(){};
+        Any<Integer> age = new AnyType<Integer>(){};
         return match(obj)
             .caseOf(AnimalCaseTu(s, age), age::val)
             .caseOf(ChairCaseTu(s, 3, age), age::val)

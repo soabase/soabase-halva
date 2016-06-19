@@ -19,90 +19,67 @@ import io.soabase.halva.alias.TypeAliasType;
 
 class AnyImpl<T extends REAL, REAL> implements Any<T>
 {
-    private final Class<T> clazz;
-    private final AnyType<T> typeLiteral;
-    private final AnyDeclaration<T> declaration;
+    private final Class<? super T> rawType;
     private final TypeAliasType<REAL, T> typeAliasType;
-    private volatile Object value = null;
+    private T value;
 
-    AnyImpl(AnyDeclaration<T> declaration, Class<T> clazz, AnyType<T> typeLiteral, TypeAliasType<REAL, T> typeAliasType)
+    AnyImpl()
     {
-        this.declaration = declaration;
+        this(null, null);
+    }
+
+    AnyImpl(Class<? super T> rawType, TypeAliasType<REAL, T> typeAliasType)
+    {
+        this.rawType = (rawType != null) ? rawType : ((typeAliasType != null) ? typeAliasType.getAliasType().getRawType() : null);
         this.typeAliasType = typeAliasType;
-        if ( (clazz == null) && (typeLiteral == null) )
-        {
-            throw new IllegalArgumentException("clazz and typeLiteral cannot both be null");
-        }
-
-        this.clazz = clazz;
-        this.typeLiteral = typeLiteral;
     }
 
     @Override
-    public AnyDeclaration<T> getDeclaration()
-    {
-        return declaration;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public T val()
+    public final T val()
     {
         if ( value == null )
         {
             throw new IllegalArgumentException("No value set for: " + this);
         }
-        return (T)value;
+        return value;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public boolean set(Object value)
+    public final void set(T value)
     {
-        Class<? super T> castClass = getCastClass();
         if ( typeAliasType != null )
         {
-            if ( typeAliasType.getRealType().getRawType().isAssignableFrom(castClass) )
-            {
-                try
-                {
-                    value = typeAliasType.wrap((T)value);
-                }
-                catch ( ClassCastException ignore )
-                {
-                    // nop
-                }
-            }
+            value = typeAliasType.wrap((T)value);
         }
+        this.value = value;
+    }
 
-        try
+    @Override
+    public final boolean canSet(T value)
+    {
+        Class<? super T> localRawType = getRawType();
+        if ( localRawType != null )
         {
-            //noinspection unchecked
-            this.value = castClass.cast(value);
-            return true;
-        }
-        catch ( ClassCastException dummy )
-        {
-            // nop
+            if ( typeAliasType != null )
+            {
+                return typeAliasType.getRealType().getRawType().isAssignableFrom(localRawType);
+            }
+
+            try
+            {
+                localRawType.cast(value);
+                return true;
+            }
+            catch ( ClassCastException dummy )
+            {
+                // dummy
+            }
         }
         return false;
     }
 
-    @Override
-    public String toString()
+    public Class<? super T> getRawType()
     {
-        StringBuilder str = new StringBuilder();
-        str.append((clazz != null) ? ("Any(" + clazz + ")") : ("Any(" + typeLiteral + ")"));
-        if ( typeAliasType != null  )
-        {
-            str.append(" - alias for ").append(typeAliasType);
-        }
-        str.append(" value: ").append(value);
-        return str.toString();
-    }
-
-    private Class<? super T> getCastClass()
-    {
-        return (clazz != null) ? clazz : typeLiteral.getRawType();
+        return rawType;
     }
 }

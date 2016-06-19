@@ -15,10 +15,9 @@
  */
 package io.soabase.halva.nettests;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyDeclaration;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.matcher.Partial;
 import org.junit.Assert;
 import org.junit.Test;
@@ -94,7 +93,7 @@ public class TestCaseClassesAndPatternMatching
      */
     Expr simplifyTop(Expr expr)
     {
-        Any<Expr> e = AnyDeclaration.of(Expr.class).define();
+        Any<Expr> e = new AnyType<Expr>(){};
         return match(expr)
             .caseOf( UnOpTu("-", UnOpTu("-", e)), e::val)   // Double negation
             .caseOf( BinOpTu("+", e, Number(0)), e::val)   // Adding zero
@@ -128,9 +127,9 @@ public class TestCaseClassesAndPatternMatching
      */
     int generalSize(Object x)
     {
-        Any<String> anyStr = AnyDeclaration.of(String.class).define();
+        Any<String> anyStr = new AnyType<String>(){};
 
-        Any<Map> anyMap = AnyDeclaration.of(Map.class).define();
+        Any<Map> anyMap = new AnyType<Map>(){};
         return match(x)
             .caseOf(anyStr, () -> anyStr.val().length())
             .caseOf(anyMap, () -> anyMap.val().size())
@@ -161,7 +160,7 @@ public class TestCaseClassesAndPatternMatching
           scala> withDefault(None)
           res26: Int = 0
      */
-    private static final Any<Optional<Integer>> opt = AnyDeclaration.of(new AnyType<Optional<Integer>>(){}).define();
+    private static final AnyType<Optional<Integer>> opt = new AnyType<Optional<Integer>>(){};
     final Partial<Optional<Integer>> withDefault = partial(new AnyType<Optional<Integer>>(){})
         .caseOf(opt, () -> opt.val().isPresent(), () -> opt.val().get())
         .caseOf(() -> 0);

@@ -224,19 +224,21 @@ abstract class TupleImpl implements Tuple
 
             if ( rhs instanceof Any )
             {
-                if ( !((Any)rhs).set(lhs) )
+                if ( ((Any)rhs).canSet(lhs) )
                 {
-                    return false;
+                    ((Any)rhs).set(lhs);
+                    continue;
                 }
-                continue;
+                return false;
             }
             if ( lhs instanceof Any )
             {
-                if ( !((Any)lhs).set(rhs) )
+                if ( ((Any)lhs).canSet(rhs) )
                 {
-                    return false;
+                    ((Any)lhs).set(rhs);
+                    continue;
                 }
-                continue;
+                return false;
             }
 
             if ( lhs instanceof TupleImpl )

@@ -15,16 +15,15 @@
  */
 package io.soabase.halva.nettests;
 
-import io.soabase.halva.any.Any;
 import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.soabase.halva.any.AnyDeclaration.anyInt;
-import static io.soabase.halva.any.AnyDeclaration.anyString;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PhoneExt.PhoneExt;
 import static io.soabase.halva.nettests.PhoneExt.PhoneExtTu;
@@ -57,8 +56,8 @@ public class TestFromScalaSchool
     @Test
     public void testTheMysteryCase()
     {
-        Any<String> name = anyString.define();
-        Any<Integer> extension = anyInt.define();
+        Any<String> name = new AnyType<String>(){};
+        Any<Integer> extension = new AnyType<Integer>(){};
         ConsList<PhoneExt> extensions = List(PhoneExt("steve", 100), PhoneExt("robey", 200));
         List<PhoneExt> lessThan200 = extensions.stream()
             .filter(e -> match(e).caseOf(PhoneExtTu(name, extension), () -> extension.val() < 200).get())

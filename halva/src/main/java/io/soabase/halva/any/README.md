@@ -47,7 +47,7 @@ list match {
 Halva supports this via Anys. Given existing Anys you can create a container Any that matches parts of a Halva `ConsList`. E.g.
 
 ```java
-AnyType<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
+Any<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
 AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair<String, Integer>>(){}, anyPairList);
 String str = match(list)
     .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())

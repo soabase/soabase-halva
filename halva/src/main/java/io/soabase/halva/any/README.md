@@ -12,37 +12,27 @@ x match {
 This simply isn't possible in Java without some very magical bytecode writing of some kind. Halva is committed to using "plain old" 
 Java so a different solution had to be implemented. The Any package is the solution for Halva's [For Comprehensions](../comprehension/README.md) and [Matching and Extracting](../matcher/README.md). Additionally, Halva [Tuples](../tuple/README.md) recognize the presence of Anys for extraction. 
 
+#### AnyVal vs Any
+
+Halva has two types of "anys", `AnyVal` and `Any`. `AnyVal` is a simple [Boxing](https://en.wikipedia.org/wiki/Object_type_(object-oriented_programming)#Boxing) mechanism that is used with Halva's [For Comprehensions](../comprehension/README.md). `Any` is a boxing and matching mechanism that is used with Halva's [Matching and Extracting](../matcher/README.md).
+
+#### Using an Any
+
 An instance of `Any` is a placeholder for any value of the matching type. During processing, an `Any` instance will compare true for 
-equality to any instance of the enclosed type and the value of that instance will be captured by the `Any` so that it can used later on.
-
-#### Declaration vs Definition 
-
-Like any variable in computer science, Anys must first be declared and then defined when they are used. The declaration can be done once and stored in a static/constant and reused as needed. Definitions are used as needed and are single use containers/boxes for the declared type of the Any. An Any Declaration is created as follows:
+equality to any instance of the enclosed type and the value of that instance will be captured by the `Any` so that it can used later on. Because of [Type Erasure](https://docs.oracle.com/javase/tutorial/java/generics/genMethods.html) you must use the "type token" idiom to partially-reify type information. Thus, you declare/define an `Any` using this pattern:
 
 ```java
-AnyDeclaration<List<String>> anyListOfString = AnyDeclaration.of(new AnyType<List<String>>(){});
-AnyDeclaration<SimpleType.class> anySimple = AnyDeclaration.of(SimpleType.class);
+Any<MyType> anyMyType = new AnyType<MyType>(){}; // the two braces {} are required
 ```
 
-The `AnyDeclaration` class pre-declares common Anys such as `anyInt`, `anyString`, etc.
-
-#### Using a Defined Any
-
-Once you have a declaration, you can define and use it in for-comprehensions and matching. E.g.
+Once you have an Any you can use it in pattern matching. E.g.
 
 ```java
-AnyDeclaration<Pair<String, Integer>> myDecl = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){});
-
+Any<Integer> i = new AnyType<Integer>(){};
+match(aVariable)
+    .caseOf(i, "The value is: " + i.val())
+    .get();
 ...
-
-List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
-    Any<Pair<String, Integer>> foundPair = myDecl.define();
-
-    return forComp(foundPair, list)
-        .filter(() -> foundPair.val()._1.equals(key))
-        .yield(foundPair::val);
-}
-```
 
 #### Function List Matching
 
@@ -57,11 +47,9 @@ list match {
 Halva supports this via Anys. Given existing Anys you can create a container Any that matches parts of a Halva `ConsList`. E.g.
 
 ```java
-Any<Pair<String, Integer>> anyStringIntPair = AnyDeclaration.of(new AnyType<Pair<String, Integer>>(){}).define();
-Any<ConsList<Pair<String, Integer>>> anyPairList = AnyDeclaration.of(new AnyType<ConsList<Pair<String, Integer>>>(){}).define();
-
-Any<Void> patternMatcher = Any.defineAnyHeadAnyTail(anyStringIntPair, anyPairList);
-match(list)
+AnyType<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
+AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair<String, Integer>>(){}, anyPairList);
+String str = match(list)
     .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
     .get();
 ```

@@ -41,7 +41,7 @@ As the matcher executes, [Any](../any/) variables get loaded with extracted valu
 E.g.
 
 ```java
-Any<String> str = AnyDeclaration.anyStr.define();
+Any<String> str = new AnyType<String>(){};
 
 match(anotherString)
     .caseOf(str, () -> "It's " + str.val())
@@ -50,7 +50,8 @@ match(anotherString)
 
 **Extraction and Case Classes**
 
-In combination with Case Classes, Scala allows for extremely rich and complicated pattern matching. Halva attempts to support most of what is commonly used. Halva [Case Classes](../caseclass/README.md) add numerous methods/features to support extraction. In Scala, you can construct case class instances that have extraction variables as arguments. This is not possible in Java, but we can get very close using Halva. Halva adds a static method to every case class that is the name of the case class suffixed with "Tu". E.g. if your case class is named "MyCase", the method is named "MyCaseTu". This method has the same number of arguments as there are fields in the Case Class. However, the argument type is `Object` so that it can accept any value. Thus, you can pass an `Any` value in any argument position (or multiple positions). The Halva matcher is aware of this syntax and does the appropriate matching and extraction when it is encountered.
+In combination with Case Classes, Scala allows for extremely rich and complicated pattern matching. Halva attempts to support most of what is commonly used. Halva [Case Classes](../caseclass/README.md) add numerous methods/features to support extraction. In Scala, you can construct case class instances that have extraction variables as arguments. This is not possible in Java, but we can get very close using Halva. Halva adds a static method to every case class that is the name of the case class suffixed with "Tu". E.g. if your case class is named "MyCase", the method is named "MyCaseTu". This method has the same number of arguments as there are fields in the Case Class. However, the argument type is `Object` so that it can accept any value. Thus, you can pass an 
+`Any` value in any argument position (or multiple positions). The Halva matcher is aware of this syntax and does the appropriate matching and extraction when it is encountered.
 
 E.g.
 
@@ -61,8 +62,8 @@ E.g.
 
 public int findAnyAge(Object obj)
 {
-    Any<String> s = anyString.define();
-    Any<Integer> age = anyInt.define();
+    Any<String> s = new AnyType<String>(){};
+    Any<Integer> age = new AnyType<Integer>(){};
     return match(obj)
         .caseOf(AnimalCaseTu(s, age), age::val)
         .caseOf(ChairCaseTu(3, age), age::val)
@@ -81,7 +82,7 @@ findAnyAge(PersonCase("Tom", 90)) -- 0 - not a chair or animal
 The front portion of a matcher can be saved for later use as a Partial. E.g.
 
 ```
-Any<Integer> anyInt = anyInt.define();
+Any<Integer> anyInt = new AnyType<Integer>(){};
 Partial<Integer> partial = partial(Integer.class)
     .caseOf(8, () -> "eight")
     .caseOf(anyInt, () -> "Number " + anyInt.val());

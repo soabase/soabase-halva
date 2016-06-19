@@ -175,14 +175,13 @@ class ForImpl implements For
     {
         Entry entry = entries.get(index);
         Stream stream = makeWorker(entry);
+        stream = checkFilters(entry, stream);
         if ( (index + 1) < entries.size() )
         {
             stream = stream.flatMap(o -> yieldLoop(index + 1, yielder, consumer));
-            stream = checkFilters(entry, stream);
         }
         else
         {
-            stream = checkFilters(entry, stream);
             stream = stream.map(o -> {
                 if ( yielder != null )
                 {
@@ -235,6 +234,6 @@ class ForImpl implements For
                 return next;
             }
         };
-        return StreamSupport.stream(worker.spliterator(), false);
+        return  StreamSupport.stream(worker.spliterator(), false);
     }
 }

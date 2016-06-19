@@ -25,8 +25,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static io.soabase.halva.any.AnyDeclaration.anyBoolean;
-import static io.soabase.halva.any.AnyDeclaration.anyString;
+import static io.soabase.halva.any.AnyDeclaration.*;
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.sugar.Author.Author;
 import static io.soabase.halva.sugar.Book.Book;
@@ -178,5 +177,18 @@ val result = for {
             .filter(() -> i.val() + j.val() == 32)
             .unit(() -> str.append("(" + i.val() + ", " + j.val() + ")"));
         Assert.assertEquals("(13, 19)(14, 18)(15, 17)(16, 16)", str.toString());
+    }
+
+    @Test
+    public void testIntStream()
+    {
+        Any<Integer> i = anyInt.define();
+        Any<Integer> j = anyInt.define();
+        Any<Integer> from = anyInt.define();
+        List<Integer> result = forComp(i, IntStream.rangeClosed(1, 3))
+            .set(() -> from.set(4 - i.val()))
+            .forCompInt(j, () -> IntStream.rangeClosed(from.val(), 3))
+            .yield(() -> (10 * i.val() + j.val()));
+        Assert.assertEquals(List(13, 22, 23, 31, 32, 33), result);
     }
 }

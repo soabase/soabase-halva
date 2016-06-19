@@ -173,8 +173,7 @@ class ForImpl implements For
     private Stream yieldLoop(int index, Supplier<?> yielder, Runnable consumer)
     {
         Entry entry = entries.get(index);
-        Stream stream = makeWorker(entry);
-        stream = checkFilters(entry, stream);
+        Stream stream = makeStream(entry);
         if ( (index + 1) < entries.size() )
         {
             stream = stream.flatMap(o -> yieldLoop(index + 1, yielder, consumer));
@@ -196,20 +195,16 @@ class ForImpl implements For
         return stream;
     }
 
-    private Stream checkFilters(Entry entry, Stream stream)
+    private Stream makeStream(Entry entry)
     {
+        Stream<?> stream = StreamSupport.stream(entry.stream.get().spliterator(), false).filter(x -> {
+            entry.any.set(x);
+            return true;
+        });
         if ( entry.predicates.size() != 0 )
         {
             stream = stream.filter(ignore -> entry.predicates.stream().allMatch(SimplePredicate::test));
         }
         return stream;
-    }
-
-    private Stream makeWorker(Entry entry)
-    {
-        return StreamSupport.stream(entry.stream.get().spliterator(), false).filter(x -> {
-            entry.any.set(x);
-            return true;
-        });
     }
 }

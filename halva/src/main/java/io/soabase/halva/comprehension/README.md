@@ -31,10 +31,6 @@ The full list of methods that `For` supports is:
 * `<T> List<T> yield(Supplier<T> yielder)` - causes the comprehension to execute. Each iteration of the various iterables will yield the value returned by the yielder lambda.
 * `void unit()` - alternate method of executing the comprehension but without returning/yielding any values.
 
-#### Extraction
-
-Extraction in for-comprehensions works exactly the same way as they do for [Pattern Matching](../matcher/README.md#extraction). Refer to the docs there.
-
 #### Example
 
 ```java

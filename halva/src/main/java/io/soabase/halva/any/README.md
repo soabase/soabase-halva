@@ -32,7 +32,7 @@ Any<Integer> i = new AnyType<Integer>(){};
 match(aVariable)
     .caseOf(i, "The value is: " + i.val())
     .get();
-...
+```
 
 #### Function List Matching
 

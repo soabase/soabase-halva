@@ -55,7 +55,7 @@ public interface For
 
     For filter(SimplePredicate test);
 
-    <T> For set(Runnable value);
+    For set(Runnable value);
 
     <T> List<T> yield(Supplier<T> yielder);
 

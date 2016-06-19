@@ -17,7 +17,6 @@ package io.soabase.halva.comprehension;
 
 import io.soabase.halva.any.Any;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -105,7 +104,7 @@ class ForImpl implements For
     }
 
     @Override
-    public <T> For set(Runnable value)
+    public For set(Runnable value)
     {
         if ( value == null )
         {
@@ -208,32 +207,9 @@ class ForImpl implements For
 
     private Stream makeWorker(Entry entry)
     {
-        Iterable worker = () -> new Iterator()
-        {
-            private Iterator actual;
-            private void check()
-            {
-                if ( actual == null )
-                {
-                    actual = entry.stream.get().iterator();
-                }
-            }
-
-            @Override
-            public boolean hasNext()
-            {
-                check();
-                return actual.hasNext();
-            }
-
-            @Override
-            public Object next()
-            {
-                Object next = actual.next();
-                entry.any.set(next);
-                return next;
-            }
-        };
-        return  StreamSupport.stream(worker.spliterator(), false);
+        return StreamSupport.stream(entry.stream.get().spliterator(), false).filter(x -> {
+            entry.any.set(x);
+            return true;
+        });
     }
 }

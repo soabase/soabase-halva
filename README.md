@@ -27,6 +27,10 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 * [Tuples](../../tree/master/halva/src/main/java/io/soabase/halva/tuple/README.md)
 * [Constructor Sugars](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/README.md)
 
+### Example Generated Files
+
+Many [example generated files](../../tree/master/examples/example-generated/README.md) are shown here.
+
 ### Using Halva
 
 Halva is available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Chalva). Use your favorite build tool and specify:

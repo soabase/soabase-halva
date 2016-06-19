@@ -118,7 +118,7 @@ class SimpleInterpreter
         return match(term).
             caseOf( VarTu(x), () -> lookup( x.val(), e) ).
             caseOf( ConTu(n), () -> unitM( Num(n.val())) ).
-            caseOf( AddTu(l, r), () -> forComp(a, Iterable(interp(l.val(), e))).
+            caseOf( AddTu(l, r), () -> forComp (a, Iterable(interp(l.val(), e)) ).
                                       forComp( b, () -> Iterable(interp(r.val(), e)) ).
                                       forComp( c, () -> Iterable(add(a.val().value(), b.val().value())) ).
                                       yield1( c::val )

@@ -25,7 +25,7 @@ For-comprehensions can be thought of as nested for loops where each nesting prod
 
 The full list of methods that `For` supports is:
 
-* `<T, R> For forComp(Any<T> any, Supplier<Iterable<? extends R>> stream)` - the any is a variable that will hold the result of one iteration of the given iterable. i.e. the given iterable is iterated over storing the result each time into the supplied variable.
+* `<T, R> For forComp(AnyVal<T> any, Supplier<Iterable<? extends R>> stream)` - the any is a variable that will hold the result of one iteration of the given iterable. i.e. the given iterable is iterated over storing the result each time into the supplied variable.
 * `For filter(SimplePredicate test)` - adds a filter to the comprehension. The items flowing through the stream only continue to the next step if they pass the predicate test.
 * `<T> For set(Runnable value)` - a simple method for setting variables at the current point in the execution.
 * `<T> List<T> yield(Supplier<T> yielder)` - causes the comprehension to execute. Each iteration of the various iterables will yield the value returned by the yielder lambda.
@@ -48,9 +48,9 @@ List<Book> books = List(
     Book(List(kenFollet), "The Pillars of the Earth")
                        );
 {
-    Any<Book> book = AnyDeclaration.of(Book.class).define();
-    Any<Author> author = AnyDeclaration.of(Author.class).define();
-    Any<Integer> year = anyInt.define();
+    AnyVal<Book> book = AnyDeclaration.of(Book.class).define();
+    AnyVal<Author> author = AnyDeclaration.of(Author.class).define();
+    AnyVal<Integer> year = anyInt.define();
 
     List<Tuple> result = forComp(book, books)
         .filter(() -> book.val().authors().size() == 1)

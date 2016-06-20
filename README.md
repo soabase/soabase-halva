@@ -13,6 +13,26 @@ No magic, no byte code generation, nothing (too) tricky or magical. Just pure, s
 There are many 3rd party libraries that add support to Java in some form or another for some of Scala's features. However, most of these libraries are large and use their own DSLs or syntax. I want, where possible, to take unmodified Scala (adding semicolons!!) and get it to work in Java. Of course, this isn't literally possible. But, I began to wonder how close I could actually get.
 Some features are pretty trivial: some simple "sugaring" that wouldn't be hard to add. Other features, like Tuples, could be supported just as well in Java as in Scala. There are, however, a few features that are complicated or seemingly impossible in Scala: Case Classes, Pattern Matching/Extractors/Partials, Comprehensions, and Implicits. There's no way to get total compatibility with Scala. But, could I get 50%? 70%? 80%? I searched the net for what people think are the killer features of Scala and attempted to implement them in pure Java. Project Halva is the result.
 
+This is pure Java:
+
+```java
+return match(term).
+caseOf( VarTu(x), () -> lookup( x.val(), e) ).
+caseOf( ConTu(n), () -> unitM( Num(n.val())) ).
+caseOf( AddTu(l, r), () -> forComp (a, Iterable(interp(l.val(), e)) ).
+                          forComp( b, () -> Iterable(interp(r.val(), e)) ).
+                          forComp( c, () -> Iterable(add(a.val().value(), b.val().value())) ).
+                          yield1( c::val )
+       ).
+caseOf( LamTu(x, t), () -> unitM( Fun(arg -> interp(t.val(), Environment(cons(Pair(x.val(), arg), e))))) ).
+caseOf( AppTu(f, t), () -> forComp( a, Iterable(interp(f.val(), e)) ).
+                          forComp( b, () -> Iterable(interp(t.val(), e)) ).
+                          forComp( c, () -> Iterable(apply(a.val().value(), b.val().value())) ).
+                          yield1( c::val )
+       ).
+get();
+```
+
 ### Full Featured Example
 
 To see the results of what Halva can do, please look at the [Simple Interpreter Example](../../tree/master/examples/README.md).

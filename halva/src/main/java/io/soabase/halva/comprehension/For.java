@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 @SuppressWarnings("MethodNameSameAsClassName")
 public interface For
@@ -57,6 +58,10 @@ public interface For
     For filter(SimplePredicate test);
 
     For set(Runnable value);
+
+    <T> Stream<T> stream(Supplier<T> yielder);
+
+    <T> Stream<T> stream();
 
     <T> List<T> yield(Supplier<T> yielder);
 

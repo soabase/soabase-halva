@@ -22,6 +22,7 @@ import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static io.soabase.halva.comprehension.For.forComp;
@@ -188,5 +189,18 @@ val result = for {
             .forCompInt(j, () -> IntStream.rangeClosed(from.val(), 3))
             .yield(() -> (10 * i.val() + j.val()));
         Assert.assertEquals(List(13, 22, 23, 31, 32, 33), result);
+    }
+
+    @Test
+    public void testStreamOverYield()
+    {
+        AnyVal<List<Integer>> i = Any.make();
+        AnyVal<Integer> j = Any.make();
+        List<String> s = forComp(i, List(List(1, 2), List(5, 6)))
+            .forComp(j, i::val)
+            .stream(() -> 10 * j.val())
+            .map(x -> "=" + x)
+            .collect(Collectors.toList());
+        Assert.assertEquals(List("=10", "=20", "=50", "=60"), s);
     }
 }

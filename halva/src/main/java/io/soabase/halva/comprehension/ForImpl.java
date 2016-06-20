@@ -149,6 +149,20 @@ class ForImpl implements For
         yieldLoop(null, consumer);
     }
 
+    @Override
+    public <T> Stream<T> stream(Supplier<T> yielder)
+    {
+        return yieldLoop(0, yielder, null);
+    }
+
+    @Override
+    public <T> Stream<T> stream()
+    {
+        return yieldLoop(0, null, () -> {
+            // NOP
+        });
+    }
+
     private Entry getPreviousEntry()
     {
         if ( entries.size() == 0 )

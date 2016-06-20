@@ -36,7 +36,7 @@ The full list of methods that `match` supports is:
 
 ### Extraction
 
-As the matcher executes, [Any](../any/) variables get loaded with extracted values so that the proceeding lambdas can access them.
+As the matcher executes, [Any](../any/README.md) variables get loaded with extracted values so that the proceeding lambdas can access them.
     
 E.g.
 

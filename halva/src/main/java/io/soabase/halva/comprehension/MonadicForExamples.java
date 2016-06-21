@@ -19,6 +19,7 @@ public class MonadicForExamples {
         ///////////////////////////////////////////////
 
         // Implement these for every type
+        // (Alternative: pass in lambdas/separate-interface - maybe as implicit constructor types)
 
         protected abstract <A> M flatMap(final M m, final Function<A, M> flat_mapper);
         protected abstract <A, B> M map(final M m, final Function<A, B> flatMapper);

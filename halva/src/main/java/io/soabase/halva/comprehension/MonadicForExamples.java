@@ -23,6 +23,7 @@ public class MonadicForExamples {
 
         protected abstract <A> M flatMap(final M m, final Function<A, M> flat_mapper);
         protected abstract <A, B> M map(final M m, final Function<A, B> flatMapper);
+        //TODO - optional filter ... in the annotation case ideally would not provide the .filter call if not present
 
         // Standard for comprehension
         // Really want M to be M<R> but not possible in java

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/halva/halva.iml" filepath="$PROJECT_DIR$/halva/halva.iml" />
+      <module fileurl="file://$PROJECT_DIR$/halva-parent.iml" filepath="$PROJECT_DIR$/halva-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/halva-processor/halva-processor.iml" filepath="$PROJECT_DIR$/halva-processor/halva-processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/halva-test/halva-test.iml" filepath="$PROJECT_DIR$/halva-test/halva-test.iml" />
+    </modules>
+  </component>
+</project>

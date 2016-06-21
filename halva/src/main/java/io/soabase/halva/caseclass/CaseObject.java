@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- Marks an interface as a template for a Case Object
+ * Marks an interface as a template for a Case Object
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)

@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- Marks an interface as a template for a Case Class
+ * Marks a class as a template for a implicit class
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
@@ -44,6 +44,19 @@ public @interface ImplicitClass
      */
     String unsuffix() default "_";
 
+    /**
+     * If non-empty, only the listed context classes will be considered when searching
+     * for implicit injections for this generated implicit class
+     *
+     * @return list of classes or []
+     */
     Class[] limitContexts() default {};
+
+    /**
+     * If non-empty, all <em>but</em> the listed context classes will be considered when
+     * searching for implicit injections for this generated implicit class
+     *
+     * @return list of classes or []
+     */
     Class[] excludeContexts() default {};
 }

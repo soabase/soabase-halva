@@ -20,18 +20,41 @@ import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * Main factory for pattern matching
+ */
 public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<ARG>>
 {
+    /**
+     * Start a pattern matcher on the given value
+     *
+     * @param arg value to match against
+     * @return a new matcher
+     */
     public static <ARG> Matcher<ARG> match(ARG arg)
     {
         return new Matcher<>(arg);
     }
 
+    /**
+     * Start a partial matcher on the given value. The partial can be executed at a later
+     * time by specifying the value using {@link Partial#with(Object)}
+     *
+     * @param marker The argument type
+     * @return a new partial
+     */
     public static <ARG> Partial<ARG> partial(Class<ARG> marker)
     {
         return new PartialImpl<>();
     }
 
+    /**
+     * Start a partial matcher on the given value. The partial can be executed at a later
+     * time by specifying the value using {@link Partial#with(Object)}
+     *
+     * @param marker The argument type
+     * @return a new partial
+     */
     public static <ARG> Partial<ARG> partial(AnyType<ARG> marker)
     {
         return new PartialImpl<>();

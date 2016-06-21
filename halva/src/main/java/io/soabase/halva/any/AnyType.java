@@ -22,6 +22,9 @@ import java.lang.reflect.Type;
 
 import static io.soabase.com.google.inject.internal.MoreTypes.canonicalize;
 
+/**
+ * A type token used to partially reify erased types
+ */
 public abstract class AnyType<T> extends AnyImpl<T, T>
 {
     private final Class<? super T> rawType;

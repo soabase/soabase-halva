@@ -18,20 +18,41 @@ package io.soabase.halva.sugar;
 import io.soabase.halva.tuple.details.Tuple2;
 import java.util.*;
 
-// http://www.grahamlea.com/2014/08/java-8-lambdas-scala-obsolete/
-
+/**
+ * Some conveniences for making immutable collections
+ */
 public class Sugar
 {
+    /**
+     * Same as calling <code>list.cons(newHead)</code>
+     *
+     * @param newHead new head
+     * @param list list
+     * @return new list
+     */
     public static <T> ConsList<T> cons(T newHead, ConsList<T> list)
     {
         return list.cons(newHead);
     }
 
+    /**
+     * Same as calling <code>lhs.concat(rhs)</code>
+     *
+     * @param lhs left-hand list
+     * @param rhs right-hand list
+     * @return new list
+     */
     public static <T> ConsList<T> concat(ConsList<T> lhs, ConsList<T> rhs)
     {
         return lhs.concat(rhs);
     }
 
+    /**
+     * Return a new ConsList consisting of the given items
+     *
+     * @param a items
+     * @return new cons list
+     */
     @SafeVarargs
     public static <T> ConsList<T> List(T... a)
     {
@@ -42,6 +63,12 @@ public class Sugar
         return new ConsListImpl<>(Arrays.asList(a), false);
     }
 
+    /**
+     * Return a new immutable set consisting of the given item
+     *
+     * @param a items
+     * @return a new set
+     */
     @SafeVarargs
     public static <T> Set<T> Set(T... a)
     {
@@ -54,6 +81,13 @@ public class Sugar
         return Collections.unmodifiableSet(set);
     }
 
+    /**
+     * Return a new immutable map consisting of keys,values using
+     * the given pairs
+     *
+     * @param kvs key/value pairs
+     * @return a new map
+     */
     @SafeVarargs
     public static <K, V> Map<K, V> Map(Tuple2<K, V>... kvs)
     {
@@ -69,6 +103,11 @@ public class Sugar
         return Collections.unmodifiableMap(map);
     }
 
+    /**
+     * Return a new empty iterator
+     *
+     * @return iterator
+     */
     public static <T> Iterator<T> Iterator()
     {
         return new Iterator<T>()
@@ -87,6 +126,12 @@ public class Sugar
         };
     }
 
+    /**
+     * Return a new iterator over a single item
+     *
+     * @param object single object to be "iterated" over
+     * @return iterator
+     */
     public static <T> Iterator<T> Iterator(T object)
     {
         return new Iterator<T>()
@@ -112,14 +157,25 @@ public class Sugar
         };
     }
 
-    public static <T> Iterable<T> Iterable(T object)
-    {
-        return () -> Iterator(object);
-    }
-
+    /**
+     * Return a new empty iterable
+     *
+     * @return iterable
+     */
     public static <T> Iterable<T> Iterable()
     {
         return Sugar::Iterator;
+    }
+
+    /**
+     * Return a new iterable over a single item
+     *
+     * @param object single object to be "iterated" over
+     * @return iterable
+     */
+    public static <T> Iterable<T> Iterable(T object)
+    {
+        return () -> Iterator(object);
     }
 
     private Sugar()

@@ -21,9 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- Marks a method in a case class as NOT being a field of the case class.
- i.e. it has the signature of a case class field (no args method with a return value)
- but should not be made an argument to the Case Class
+ * Marks a method in a case class as NOT being a field of the case class.
+ * i.e. it has the signature of a case class field (no args method with a
+ * return value) but should not be made an argument to the Case Class
  */
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.METHOD)

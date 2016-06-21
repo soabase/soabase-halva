@@ -19,6 +19,9 @@ import io.soabase.halva.tuple.details.*;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Main factory for creating Tuples
+ */
 public interface Tuple extends Collection<Object>
 {
     static Tuple0 Tu()

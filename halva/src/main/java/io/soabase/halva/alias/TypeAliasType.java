@@ -18,12 +18,24 @@ package io.soabase.halva.alias;
 import io.soabase.halva.any.AnyType;
 import java.util.function.Function;
 
+/**
+ * Container for the generated alias class that
+ * can be used to convert between types
+ *
+ * @param <T> the real type
+ * @param <A> the alias type
+ */
 public final class TypeAliasType<T, A extends T>
 {
     private final AnyType<T> realType;
     private final AnyType<A> aliasType;
     private final Function<T, A> wrapper;
 
+    /**
+     * @param realType the real type
+     * @param aliasType the alias type
+     * @param wrapper a functor to wrap a real instance into an aliased instance
+     */
     public TypeAliasType(AnyType<T> realType, AnyType<A> aliasType, Function<T, A> wrapper)
     {
         this.realType = realType;
@@ -41,6 +53,12 @@ public final class TypeAliasType<T, A extends T>
         return aliasType;
     }
 
+    /**
+     * Wrap a real instance into an aliased instance
+     *
+     * @param instance real instance
+     * @return alias
+     */
     public A wrap(T instance)
     {
         return wrapper.apply(instance);

@@ -15,9 +15,8 @@
  */
 package io.soabase.halva.matcher;
 
-import io.soabase.halva.comprehension.SimplePredicate;
-
 @FunctionalInterface
-public interface Guard extends SimplePredicate
+public interface Guard
 {
+    boolean test();
 }

@@ -15,6 +15,11 @@
  */
 package io.soabase.halva.implicit;
 
+/**
+ * Classes annotated with {@link ImplicitClass} can specify implicit interfaces
+ * but implementing Implicitly - the parameter to Implicitly is the interface
+ * to implicitly inject
+ */
 public interface Implicitly<T>
 {
 }

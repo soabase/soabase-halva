@@ -18,41 +18,94 @@ package io.soabase.halva.any;
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.sugar.ConsList;
 
+/**
+ * Value boxing any pattern matching mechanism
+ */
 public interface Any<T>
 {
+    /**
+     * Return a new simple box for the given value. The value is initially set to <code>null</code>.
+     *
+     * @return new, null AnyVal
+     */
     static <T> AnyVal<T> make()
     {
         return new AnyVal<>();
     }
 
+    /**
+     * Return a new AnyList that matches the given head of a list and the given tail of a list
+     *
+     * @param head head to match
+     * @param tail tail to match
+     * @return new AnyList
+     */
     static <T> AnyList headTail(T head, ConsList<T> tail)
     {
         return new AnyConsImpl(head, null, tail, null);
     }
 
+    /**
+     * Return a new AnyList that matches the given head of a list and any tail of a list
+     *
+     * @param head head to match
+     * @param tail holder for the value of the tail of the list that matches
+     * @return new AnyList
+     */
     static <T> AnyList headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
     {
         return new AnyConsImpl(head, null, null, tail);
     }
 
+    /**
+     * Return a new AnyList that matches any head of a list and the given tail of a list
+     *
+     * @param head holder for the value of the head of the list that matches
+     * @param tail tail to match
+     * @return new AnyList
+     */
     static <T> AnyList anyHeadTail(Any<T> head, ConsList<T> tail)
     {
         return new AnyConsImpl(null, head, tail, null);
     }
 
+    /**
+     * Return a new AnyList that matches any head of a list and any tail of a list
+     *
+     * @param head holder for the value of the head of the list that matches
+     * @param tail holder for the value of the tail of the list that matches
+     * @return new AnyList
+     */
     static <T> AnyList anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
     {
         return new AnyConsImpl(null, head, null, tail);
     }
 
+    /**
+     * Return a new Any that matches any alias and will hold its value.
+     *
+     * @return Any for the given alias type
+     */
     static <T extends REAL, REAL> Any<T> typeAlias(TypeAliasType<REAL, T> typeAliasType)
     {
         return new AnyImpl<>(null, typeAliasType);
     }
 
+    /**
+     * @return the loaded value or <code>null</code>
+     */
     T val();
 
+    /**
+     * @param value new value for the Any
+     */
     void set(T value);
 
+    /**
+     * Used internally to determine if this Any can load/hold the given value
+     *
+     * @param value value to check
+     * @return true/false
+     */
     boolean canSet(T value);
 }

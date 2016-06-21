@@ -17,11 +17,28 @@ package io.soabase.halva.matcher;
 
 import java.util.Optional;
 
+/**
+ * <em>Terminal operations</em>
+ */
 public interface GettersBase
 {
+    /**
+     * Process all the added cases and return the match
+     *
+     * @return Optional of the match. If the optional is empty, there is no match
+     */
     <T> Optional<T> getOpt();
 
+    /**
+     * Process all the added cases and return the match
+     *
+     * @return the match
+     * @throws MatchError if there are no matches
+     */
     <T> T get();
 
+    /**
+     * Process all the added cases without returning any value
+     */
     void apply();
 }

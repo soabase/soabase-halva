@@ -21,27 +21,123 @@ import java.util.function.Supplier;
 
 public interface CasesBase<ARG, M>
 {
+    /**
+     * Add a case to the pattern matcher with a guard test. If the value matches
+     * and the guard passes, the proc is executed.
+     *
+     * @param lhs possible match
+     * @param guard test
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOf(Tuple lhs, Guard guard, Supplier<T> proc);
 
+    /**
+     * Add a case to the pattern matcher with a guard test. If the value matches
+     * and the guard passes, the proc is executed.
+     *
+     * @param lhs possible match
+     * @param guard test
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOf(Object lhs, Guard guard, Supplier<T> proc);
 
+    /**
+     * Add a case to the pattern matcher. If the value matches,
+     * the proc is executed.
+     *
+     * @param lhs possible match
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOf(Tuple lhs, Supplier<T> proc);
 
+    /**
+     * Add a case to the pattern matcher. If the value matches,
+     * the proc is executed.
+     *
+     * @param lhs possible match
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOf(Object lhs, Supplier<T> proc);
 
+    /**
+     * Add a case to the pattern matcher with a guard test. If the value matches
+     * and the guard passes, the proc is executed.
+     *
+     * @param lhs possible match
+     * @param guard test
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOfUnit(Tuple lhs, Guard guard, Runnable proc);
 
+    /**
+     * Add a case to the pattern matcher with a guard test. If the value matches
+     * and the guard passes, the proc is executed.
+     *
+     * @param lhs possible match
+     * @param guard test
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOfUnit(Object lhs, Guard guard, Runnable proc);
 
+    /**
+     * Add a case to the pattern matcher. If the value matches,
+     * the proc is executed.
+     *
+     * @param lhs possible match
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOfUnit(Tuple lhs, Runnable proc);
 
+    /**
+     * Add a case to the pattern matcher. If the value matches,
+     * the proc is executed.
+     *
+     * @param lhs possible match
+     * @param proc proc to execute on match
+     * @return this
+     */
     <T> M caseOfUnit(Object lhs, Runnable proc);
 
+    /**
+     * The predicate is executed. If the test passes, the proc is executed
+     *
+     * @param tester tester
+     * @param proc proc
+     * @return this
+     */
     <T> M caseOfTest(Predicate<ARG> tester, Supplier<T> proc);
 
+    /**
+     * The predicate is executed. If the test passes, the proc is executed
+     *
+     * @param tester tester
+     * @param proc proc
+     * @return this
+     */
     M caseOfTestUnit(Predicate<ARG> tester, Runnable proc);
 
+    /**
+     * The default case - if there are no matches in any other cases,
+     * the proc is run
+     *
+     * @param proc the proc
+     * @return this
+     */
     <T> M caseOf(Supplier<T> proc);
 
+    /**
+     * The default case - if there are no matches in any other cases,
+     * the proc is run
+     *
+     * @param proc the proc
+     * @return this
+     */
     M caseOfUnit(Runnable proc);
 }

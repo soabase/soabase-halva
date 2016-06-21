@@ -15,6 +15,9 @@
  */
 package io.soabase.halva.any;
 
+/**
+ * Represents portions of a list
+ */
 public abstract class AnyList implements Any<Object>
 {
     AnyList()

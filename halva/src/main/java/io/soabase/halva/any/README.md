@@ -10,11 +10,16 @@ x match {
 ```
 
 This simply isn't possible in Java without some very magical bytecode writing of some kind. Halva is committed to using "plain old" 
-Java so a different solution had to be implemented. The Any package is the solution for Halva's [For Comprehensions](../comprehension/README.md) and [Matching and Extracting](../matcher/README.md). Additionally, Halva [Tuples](../tuple/README.md) recognize the presence of Anys for extraction. 
+Java so a different solution had to be implemented. The Any package is the solution for 
+Halva's [For Comprehensions](../comprehension/README.md) and [Matching and Extracting](../matcher/README.md). 
+Additionally, Halva [Tuples](../tuple/README.md) recognize the presence of Anys for extraction. 
 
 #### AnyVal vs Any
 
-Halva has two types of "anys", `AnyVal` and `Any`. `AnyVal` is a simple [Boxing](https://en.wikipedia.org/wiki/Object_type_(object-oriented_programming)#Boxing) mechanism that is used with Halva's [For Comprehensions](../comprehension/README.md). `Any` is a boxing and matching mechanism that is used with Halva's [Matching and Extracting](../matcher/README.md).
+Halva has two types of "anys", `AnyVal` and `Any`. `AnyVal` is a simple 
+[Boxing](https://en.wikipedia.org/wiki/Object_type_(object-oriented_programming)#Boxing) mechanism 
+that is used with Halva's [For Comprehensions](../comprehension/README.md). `Any` is a boxing and 
+matching mechanism that is used with Halva's [Matching and Extracting](../matcher/README.md).
 
 #### Using an Any
 

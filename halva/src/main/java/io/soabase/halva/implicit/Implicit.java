@@ -21,10 +21,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- Marks an interface as a template for a Case Class
+ * Marks a field, parameter or method as being implicit
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE_USE})
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface Implicit
 {
 }

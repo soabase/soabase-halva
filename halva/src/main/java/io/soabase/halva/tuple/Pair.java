@@ -17,6 +17,9 @@ package io.soabase.halva.tuple;
 
 import io.soabase.halva.tuple.details.Tuple2;
 
+/**
+ * An alias for Tuple2<A, B>
+ */
 public class Pair<A, B> extends Tuple2<A, B>
 {
     public Pair(A _1, B _2)
@@ -25,7 +28,7 @@ public class Pair<A, B> extends Tuple2<A, B>
     }
 
     @SuppressWarnings("MethodNameSameAsClassName")
-    static <A, B> Pair<A, B> Pair(A _1, B _2)
+    public static <A, B> Pair<A, B> Pair(A _1, B _2)
     {
         return new Pair<>(_1, _2);
     }

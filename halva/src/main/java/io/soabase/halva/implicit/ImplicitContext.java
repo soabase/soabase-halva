@@ -21,7 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- Marks an interface as a template for a Case Class
+ * Marks a class as containing implicit source fields and/or methods. Public/static
+ * methods and fields in the class annotated with {@link Implicit} will be candidates
+ * for implicit injection
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
@@ -44,6 +46,17 @@ public @interface ImplicitContext
      */
     String unsuffix() default "_";
 
+    /**
+     * If non-empty, the context only applies to the listed implicit classes
+     *
+     * @return list of classes or []
+     */
     Class[] limits() default {};
+
+    /**
+     * If non-empty, the context applies to all <em>but</em> the listed implicit classes
+     *
+     * @return list of classes or []
+     */
     Class[] excludes() default {};
 }

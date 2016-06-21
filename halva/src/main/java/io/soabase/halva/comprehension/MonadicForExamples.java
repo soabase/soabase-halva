@@ -37,7 +37,7 @@ public class MonadicForExamples {
 
     // EXAMPLES - ideally would generate code so that instead could write:
 
-    //public static class FutureFor<A> extends MonadicFor<A, CompletableFuture<A>> {
+    //@MonadicFor public static class FutureFor<A> extends MonadicFor<A, CompletableFuture<A>> {
     //and it would create a class with signatures, eg instead of:
     //public <R> MonadicFor<M> forComp(final AnyVal<R> any, final Supplier<M> monad_supplier)
     //public <R> M yield(Supplier<R> yield_supplier)

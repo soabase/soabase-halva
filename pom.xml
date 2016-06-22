@@ -292,10 +292,6 @@
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 

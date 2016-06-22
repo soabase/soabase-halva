@@ -30,7 +30,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOf(Tuple lhs, Guard guard, Supplier<T> proc);
+    <T> M caseOf(Tuple lhs, Supplier<Boolean> guard, Supplier<T> proc);
 
     /**
      * Add a case to the pattern matcher with a guard test. If the value matches
@@ -41,7 +41,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOf(Object lhs, Guard guard, Supplier<T> proc);
+    <T> M caseOf(Object lhs, Supplier<Boolean> guard, Supplier<T> proc);
 
     /**
      * Add a case to the pattern matcher. If the value matches,
@@ -72,7 +72,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOfUnit(Tuple lhs, Guard guard, Runnable proc);
+    <T> M caseOfUnit(Tuple lhs, Supplier<Boolean> guard, Runnable proc);
 
     /**
      * Add a case to the pattern matcher with a guard test. If the value matches
@@ -83,7 +83,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOfUnit(Object lhs, Guard guard, Runnable proc);
+    <T> M caseOfUnit(Object lhs, Supplier<Boolean> guard, Runnable proc);
 
     /**
      * Add a case to the pattern matcher. If the value matches,

@@ -133,7 +133,7 @@ public interface For
      * @param test the tester function
      * @return this
      */
-    For filter(SimplePredicate test);
+    For filter(Supplier<Boolean> test);
 
     /**
      * Return a stream view of the for-comprehension so that it can be pipelined

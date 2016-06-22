@@ -60,7 +60,7 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
         return new PartialImpl<>();
     }
 
-    <T> Matcher<ARG> register(Tuple fields, Guard guard, Supplier<T> proc)
+    <T> Matcher<ARG> register(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)
     {
         ExtractObject extracter = new ExtractObject(fields, guard);
         addEntry(new Entry<>(extracter, proc));
@@ -68,7 +68,7 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     }
 
     @Override
-    public <T> Matcher<ARG> caseOf(Tuple fields, Guard guard, Supplier<T> proc)
+    public <T> Matcher<ARG> caseOf(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)
     {
         return register(fields, guard, proc);
     }
@@ -92,19 +92,19 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     }
 
     @Override
-    public <T> Matcher<ARG> caseOf(Object lhs, Guard guard, Supplier<T> proc)
+    public <T> Matcher<ARG> caseOf(Object lhs, Supplier<Boolean> guard, Supplier<T> proc)
     {
         return register(Tuple.Tu(lhs), guard, proc);
     }
 
     @Override
-    public <T> Matcher<ARG> caseOfUnit(Tuple lhs, Guard guard, Runnable proc)
+    public <T> Matcher<ARG> caseOfUnit(Tuple lhs, Supplier<Boolean> guard, Runnable proc)
     {
         return register(lhs, guard, wrap(proc));
     }
 
     @Override
-    public <T> Matcher<ARG> caseOfUnit(Object lhs, Guard guard, Runnable proc)
+    public <T> Matcher<ARG> caseOfUnit(Object lhs, Supplier<Boolean> guard, Runnable proc)
     {
         return register(Tuple.Tu(lhs), guard, wrap(proc));
     }

@@ -30,7 +30,7 @@ class PartialImpl<ARG> implements GettersBase, Partial<ARG>
     }
 
     @Override
-    public <T> Partial<ARG> caseOf(Tuple lhs, Guard guard, Supplier<T> proc)
+    public <T> Partial<ARG> caseOf(Tuple lhs, Supplier<Boolean> guard, Supplier<T> proc)
     {
         matcher.caseOf(lhs, guard, proc);
         return this;
@@ -86,21 +86,21 @@ class PartialImpl<ARG> implements GettersBase, Partial<ARG>
     }
 
     @Override
-    public <T> Partial<ARG> caseOf(Object lhs, Guard guard, Supplier<T> proc)
+    public <T> Partial<ARG> caseOf(Object lhs, Supplier<Boolean> guard, Supplier<T> proc)
     {
         matcher.caseOf(lhs, guard, proc);
         return this;
     }
 
     @Override
-    public <T> Partial<ARG> caseOfUnit(Tuple lhs, Guard guard, Runnable proc)
+    public <T> Partial<ARG> caseOfUnit(Tuple lhs, Supplier<Boolean> guard, Runnable proc)
     {
         matcher.caseOfUnit(lhs, guard, proc);
         return this;
     }
 
     @Override
-    public <T> Partial<ARG> caseOfUnit(Object lhs, Guard guard, Runnable proc)
+    public <T> Partial<ARG> caseOfUnit(Object lhs, Supplier<Boolean> guard, Runnable proc)
     {
         matcher.caseOfUnit(lhs, guard, proc);
         return this;

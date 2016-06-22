@@ -16,13 +16,14 @@
 package io.soabase.halva.matcher;
 
 import io.soabase.halva.tuple.Tuple;
+import java.util.function.Supplier;
 
 class ExtractObject
 {
     private final Tuple values;
-    private final Guard guard;
+    private final Supplier<Boolean> guard;
 
-    ExtractObject(Tuple values, Guard guard)
+    ExtractObject(Tuple values, Supplier<Boolean> guard)
     {
         this.values = values;
         this.guard = guard;
@@ -30,6 +31,6 @@ class ExtractObject
 
     boolean extract(Object from)
     {
-        return values.extract(from) && ((guard == null) || guard.test());
+        return values.extract(from) && ((guard == null) || guard.get());
     }
 }

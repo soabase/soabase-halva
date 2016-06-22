@@ -36,7 +36,7 @@ class ForImpl implements For
     {
         final Any any;
         final Supplier<Iterable<?>> stream;
-        final List<SimplePredicate> predicates = new ArrayList<>();
+        final List<Supplier<Boolean>> predicates = new ArrayList<>();
 
         Entry(Any any, Supplier<Iterable<?>> stream)
         {
@@ -109,7 +109,7 @@ class ForImpl implements For
     }
 
     @Override
-    public For filter(SimplePredicate test)
+    public For filter(Supplier<Boolean> test)
     {
         if ( test == null )
         {
@@ -218,7 +218,7 @@ class ForImpl implements For
         });
         if ( entry.predicates.size() != 0 )
         {
-            stream = stream.filter(ignore -> entry.predicates.stream().allMatch(SimplePredicate::test));
+            stream = stream.filter(ignore -> entry.predicates.stream().allMatch(Supplier::get));
         }
         return stream;
     }

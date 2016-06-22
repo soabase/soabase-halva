@@ -94,6 +94,21 @@ class ForImpl implements For
     }
 
     @Override
+    public <T> For letComp(AnyVal<T> any, Supplier<T> valueSupplier)
+    {
+        if ( valueSupplier == null )
+        {
+            throw new IllegalArgumentException("value cannot be null");
+        }
+        Entry previousEntry = getPreviousEntry();
+        previousEntry.predicates.add(() -> {
+            any.set(valueSupplier.get());
+            return true;
+        });
+        return this;
+    }
+
+    @Override
     public For filter(SimplePredicate test)
     {
         if ( test == null )
@@ -101,21 +116,6 @@ class ForImpl implements For
             throw new IllegalArgumentException("test cannot be null");
         }
         getPreviousEntry().predicates.add(test);
-        return this;
-    }
-
-    @Override
-    public For set(Runnable value)
-    {
-        if ( value == null )
-        {
-            throw new IllegalArgumentException("value cannot be null");
-        }
-        Entry previousEntry = getPreviousEntry();
-        previousEntry.predicates.add(() -> {
-            value.run();
-            return true;
-        });
         return this;
     }
 

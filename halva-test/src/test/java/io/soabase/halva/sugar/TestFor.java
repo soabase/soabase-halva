@@ -56,7 +56,7 @@ val result = for {
         AnyVal<Boolean> does = Any.make();
 
         List<Tuple> ts = forComp(sentence, sentences)
-            .set(() -> does.set(dict.contains(sentence.val())))
+            .letComp(does, () -> dict.contains(sentence.val()))
             .yield(() -> Tu(sentence.val(), does.val()));
         System.out.println(ts);
     }
@@ -185,7 +185,7 @@ val result = for {
         AnyVal<Integer> j = Any.make();
         AnyVal<Integer> from = Any.make();
         List<Integer> result = forComp(i, IntStream.rangeClosed(1, 3))
-            .set(() -> from.set(4 - i.val()))
+            .letComp(from, () -> 4 - i.val())
             .forCompInt(j, () -> IntStream.rangeClosed(from.val(), 3))
             .yield(() -> (10 * i.val() + j.val()));
         Assert.assertEquals(List(13, 22, 23, 31, 32, 33), result);

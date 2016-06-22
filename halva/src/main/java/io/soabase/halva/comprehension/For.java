@@ -115,6 +115,17 @@ public interface For
     <T> For forCompDouble(AnyVal<T> any, Supplier<DoubleStream> stream);
 
     /**
+     * Allows setting of an any value (or the current set of values) at the
+     * current state of the stream
+     *
+     *
+     * @param any value to set
+     * @param valueSupplier function that return the value to assign
+     * @return this
+     */
+    <T> For letComp(AnyVal<T> any, Supplier<T> valueSupplier);
+
+    /**
      * Add filtering to the stream. The test can examine the current state
      * of the any values and return true to accept the current cummulative set of
      * values or false to reject.
@@ -123,15 +134,6 @@ public interface For
      * @return this
      */
     For filter(SimplePredicate test);
-
-    /**
-     * Allows setting of an any value (or the current set of values) at the
-     * current state of the stream
-     *
-     * @param value function that sets values
-     * @return this
-     */
-    For set(Runnable value);
 
     /**
      * Return a stream view of the for-comprehension so that it can be pipelined

@@ -71,7 +71,7 @@ public class Test200908ForComprehensions
     {
         List<Integer> result = forComp(i, range)
             .forCompInt(j, () -> IntStream.rangeClosed(1, i.val()))
-            .set(() -> k.set(i.val() - j.val()))
+            .letComp(k, () -> i.val() - j.val())
             .yield(() -> k.val());
         Assert.assertEquals(List(0, 1, 0, 2, 1, 0, 3, 2, 1, 0, 4, 3, 2, 1, 0), result);
     }

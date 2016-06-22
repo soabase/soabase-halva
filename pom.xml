@@ -5,7 +5,7 @@
     <groupId>io.soabase.halva</groupId>
     <artifactId>halva-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.3-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
 
     <modules>
         <module>halva</module>
@@ -129,8 +129,8 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin-version}</version>
                     <configuration>
-                        <aggregate>true</aggregate>
                         <failOnError>false</failOnError>
+                        <additionalparam>-Xdoclint:none</additionalparam>
                     </configuration>
                 </plugin>
 
@@ -275,6 +275,14 @@
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

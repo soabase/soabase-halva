@@ -2,7 +2,7 @@
 
 **Welcome to Halva - _Idiomatic Scala... in Java!_**
 
-[![Build Status](https://travis-ci.org/randgalt/halva.svg?branch=master)](https://travis-ci.org/randgalt/halva)
+[![Build Status](https://travis-ci.org/Randgalt/halva.svg?branch=master)](https://travis-ci.org/Randgalt/halva)
 
 Halva's goal is to bring as many features from Scala to Java as is possible _without_ byte code generation 
 or magic. Using the features in Java should be as close as possibile to how the features are used in Scala.

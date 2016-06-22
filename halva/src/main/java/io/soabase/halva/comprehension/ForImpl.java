@@ -53,7 +53,7 @@ class ForImpl implements For
         }
         if ( stream == null )
         {
-            throw new IllegalArgumentException("monad_supplier cannot be null");
+            throw new IllegalArgumentException("stream cannot be null");
         }
         entries.add(new Entry(any, () -> stream));
     }
@@ -67,7 +67,7 @@ class ForImpl implements For
         }
         if ( stream == null )
         {
-            throw new IllegalArgumentException("monad_supplier cannot be null");
+            throw new IllegalArgumentException("stream cannot be null");
         }
         //noinspection Convert2MethodRef
         Supplier<Iterable<?>> wrapped = () -> stream.get();

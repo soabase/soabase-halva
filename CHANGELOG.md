@@ -1,5 +1,16 @@
 # Change Log
 
+## [halva-0.1.2](https://github.com/Randgalt/halva/tree/halva-0.1.2) (2016-06-22)
+[Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.1...halva-0.1.2)
+
+**Fixed bugs:**
+
+- exception with set\(\) expression [\#6](https://github.com/Randgalt/halva/issues/6)
+
+**Closed issues:**
+
+- Should For.yield not return a Stream instead of a List? [\#13](https://github.com/Randgalt/halva/issues/13)
+
 ## [halva-0.1.1](https://github.com/Randgalt/halva/tree/halva-0.1.1) (2016-06-18)
 [Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.0...halva-0.1.1)
 

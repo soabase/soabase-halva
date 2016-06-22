@@ -1,5 +1,3 @@
-### *PREVIEW - ALPHA*
-
 ## Halva
 
 **Welcome to Halva - _Idiomatic Scala... in Java!_**

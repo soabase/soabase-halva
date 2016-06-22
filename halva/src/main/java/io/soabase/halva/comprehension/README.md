@@ -1,5 +1,3 @@
-### *PREVIEW - ALPHA*
-
 ### For Comprehensions
 
 ----

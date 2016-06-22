@@ -1,5 +1,3 @@
-### *PREVIEW - ALPHA*
-
 ### Simple Interpreter Example
 
 This is an older Scala file I found on the net here: 

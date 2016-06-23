@@ -23,7 +23,7 @@ public class TestOptionFor {
 
         final Optional<String> opt =
                 OptionFor
-                        .forComp(a, (Optional)Optional.of("a"))
+                        .forComp(a, Optional.of("a"))
                         .forComp(c, () -> Optional.empty())
                         .forComp(d, () -> Optional.of(a.val().length() + c.val()))
                         .yield(() -> d.val().toString())

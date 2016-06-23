@@ -41,10 +41,6 @@ public class FutureFor {
         _delegate.letComp(any, let_supplier);
         return this;
     }
-    public FutureFor filter(final Supplier<Boolean> test) {
-        _delegate.filter(test);
-        return this;
-    }
 
     // Internal
 

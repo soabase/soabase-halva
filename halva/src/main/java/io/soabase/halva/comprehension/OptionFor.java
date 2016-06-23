@@ -52,10 +52,10 @@ public class OptionFor {
 
     // Internal
 
-    protected final MonadicFor<Optional> _delegate;
-    protected OptionFor(final MonadicFor<Optional> delegate) {
+    private final MonadicFor<Optional> _delegate;
+    private OptionFor(final MonadicFor<Optional> delegate) {
         _delegate = delegate;
     }
-    protected static OptionForWrapper _wrapper = new OptionForWrapper();
+    private static final OptionForWrapper _wrapper = new OptionForWrapper();
 
 }

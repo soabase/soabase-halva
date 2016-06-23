@@ -48,10 +48,10 @@ public class FutureFor {
 
     // Internal
 
-    protected final MonadicFor<CompletableFuture> _delegate;
-    protected FutureFor(final MonadicFor<CompletableFuture> delegate) {
+    private final MonadicFor<CompletableFuture> _delegate;
+    private FutureFor(final MonadicFor<CompletableFuture> delegate) {
         _delegate = delegate;
     }
-    protected static FutureForWrapper _wrapper = new FutureForWrapper();
+    private static final FutureForWrapper _wrapper = new FutureForWrapper();
 
 }

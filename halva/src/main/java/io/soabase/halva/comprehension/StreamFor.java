@@ -52,10 +52,10 @@ public class StreamFor {
 
     // Internal
 
-    protected final MonadicFor<Stream> _delegate;
-    protected StreamFor(final MonadicFor<Stream> delegate) {
+    private final MonadicFor<Stream> _delegate;
+    private StreamFor(final MonadicFor<Stream> delegate) {
         _delegate = delegate;
     }
-    protected static StreamForWrapper _wrapper = new StreamForWrapper();
+    private static final StreamForWrapper _wrapper = new StreamForWrapper();
 
 }

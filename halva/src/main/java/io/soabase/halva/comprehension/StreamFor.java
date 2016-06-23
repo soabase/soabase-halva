@@ -1,61 +1,54 @@
+/**
+ * Copyright 2016 Jordan Zimmerman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// Auto generated from com.company.StreamForFactory by Soabase MonadicFor annotation processor
 package io.soabase.halva.comprehension;
 
 import io.soabase.halva.any.AnyVal;
-
-import java.util.stream.Stream;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-/** For comprehension working with Stream
- * Created by Alex on 6/22/2016.
- */
-public class StreamFor {
+public class StreamFor
+{
+    private final MonadicForImpl<Stream> delegate;
 
-    // Things that need to change
-
-    public static class StreamForWrapper implements MonadicFor.MonadicForWrapper<Stream> {
-
-        public <A> Stream flatMap(final Stream m, final Function<A, Stream> flat_mapper) {
-            return m.flatMap(flat_mapper);
-        }
-        public <A, B> Stream map(final Stream m, final Function<A, B> mapper) {
-            return m.map(mapper);
-        }
-        public <A, B> Stream filter(final Stream m, final Predicate<A> test) {
-            return m.filter(test);
-        }
-    }
-    public static <R> StreamFor forComp(final AnyVal<R> any, final Stream<R> starting_monad) {
-        return new StreamFor(new MonadicForImpl(any, starting_monad, _wrapper));
-    }
-    public <R> StreamFor forComp(final AnyVal<R> any, final Supplier<Stream<R>> monad_supplier) {
-        _delegate.forComp(any, (Supplier<Stream>)(Supplier<?>)monad_supplier);
-        return this;
-    }
-    public <R> Stream<R> yield(Supplier<R> yield_supplier) {
-        return _delegate.yield(yield_supplier);
+    private StreamFor(MonadicForImpl<Stream> delegate) {
+        this.delegate = delegate;
     }
 
-    // Things that can stay the same (can be templated/annotated)
-
-    // External
-
-    public <T> StreamFor letComp(final AnyVal<T> any, final Supplier<T> let_supplier) {
-        _delegate.letComp(any, let_supplier);
-        return this;
+    public static <A> StreamFor forComp(AnyVal<A> any, Stream<A> firstMonad) {
+        return new StreamFor(new MonadicForImpl<>(any, firstMonad, new StreamForFactory(), MonadicForImpl.Method.INLINE_SETTERS));
     }
-    public StreamFor filter(final Supplier<Boolean> test) {
-        _delegate.filter(test);
+
+    public <A> StreamFor forComp(AnyVal<A> any, Supplier<? extends Stream<A>> supplier) {
+        delegate.forComp(any, supplier);
         return this;
     }
 
-    // Internal
-
-    protected final MonadicFor<Stream> _delegate;
-    protected StreamFor(final MonadicFor<Stream> delegate) {
-        _delegate = delegate;
+    @SuppressWarnings("unchecked")
+    public <A> Stream<A> yield(Supplier<A> supplier) {
+        return delegate.yield(supplier);
     }
-    protected static StreamForWrapper _wrapper = new StreamForWrapper();
 
+    public <R> StreamFor letComp(AnyVal<R> any, Supplier<R> supplier) {
+        delegate.letComp(any, supplier);
+        return this;
+    }
+
+    public StreamFor filter(Supplier<Boolean> supplier) {
+        delegate.filter(supplier);
+        return this;
+    }
 }

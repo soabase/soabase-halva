@@ -1,43 +1,50 @@
+/**
+ * Copyright 2016 Jordan Zimmerman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.soabase.halva.comprehension;
 
-import io.soabase.halva.any.AnyVal;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.Function;
-
-/** Interface class for the non-type-safe version "for comprehension" for Monadic classes
- *  TODO add documentation for creating new types
- */
-public interface MonadicFor<M> {
-
-    /** Defines how a given (monadic) type should implement map/flatMap and optionally filter
-     *  The specification isn't type safe so you'll have to be careful for these 2 lines...
-     *  (which has meaning in some cases, eg Optional/Stream and not in others, eg CompletableFuture, Validation)
+@Retention(RetentionPolicy.SOURCE)
+@Target(ElementType.TYPE)
+public @interface MonadicFor
+{
+    /**
+     * Suffix for the generated class. i.e. if the template is "Foo" the generated class is
+     * named "FooFor" (or whatever the suffix is)
      *
-     * @param <MM> - the monad class, ie the same as the `M` in the parent class
+     * @return suffix
      */
-    interface MonadicForWrapper<MM> {
-        <A> MM flatMap(final MM m, final Function<A, MM> flat_mapper);
-        <A, B> MM map(final MM m, final Function<A, B> flatMapper);
-        default MM filter(final MM m, Predicate predicate) { throw new RuntimeException("NO FILTER"); }
-    }
+    String suffix() default "For";
 
     /**
-     * Constructor - intended to be replaced by the type specific implementation
-     * (which will then hide away the `wrapper`)
-     * @param any - the variable which inside the for comprehension contains the value of the value(s) inside the `starting_monad`
-     * @param starting_monad
-     * @param wrapper
-     * @param <M> - the type of the monad
-     * @param <R> - the type of the variable to which the values inside the monad from this stage are assigned
-     * @return
+     * If a non-empty string, is used instead of {@link #suffix()}. The
+     * generated class name is the name of the template <em>minus</em> the value
+     * of this attribute.
+     *
+     * @return string suffix to remove to produce the class name
      */
-    static <M, R> MonadicFor<M> forComp(final AnyVal<R> any, final M starting_monad, MonadicForWrapper<M> wrapper) {
-        return new MonadicForImpl(any, starting_monad, wrapper);
-    }
-    <R> MonadicFor<M> forComp(final AnyVal<R> any, final Supplier<M> monad_supplier);
-    <T> MonadicFor<M> letComp(final AnyVal<T> any, final Supplier<T> let_supplier);
-    MonadicFor<M> filter(final Supplier<Boolean> test);
-    <R> M yield(Supplier<R> yield_supplier);
+    String unsuffix() default "Factory";
+
+    /**
+     * If the argument to {@link MonadicForWrapper} takes more
+     * than 1 type parameter you must specify which one is monadic. The default
+     * is to use the last type parameter.
+     */
+    int monadicParameterPosition = -1;
 }

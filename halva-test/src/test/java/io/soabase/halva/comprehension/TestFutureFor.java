@@ -1,21 +1,32 @@
-package io.soabase.halva.forcomp;
+/**
+ * Copyright 2016 Jordan Zimmerman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.soabase.halva.comprehension;
 
+import com.company.*;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
-import io.soabase.halva.comprehension.FutureFor;
 import org.junit.Test;
 import org.junit.Assert;
 
-
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Created by Alex on 6/22/2016.
- */
 public class TestFutureFor {
 
     @Test
-    public void test_futureFor() throws Exception {
+    public void testFutureFor() throws Exception {
         final AnyVal<String> a = Any.make();
         final AnyVal<String> b = Any.make();
         final AnyVal<Integer> c = Any.make();

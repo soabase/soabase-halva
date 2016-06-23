@@ -64,7 +64,7 @@ class PassCreate implements Pass
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName aliasQualifiedClassName = ClassName.get(packageName, environment.getCaseClassSimpleName(typeElement, spec.getAnnotationReader()));
+        ClassName aliasQualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(typeElement, spec.getAnnotationReader()));
 
         environment.log("Generating TypeAlias for " + templateQualifiedClassName + " as " + aliasQualifiedClassName);
 

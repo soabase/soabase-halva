@@ -62,6 +62,16 @@ public class AnnotationReader
         return false;
     }
 
+    public int getInt(String named)
+    {
+        Optional<? extends AnnotationValue> found = find(named);
+        if ( found.isPresent() )
+        {
+            return ((Integer)found.get().getValue());
+        }
+        return 0;
+    }
+
     public String getString(String named)
     {
         Optional<? extends AnnotationValue> found = find(named);

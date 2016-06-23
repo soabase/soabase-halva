@@ -65,7 +65,7 @@ class PassCreate implements Pass
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName implicitQualifiedClassName = ClassName.get(packageName, environment.getCaseClassSimpleName(typeElement, spec.getAnnotationReader()));
+        ClassName implicitQualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(typeElement, spec.getAnnotationReader()));
 
         environment.log("Generating ImplicitClass for " + templateQualifiedClassName + " as " + implicitQualifiedClassName);
         List<Modifier> modifiers = typeElement.getModifiers().stream().filter(m -> m != Modifier.STATIC).collect(Collectors.toList());

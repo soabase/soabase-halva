@@ -1,3 +1,4 @@
 io.soabase.halva.processor.caseclass.CaseClassProcessor
 io.soabase.halva.processor.alias.TypeAliasProcessor
 io.soabase.halva.processor.implicit.ImplicitClassProcessor
+io.soabase.halva.processor.comprehension.MonadicForClassProcessor

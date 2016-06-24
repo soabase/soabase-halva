@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Auto generated from com.company.StreamForFactory by Soabase MonadicFor annotation processor
+// Auto generated from io.soabase.halva.comprehension.StreamForFactory by Soabase MonadicFor annotation processor
 package io.soabase.halva.comprehension;
 
 import io.soabase.halva.any.AnyVal;
+import java.lang.Boolean;
+import java.lang.SuppressWarnings;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class StreamFor
-{
+public class StreamFor {
     private final MonadicForImpl<Stream> delegate;
 
     private StreamFor(MonadicForImpl<Stream> delegate) {
         this.delegate = delegate;
     }
 
-    public static <A> StreamFor forComp(AnyVal<A> any, Stream<A> firstMonad) {
-        return new StreamFor(new MonadicForImpl<>(any, firstMonad, new StreamForFactory()));
+    public static StreamFor start() {
+        return new StreamFor(new MonadicForImpl<>(new StreamForFactory()));
     }
 
     public <A> StreamFor forComp(AnyVal<A> any, Supplier<? extends Stream<A>> supplier) {

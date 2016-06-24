@@ -76,7 +76,7 @@ class PassCreate implements Pass
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
         addConstructorAndDelegate(builder, spec);
-        addStaticBuilder(builder, spec, specData, generatedQualifiedClassName);
+        addStaticBuilder(builder, spec, generatedQualifiedClassName);
         addForComp(builder, generatedQualifiedClassName, specData);
         addYield(builder, specData);
         addLetComp(builder, generatedQualifiedClassName);
@@ -192,17 +192,14 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, SpecData specData, ClassName generatedQualifiedClassName)
+    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, ClassName generatedQualifiedClassName)
     {
         CodeBlock.Builder codeBuilder = CodeBlock.builder()
-            .addStatement("return new $T(new $T<>(any, firstMonad, new $T()))", generatedQualifiedClassName, ClassName.get(MonadicForImpl.class), spec.getAnnotatedElement());
+            .addStatement("return new $T(new $T<>(new $T()))", generatedQualifiedClassName, ClassName.get(MonadicForImpl.class), spec.getAnnotatedElement());
 
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("forComp")
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("start")
             .returns(generatedQualifiedClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .addTypeVariables(specData.typeVariableNames)
-            .addParameter(ParameterSpec.builder(specData.anyName, "any").build())
-            .addParameter(ParameterSpec.builder(specData.parameterizedMonadicName, "firstMonad").build())
             .addCode(codeBuilder.build())
             ;
 

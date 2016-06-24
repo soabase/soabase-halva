@@ -32,8 +32,8 @@ public class TestOptionFor {
         final AnyVal<Integer> d = Any.make();
 
         final Optional<String> opt =
-                OptionalFor
-                        .forComp(a, Optional.of("a"))
+                OptionalFor.start()
+                        .forComp(a, () -> Optional.of("a"))
                         .forComp(c, Optional::empty)
                         .forComp(d, () -> Optional.of(a.val().length() + c.val()))
                         .yield(() -> d.val().toString())

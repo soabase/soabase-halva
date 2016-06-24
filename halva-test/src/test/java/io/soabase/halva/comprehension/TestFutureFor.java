@@ -33,8 +33,8 @@ public class TestFutureFor {
         final AnyVal<Integer> d = Any.make();
 
         final CompletableFuture<Integer> f =
-                FutureFor
-                        .forComp(a, CompletableFuture.completedFuture("a"))
+                FutureFor.start()
+                        .forComp(a, () -> CompletableFuture.completedFuture("a"))
                         .forComp(b, () -> CompletableFuture.completedFuture(a.val() + "b"))
                         .letComp(c, () -> b.val().length())
                         .forComp(d, () -> CompletableFuture.completedFuture(c.val()))

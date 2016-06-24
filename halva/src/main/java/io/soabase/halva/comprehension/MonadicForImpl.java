@@ -26,6 +26,15 @@ import java.util.function.Supplier;
  */
 public class MonadicForImpl<M>
 {
+    public <R> MonadicForImpl(MonadicForWrapper<M> wrapper)
+    {
+        if ( wrapper == null )
+        {
+            throw new IllegalArgumentException("wrapper cannot be null");
+        }
+        this.wrapper = wrapper;
+    }
+
     public <R> MonadicForImpl(AnyVal<R> any, M startingMonad, MonadicForWrapper<M> wrapper)
     {
         if ( any == null )

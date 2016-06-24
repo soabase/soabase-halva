@@ -32,7 +32,7 @@ class ForImpl implements For
 
     ForImpl(AnyVal any, Iterable stream)
     {
-        streamFor = StreamFor.forComp(any, StreamSupport.stream(stream.spliterator(), false));
+        streamFor = StreamFor.start().forComp(any, () -> StreamSupport.stream(stream.spliterator(), false));
     }
 
     @Override

@@ -14,8 +14,8 @@ public class FutureFor {
         this.delegate = delegate;
     }
 
-    public static <A> FutureFor forComp(AnyVal<A> any, CompletableFuture<A> firstMonad) {
-        return new FutureFor(new MonadicForImpl<>(any, firstMonad, new FutureForFactory()));
+    public static FutureFor start() {
+        return new FutureFor(new MonadicForImpl<>(new FutureForFactory()));
     }
 
     public <A> FutureFor forComp(AnyVal<A> any, Supplier<? extends CompletableFuture<A>> supplier) {

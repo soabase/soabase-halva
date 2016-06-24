@@ -15,8 +15,8 @@ public class OptionalFor {
         this.delegate = delegate;
     }
 
-    public static <A> OptionalFor forComp(AnyVal<A> any, Optional<A> firstMonad) {
-        return new OptionalFor(new MonadicForImpl<>(any, firstMonad, new OptionalForFactory()));
+    public static OptionalFor start() {
+        return new OptionalFor(new MonadicForImpl<>(new OptionalForFactory()));
     }
 
     public <A> OptionalFor forComp(AnyVal<A> any, Supplier<? extends Optional<A>> supplier) {

@@ -76,7 +76,7 @@ class PassCreate implements Pass
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
         addConstructorAndDelegate(builder, spec);
-        addStaticBuilder(builder, spec, specData, generatedQualifiedClassName, hasFilter);
+        addStaticBuilder(builder, spec, specData, generatedQualifiedClassName);
         addForComp(builder, generatedQualifiedClassName, specData);
         addYield(builder, specData);
         addLetComp(builder, generatedQualifiedClassName);
@@ -192,10 +192,10 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, SpecData specData, ClassName generatedQualifiedClassName, boolean hasFilter)
+    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, SpecData specData, ClassName generatedQualifiedClassName)
     {
         CodeBlock.Builder codeBuilder = CodeBlock.builder()
-            .addStatement("return new $T(new $T<>(any, firstMonad, new $T(), MonadicForImpl.Method.$L))", generatedQualifiedClassName, ClassName.get(MonadicForImpl.class), spec.getAnnotatedElement(), hasFilter ? "INLINE_SETTERS" : "MAPPED_SETTERS");
+            .addStatement("return new $T(new $T<>(any, firstMonad, new $T()))", generatedQualifiedClassName, ClassName.get(MonadicForImpl.class), spec.getAnnotatedElement());
 
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("forComp")
             .returns(generatedQualifiedClassName)

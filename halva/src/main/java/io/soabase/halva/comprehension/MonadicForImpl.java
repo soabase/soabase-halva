@@ -26,17 +26,10 @@ import java.util.function.Supplier;
  */
 public class MonadicForImpl<M>
 {
-    public enum Method
-    {
-        MAPPED_SETTERS,
-        INLINE_SETTERS // requires filter support
-    }
-
-    public <R> MonadicForImpl(AnyVal<R> any, M startingMonad, MonadicForWrapper<M> wrapper, Method method)
+    public <R> MonadicForImpl(AnyVal<R> any, M startingMonad, MonadicForWrapper<M> wrapper)
     {
         this.wrapper = wrapper;
-        this.method = method;
-        entries.add(new Entry<>(any, () -> startingMonad, null));
+        entries.add(new Entry<>(any, () -> startingMonad));
     }
 
     /////////////////////////////////////////////////////////////
@@ -44,24 +37,14 @@ public class MonadicForImpl<M>
     @SuppressWarnings("unchecked")
     public <R> MonadicForImpl<M> forComp(AnyVal<R> any, Supplier<? extends M> monadSupplier)
     {
-        entries.add(new Entry(any, monadSupplier, null));
+        entries.add(new Entry(any, monadSupplier));
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public <T> MonadicForImpl<M> letComp(AnyVal<T> any, Supplier<T> letSupplier)
     {
-        if ( method == Method.INLINE_SETTERS )
-        {
-            filter(() -> {
-                any.set(letSupplier.get());
-                return true;
-            });
-        }
-        else
-        {
-            entries.add(new Entry(any, null, letSupplier));
-        }
+        getPreviousEntry().setters.add(() -> any.set(letSupplier.get()));
         return this;
     }
 
@@ -73,11 +56,7 @@ public class MonadicForImpl<M>
 
     public <R> M yield(Supplier<R> yieldSupplier)
     {
-        if ( method == Method.INLINE_SETTERS )
-        {
-            return yieldLoopInline(0, yieldSupplier);
-        }
-        return yieldLoopMapped(0, yieldSupplier, null);
+        return yieldLoopInline(0, yieldSupplier);
     }
 
     /////////////////////////////////////////////////////////////
@@ -85,7 +64,6 @@ public class MonadicForImpl<M>
     // INTERNALS
 
     private final MonadicForWrapper<M> wrapper;
-    private final Method method;
 
     // From ForImpl
 
@@ -95,18 +73,13 @@ public class MonadicForImpl<M>
     {
         final Any any;
         final Supplier<M> monadSupplier;
-        final Supplier<?> setter;
         final List<Supplier<Boolean>> predicates = new ArrayList<>();
+        final List<Runnable> setters = new ArrayList<>();
 
-        Entry(Any any, Supplier<M> stream, Supplier<?> setter)
+        Entry(Any any, Supplier<M> stream)
         {
-            if ( (stream != null) && (setter != null) )
-            {
-                throw new IllegalStateException("Internal error. Can't have both a stream and a setter");
-            }
             this.any = any;
             this.monadSupplier = stream;
-            this.setter = setter;
         }
     }
 
@@ -123,22 +96,22 @@ public class MonadicForImpl<M>
     private M yieldLoopInline(int index, Supplier<?> yielder)
     {
         Entry<M> entry = entries.get(index);
-        M stream;
-        if ( entry.monadSupplier != null )
-        {
-            stream = wrapper.filter(entry.monadSupplier.get(), o -> {
-                entry.any.set(o);
-                return true;
-            });
-        }
-        else
-        {
-            throw new IllegalStateException("inline yield does not support setter");
-        }
+        M stream = wrapper.map(entry.monadSupplier.get(), o -> {
+            entry.any.set(o);
+            return o;
+        });
 
         if ( entry.predicates.size() != 0 )
         {
             stream = wrapper.filter(stream, o -> entry.predicates.stream().allMatch(Supplier::get));
+        }
+
+        if ( entry.setters.size() != 0 )
+        {
+            stream = wrapper.map(stream, o -> {
+                entry.setters.stream().forEach(Runnable::run);
+                return o;
+            });
         }
 
         if ( (index + 1) < entries.size() )
@@ -151,46 +124,5 @@ public class MonadicForImpl<M>
         }
         return stream;
     }
-
-    @SuppressWarnings("unchecked")
-    private M yieldLoopMapped(int index, Supplier<?> yielder, M prevStream)
-    {
-        final Entry<M> entry = entries.get(index);
-        M monad = prevStream;
-        if ( null != entry.monadSupplier )
-        {
-            monad = entry.monadSupplier.get();
-            wrapper.map(monad, o -> {
-                entry.any.set(o);
-                return o;
-            });
-        }
-        else if ( null != entry.setter )
-        { // this is a setter
-            monad = prevStream;
-            wrapper.map(monad, o -> {
-                entry.any.set(entry.setter.get());
-                return o;
-            });
-        }
-
-        // Test:
-        for ( Supplier<Boolean> test : entry.predicates )
-        {
-            monad = wrapper.filter(monad, __ -> test.get());
-        }
-        // Map
-        if ( (index + 1) < entries.size() )
-        {
-            final M nextStageMonad = monad;
-            monad = wrapper.flatMap(monad, o -> yieldLoopMapped(index + 1, yielder, nextStageMonad));
-        }
-        else
-        {
-            monad = wrapper.map(monad, o -> yielder.get());
-        }
-        return monad;
-    }
-
 }
 

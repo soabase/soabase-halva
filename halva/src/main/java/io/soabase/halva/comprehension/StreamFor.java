@@ -29,7 +29,7 @@ public class StreamFor
     }
 
     public static <A> StreamFor forComp(AnyVal<A> any, Stream<A> firstMonad) {
-        return new StreamFor(new MonadicForImpl<>(any, firstMonad, new StreamForFactory(), MonadicForImpl.Method.INLINE_SETTERS));
+        return new StreamFor(new MonadicForImpl<>(any, firstMonad, new StreamForFactory()));
     }
 
     public <A> StreamFor forComp(AnyVal<A> any, Supplier<? extends Stream<A>> supplier) {

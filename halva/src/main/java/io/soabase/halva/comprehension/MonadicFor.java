@@ -46,5 +46,5 @@ public @interface MonadicFor
      * than 1 type parameter you must specify which one is monadic. The default
      * is to use the last type parameter.
      */
-    int monadicParameterPosition = -1;
+    int monadicParameterPosition() default -1;
 }

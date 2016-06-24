@@ -20,6 +20,6 @@ MonadicFor attributes `suffix()` and `unsuffix()`.
 #### Examples
 
 | Source Class     | Generated Class     |
--------------------------------------------
+|------------------|----------------------|
 | [FutureForFactory.java](../../../../../../../../examples/example-generated/FutureForFactory.java) | [FutureFor.java](../../../../../../../../examples/example-generated/FutureFor.java) | 
 | [OptionalForFactory.java](../../../../../../../../examples/example-generated/OptionalForFactory.java) | [FutureFor.java](../../../../../../../../examples/example-generated/OptionalFor.java) | 

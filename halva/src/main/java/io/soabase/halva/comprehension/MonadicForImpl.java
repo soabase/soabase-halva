@@ -28,6 +28,18 @@ public class MonadicForImpl<M>
 {
     public <R> MonadicForImpl(AnyVal<R> any, M startingMonad, MonadicForWrapper<M> wrapper)
     {
+        if ( any == null )
+        {
+            throw new IllegalArgumentException("any cannot be null");
+        }
+        if ( startingMonad == null )
+        {
+            throw new IllegalArgumentException("startingMonad cannot be null");
+        }
+        if ( wrapper == null )
+        {
+            throw new IllegalArgumentException("wrapper cannot be null");
+        }
         this.wrapper = wrapper;
         entries.add(new Entry<>(any, () -> startingMonad));
     }
@@ -37,6 +49,14 @@ public class MonadicForImpl<M>
     @SuppressWarnings("unchecked")
     public <R> MonadicForImpl<M> forComp(AnyVal<R> any, Supplier<? extends M> monadSupplier)
     {
+        if ( any == null )
+        {
+            throw new IllegalArgumentException("any cannot be null");
+        }
+        if ( monadSupplier == null )
+        {
+            throw new IllegalArgumentException("monadSupplier cannot be null");
+        }
         entries.add(new Entry(any, monadSupplier));
         return this;
     }
@@ -44,18 +64,34 @@ public class MonadicForImpl<M>
     @SuppressWarnings("unchecked")
     public <T> MonadicForImpl<M> letComp(AnyVal<T> any, Supplier<T> letSupplier)
     {
+        if ( any == null )
+        {
+            throw new IllegalArgumentException("any cannot be null");
+        }
+        if ( letSupplier == null )
+        {
+            throw new IllegalArgumentException("letSupplier cannot be null");
+        }
         getPreviousEntry().filters.add(new Filters(null, () -> any.set(letSupplier.get())));
         return this;
     }
 
     public MonadicForImpl<M> filter(Supplier<Boolean> test)
     {
+        if ( test == null )
+        {
+            throw new IllegalArgumentException("test cannot be null");
+        }
         getPreviousEntry().filters.add(new Filters(test, null));
         return this;
     }
 
     public <R> M yield(Supplier<R> yieldSupplier)
     {
+        if ( yieldSupplier == null )
+        {
+            throw new IllegalArgumentException("yieldSupplier cannot be null");
+        }
         return yieldLoopInline(0, yieldSupplier);
     }
 

@@ -44,13 +44,13 @@ public class MonadicForImpl<M>
     @SuppressWarnings("unchecked")
     public <T> MonadicForImpl<M> letComp(AnyVal<T> any, Supplier<T> letSupplier)
     {
-        getPreviousEntry().setters.add(() -> any.set(letSupplier.get()));
+        getPreviousEntry().filters.add(new Filters(null, () -> any.set(letSupplier.get())));
         return this;
     }
 
     public MonadicForImpl<M> filter(Supplier<Boolean> test)
     {
-        getPreviousEntry().predicates.add(test);
+        getPreviousEntry().filters.add(new Filters(test, null));
         return this;
     }
 
@@ -69,12 +69,23 @@ public class MonadicForImpl<M>
 
     private final List<Entry<M>> entries = new ArrayList<>();
 
+    private static class Filters
+    {
+        final Supplier<Boolean> filter;
+        final Runnable setter;
+
+        Filters(Supplier<Boolean> filter, Runnable setter)
+        {
+            this.filter = filter;
+            this.setter = setter;
+        }
+    }
+
     private static class Entry<M>
     {
         final Any any;
         final Supplier<M> monadSupplier;
-        final List<Supplier<Boolean>> predicates = new ArrayList<>();
-        final List<Runnable> setters = new ArrayList<>();
+        final List<Filters> filters = new ArrayList<>();
 
         Entry(Any any, Supplier<M> stream)
         {
@@ -100,18 +111,19 @@ public class MonadicForImpl<M>
             entry.any.set(o);
             return o;
         });
-
-        if ( entry.predicates.size() != 0 )
+        for ( Filters filter : entry.filters )
         {
-            stream = wrapper.filter(stream, o -> entry.predicates.stream().allMatch(Supplier::get));
-        }
-
-        if ( entry.setters.size() != 0 )
-        {
-            stream = wrapper.map(stream, o -> {
-                entry.setters.stream().forEach(Runnable::run);
-                return o;
-            });
+            if ( filter.filter != null )
+            {
+                stream = wrapper.filter(stream, __ -> filter.filter.get());
+            }
+            else if ( filter.setter != null )
+            {
+                stream = wrapper.map(stream, o -> {
+                    filter.setter.run();
+                    return o;
+                });
+            }
         }
 
         if ( (index + 1) < entries.size() )

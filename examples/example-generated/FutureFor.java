@@ -15,7 +15,7 @@ public class FutureFor {
     }
 
     public static <A> FutureFor forComp(AnyVal<A> any, CompletableFuture<A> firstMonad) {
-        return new FutureFor(new MonadicForImpl<>(any, firstMonad, new FutureForFactory(), MonadicForImpl.Method.MAPPED_SETTERS));
+        return new FutureFor(new MonadicForImpl<>(any, firstMonad, new FutureForFactory()));
     }
 
     public <A> FutureFor forComp(AnyVal<A> any, Supplier<? extends CompletableFuture<A>> supplier) {

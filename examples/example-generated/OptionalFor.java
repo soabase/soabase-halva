@@ -16,7 +16,7 @@ public class OptionalFor {
     }
 
     public static <A> OptionalFor forComp(AnyVal<A> any, Optional<A> firstMonad) {
-        return new OptionalFor(new MonadicForImpl<>(any, firstMonad, new OptionalForFactory(), MonadicForImpl.Method.INLINE_SETTERS));
+        return new OptionalFor(new MonadicForImpl<>(any, firstMonad, new OptionalForFactory()));
     }
 
     public <A> OptionalFor forComp(AnyVal<A> any, Supplier<? extends Optional<A>> supplier) {

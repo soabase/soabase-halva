@@ -251,6 +251,7 @@
                             <exclude>**/examples/**</exclude>
                             <exclude>**/io/soabase/com/google/**</exclude>
                             <exclude>**/com/company/**</exclude>
+                            <exclude>**/StreamFor.java</exclude>    <!-- this is generated and too hard to get the header in -->
                         </excludes>
                         <strictCheck>true</strictCheck>
                     </configuration>

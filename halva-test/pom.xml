@@ -69,6 +69,7 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-examples</id>
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -83,6 +84,26 @@
                                 <resource>
                                     <directory>${project.build.directory}/generated-test-sources/test-annotations/com/company</directory>
                                     <include>*.java</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-stream-for</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../halva/src/main/java/io/soabase/halva/comprehension</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/java/io/soabase/halva/comprehension</directory>
+                                    <include>StreamForFactory.java</include>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-test-sources/test-annotations/io/soabase/halva/comprehension</directory>
+                                    <include>StreamFor.java</include>
                                 </resource>
                             </resources>
                         </configuration>

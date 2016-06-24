@@ -44,7 +44,7 @@ public interface Environment
 
     String getPackage(TypeElement element);
 
-    String getCaseClassSimpleName(TypeElement element, AnnotationReader annotationReader);
+    String getGeneratedClassName(TypeElement element, AnnotationReader annotationReader);
 
     Collection<Modifier> getModifiers(TypeElement element);
 

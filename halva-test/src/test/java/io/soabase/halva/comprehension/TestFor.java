@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.sugar;
+package io.soabase.halva.comprehension;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.any.Any;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static io.soabase.halva.comprehension.Author.Author;
+import static io.soabase.halva.comprehension.Book.Book;
 import static io.soabase.halva.comprehension.For.forComp;
-import static io.soabase.halva.sugar.Author.Author;
-import static io.soabase.halva.sugar.Book.Book;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Tu;
 
@@ -64,12 +64,12 @@ val result = for {
     @Test
     public void testBasic()
     {
-        List<List<?>> lists1 = List(List(1, 2, 3), List("A", "B", "C"));
-        List<List<?>> lists2 = List(List(4, 5, 6), List("D", "E", "F"));
-        List<List<List<?>>> big = List(lists1, lists2);
+        List<List> lists1 = List(List(1, 2, 3), List("A", "B", "C"));
+        List<List> lists2 = List(List(4, 5, 6), List("D", "E", "F"));
+        List<List<List>> big = List(lists1, lists2);
 
-        AnyVal<List<List<?>>> lol = Any.make();
-        AnyVal<List<?>> l = Any.make();
+        AnyVal<List<List>> lol = Any.make();
+        AnyVal<List> l = Any.make();
         AnyVal<Object> o = Any.make();
         List<String> s = forComp(lol, big)
               .forComp(l, lol::val)

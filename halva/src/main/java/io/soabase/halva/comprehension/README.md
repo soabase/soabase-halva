@@ -56,3 +56,7 @@ List<Book> books = List(
     Assert.assertEquals(List(Tu("Atlas Shrugged", 1940), Tu("Atlas Shrugged", 1950)), result);
 }
 ```
+
+#### Custom Implementations
+
+Halva supports [custom For Comprehension implementations](CUSTOM.md). See the [docs](CUSTOM.md) for details.

@@ -67,8 +67,9 @@ public abstract class Processor extends AbstractProcessor
         Optional<Pass> pass = passFactory.firstPass(internalEnvironment, workItems);
         while ( pass.isPresent() )
         {
-            internalEnvironment.debug(getClass().getSimpleName() + " " + pass.getClass().getSimpleName());
-            pass = pass.get().process();
+            Pass actualPass = pass.get();
+            internalEnvironment.debug(getClass().getSimpleName() + "-" + actualPass.getClass().getSimpleName());
+            pass = actualPass.process();
         }
         return true;
     }
@@ -145,7 +146,7 @@ public abstract class Processor extends AbstractProcessor
             }
 
             @Override
-            public String getCaseClassSimpleName(TypeElement element, AnnotationReader annotationReader)
+            public String getGeneratedClassName(TypeElement element, AnnotationReader annotationReader)
             {
                 String suffix = annotationReader.getString("suffix");
                 String unsuffix = annotationReader.getString("unsuffix");

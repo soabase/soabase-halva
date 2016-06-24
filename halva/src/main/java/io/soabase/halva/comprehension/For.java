@@ -85,7 +85,7 @@ public interface For
      * @param stream function that returns a stream
      * @return this
      */
-    <T, R> For forComp(AnyVal<T> any, Supplier<Iterable<? extends R>> stream);
+    <T> For forComp(AnyVal<T> any, Supplier<Iterable<T>> stream);
 
     /**
      * Add another instance to the comprehension
@@ -94,7 +94,7 @@ public interface For
      * @param stream function that returns a stream
      * @return this
      */
-    <T> For forCompInt(AnyVal<T> any, Supplier<IntStream> stream);
+    For forCompInt(AnyVal<Integer> any, Supplier<IntStream> stream);
 
     /**
      * Add another instance to the comprehension
@@ -103,7 +103,7 @@ public interface For
      * @param stream function that returns a stream
      * @return this
      */
-    <T> For forCompLong(AnyVal<T> any, Supplier<LongStream> stream);
+    For forCompLong(AnyVal<Long> any, Supplier<LongStream> stream);
 
     /**
      * Add another instance to the comprehension
@@ -112,7 +112,7 @@ public interface For
      * @param stream function that returns a stream
      * @return this
      */
-    <T> For forCompDouble(AnyVal<T> any, Supplier<DoubleStream> stream);
+    For forCompDouble(AnyVal<Double> any, Supplier<DoubleStream> stream);
 
     /**
      * Allows setting of an any value (or the current set of values) at the
@@ -144,14 +144,6 @@ public interface For
      * @return the stream
      */
     <T> Stream<T> stream(Supplier<T> yielder);
-
-    /**
-     * Return a stream view of the for-comprehension so that it can be pipelined
-     * with other streams.
-     *
-     * @return the stream
-     */
-    <T> Stream<T> stream();
 
     /**
      * Process the added collections and call the given function for the cartesian

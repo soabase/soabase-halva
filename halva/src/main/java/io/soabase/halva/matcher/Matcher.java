@@ -15,7 +15,10 @@
  */
 package io.soabase.halva.matcher;
 
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -58,6 +61,54 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     public static <ARG> Partial<ARG> partial(AnyType<ARG> marker)
     {
         return new PartialImpl<>();
+    }
+
+    /**
+     * Return a new AnyList that matches the given head of a list and the given tail of a list
+     *
+     * @param head head to match
+     * @param tail tail to match
+     * @return new AnyList
+     */
+    public static <T> AnyList headTail(T head, ConsList<T> tail)
+    {
+        return Any.headTail(head, tail);
+    }
+
+    /**
+     * Return a new AnyList that matches the given head of a list and any tail of a list
+     *
+     * @param head head to match
+     * @param tail holder for the value of the tail of the list that matches
+     * @return new AnyList
+     */
+    public static <T> AnyList headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
+    {
+        return Any.headAnyTail(head, tail);
+    }
+
+    /**
+     * Return a new AnyList that matches any head of a list and the given tail of a list
+     *
+     * @param head holder for the value of the head of the list that matches
+     * @param tail tail to match
+     * @return new AnyList
+     */
+    public static <T> AnyList anyHeadTail(Any<T> head, ConsList<T> tail)
+    {
+        return Any.anyHeadTail(head, tail);
+    }
+
+    /**
+     * Return a new AnyList that matches any head of a list and any tail of a list
+     *
+     * @param head holder for the value of the head of the list that matches
+     * @param tail holder for the value of the tail of the list that matches
+     * @return new AnyList
+     */
+    public static <T> AnyList anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
+    {
+        return Any.anyHeadAnyTail(head, tail);
     }
 
     <T> Matcher<ARG> register(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)

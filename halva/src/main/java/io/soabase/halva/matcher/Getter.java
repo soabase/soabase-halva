@@ -126,6 +126,6 @@ class Getter<ARG> implements GettersBase
 
     ARG getArg()
     {
-        return this.arg.orElseThrow(() -> new UnsupportedOperationException("Partial is being called without an argument"));
+        return this.arg.orElse(null);
     }
 }

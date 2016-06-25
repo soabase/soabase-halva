@@ -166,7 +166,7 @@ abstract class TupleImpl implements Tuple
         }
         if ( o == null )
         {
-            return false;
+            o = Tuple.Tu(Void.TYPE);
         }
 
         if ( getClass() == o.getClass() )

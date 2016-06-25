@@ -92,6 +92,38 @@ public interface Any<T>
     }
 
     /**
+     * Returns an Any that matches any null value
+     *
+     * @return Any for nulls
+     */
+    static AnyNull anyNull()
+    {
+        return AnyNull.instance;
+    }
+
+    /**
+     * Returns a new Any that matches a present Optional. The given value
+     * is assigned the value of the optional on match.
+     *
+     * @param value will get the value of the optional
+     * @return a new any
+     */
+    static <T> AnyOptional<T> anySome(Any<T> value)
+    {
+        return new AnyOptional<T>(value){};
+    }
+
+    /**
+     * Returns a new Any that matches an empty Optional.
+     *
+     * @return a new any
+     */
+    static AnyOptional<Void> anyNone()
+    {
+        return new AnyOptional<Void>(null){};
+    }
+
+    /**
      * @return the loaded value or <code>null</code>
      */
     T val();

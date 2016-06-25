@@ -18,14 +18,18 @@ package io.soabase.halva.caseclass;
 import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyList;
+import io.soabase.halva.any.AnyNull;
+import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.matcher.MatchError;
+import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
+import java.util.Optional;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
@@ -35,6 +39,8 @@ import static io.soabase.halva.caseclass.ChairCase.ChairCaseTu;
 import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueTu;
 import static io.soabase.halva.comprehension.For.forComp;
+import static io.soabase.halva.matcher.Matcher.anyNone;
+import static io.soabase.halva.matcher.Matcher.anyNull;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
@@ -136,5 +142,46 @@ public class TestMatcher
         match("test")
             .caseOf("nope", () -> "")
             .get();
+    }
+
+    @Test
+    public void testMatchNull()
+    {
+        AnyNull n = anyNull();
+        String result = match(null)
+            .caseOf(n, () -> "Yes it's null")
+            .caseOf(() -> "No it's not null")
+            .get();
+        Assert.assertEquals("Yes it's null", result);
+    }
+
+    @Test
+    public void testMatchSome()
+    {
+        Any<String> s = new AnyType<String>(){};
+        Any<Integer> i = new AnyType<Integer>(){};
+        AnyOptional<Integer> some = Matcher.anySome(i);
+        AnyOptional<String> someStr = Matcher.anySome(s);
+        String result = match(Optional.of(10))
+            .caseOf(someStr, () -> "It's a string: " + s.val())
+            .caseOf(some, () -> "It's an int: " + i.val())
+            .get();
+        Assert.assertEquals("It's an int: 10", result);
+
+        result = match(Optional.of("10"))
+            .caseOf(someStr, () -> "It's a string: " + s.val())
+            .caseOf(some, () -> "It's an int: " + i.val())
+            .get();
+        Assert.assertEquals("It's a string: 10", result);
+    }
+
+    @Test
+    public void testMatchNone()
+    {
+        String result = match(Optional.empty())
+            .caseOf(anyNone(), () -> "It's empty")
+            .caseOf(() -> "It's not empty")
+            .get();
+        Assert.assertEquals("It's empty", result);
     }
 }

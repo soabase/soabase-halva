@@ -17,6 +17,8 @@ package io.soabase.halva.matcher;
 
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyList;
+import io.soabase.halva.any.AnyNull;
+import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Tuple;
@@ -109,6 +111,38 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     public static <T> AnyList anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
     {
         return Any.anyHeadAnyTail(head, tail);
+    }
+
+    /**
+     * Returns an Any that matches any null value
+     *
+     * @return Any for nulls
+     */
+    public static AnyNull anyNull()
+    {
+        return Any.anyNull();
+    }
+
+    /**
+     * Returns a new Any that matches a present Optional. The given value
+     * is assigned the value of the optional on match.
+     *
+     * @param value will get the value of the optional
+     * @return a new any
+     */
+    public static <T> AnyOptional<T> anySome(Any<T> value)
+    {
+        return Any.anySome(value);
+    }
+
+    /**
+     * Returns a new Any that matches an empty Optional.
+     *
+     * @return a new any
+     */
+    public static AnyOptional<Void> anyNone()
+    {
+        return Any.anyNone();
     }
 
     <T> Matcher<ARG> register(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)

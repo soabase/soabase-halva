@@ -95,6 +95,14 @@ String str = match(list)
     .get();
 ```
 
+**Match Some, None and Null**
+
+Halva has special handling for matching an "isPresent" `Optional`, an empty `Optional`, and null values:
+
+* `Matcher.anyNull()` - an Any that matches any null value
+* `Matcher.anyNone()` - an Any that matches any empty Optional
+* `Matcher.anySome(val)` - an Any that matches an Optional that has a value. The argument to anySome() will get set to that value.
+
 ### Partials
 
 The front portion of a matcher can be saved for later use as a Partial. E.g.

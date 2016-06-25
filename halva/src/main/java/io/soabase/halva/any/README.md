@@ -38,23 +38,3 @@ match(aVariable)
     .caseOf(i, "The value is: " + i.val())
     .get();
 ```
-
-#### Function List Matching
-
-Anys support some of Scala's list pattern matching. In Scala you can do:
-
-```scala
-list match {
-    case Pair(x, y) :: tail => ...
-}
-```
-
-Halva supports this via Anys. Given existing Anys you can create a container Any that matches parts of a Halva `ConsList`. E.g.
-
-```java
-Any<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
-AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair<String, Integer>>(){}, anyPairList);
-String str = match(list)
-    .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
-    .get();
-```

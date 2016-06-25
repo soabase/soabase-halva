@@ -75,7 +75,7 @@ findAnyAge(ChairCase(3, 5)) -- 5
 findAnyAge(PersonCase("Tom", 90)) -- 0 - not a chair or animal
 ```
 
-** Function List Matching/Extraction **
+**Function List Matching/Extraction**
 
 Halva supports some of Scala's list pattern matching. In Scala you can do:
 

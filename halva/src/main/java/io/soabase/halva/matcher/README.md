@@ -46,7 +46,7 @@ match(anotherString)
     .get();
 ```
 
-**Note:** Halva supports list pattern matching/extraction using `Any`. Please see the [documentation here for details](../any/README.md#function-list-matching).
+**Note:** Halva supports list pattern matching/extraction (similar to `case Pair(x, y) :: tail`) using `Any`. Please see the [documentation here for details](../any/README.md#function-list-matching).
 
 **Extraction and Case Classes**
 

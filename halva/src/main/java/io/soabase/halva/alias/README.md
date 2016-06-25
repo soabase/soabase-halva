@@ -11,13 +11,13 @@ Halva can only alias interfaces. Aliasing concrete classes would most likely req
 there's a need for it. The general form for aliasing is:
 
 ```
-@TypeAlias interface BaseNameForTheNewClass implements ClassToBeAliased{}
+@TypeAlias interface BaseNameForTheNewClass extends ClassToBeAliased{}
 ```
 
 The annotated interface may not contain any content - no methods, fields, etc. Here's an example that aliases lists of pairs of string/ints:
 
 ```java
-@TypeAlias interface PairList implements ConsList<Pair<String, Integer>>{}
+@TypeAlias interface PairList extends ConsList<Pair<String, Integer>>{}
 ```
 
 The generated class will be named `PairListAlias`. However, if you were to name the annotated source interface `PairList_`, 

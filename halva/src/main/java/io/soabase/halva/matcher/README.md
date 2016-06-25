@@ -46,8 +46,6 @@ match(anotherString)
     .get();
 ```
 
-**Note:** Halva supports list pattern matching/extraction (similar to `case Pair(x, y) :: tail`) using `Any`. Please see the [documentation here for details](../any/README.md#function-list-matching).
-
 **Extraction and Case Classes**
 
 In combination with Case Classes, Scala allows for extremely rich and complicated pattern matching. Halva attempts to support most of what is commonly used. Halva [Case Classes](../caseclass/README.md) add numerous methods/features to support extraction. In Scala, you can construct case class instances that have extraction variables as arguments. This is not possible in Java, but we can get very close using Halva. Halva adds a static method to every case class that is the name of the case class suffixed with "Tu". E.g. if your case class is named "MyCase", the method is named "MyCaseTu". This method has the same number of arguments as there are fields in the Case Class. However, the argument type is `Object` so that it can accept any value. Thus, you can pass an 
@@ -75,6 +73,26 @@ findAnyAge(AnimalCase("Bobby", 14)) -- 14
 findAnyAge(ChairCase(2, 5)) -- 0 - not enough legs
 findAnyAge(ChairCase(3, 5)) -- 5
 findAnyAge(PersonCase("Tom", 90)) -- 0 - not a chair or animal
+```
+
+** Function List Matching/Extraction **
+
+Halva supports some of Scala's list pattern matching. In Scala you can do:
+
+```scala
+list match {
+    case Pair(x, y) :: tail => ...
+}
+```
+
+Halva supports this via Anys. Given existing Anys you can create a container Any that matches parts of a Halva `ConsList`. E.g.
+
+```java
+Any<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
+AnyList patternMatcher = Matcher.anyHeadAnyTail(new AnyType<Pair<String, Integer>>(){}, anyPairList);
+String str = match(list)
+    .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
+    .get();
 ```
 
 ### Partials

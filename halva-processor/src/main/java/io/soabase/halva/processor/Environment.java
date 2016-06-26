@@ -19,10 +19,12 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.util.Collection;
@@ -53,4 +55,6 @@ public interface Environment
     Optional<List<TypeVariableName>> addTypeVariableNames(Consumer<List<TypeVariableName>> applier, List<? extends TypeParameterElement> elements);
 
     DeclaredType typeOfFieldOrMethod(Element element);
+
+    TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing);
 }

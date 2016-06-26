@@ -32,6 +32,11 @@ public class ConcreteType<A, B>
         this.b = b;
     }
 
+    public ConcreteType<A, B> copy()
+    {
+        return new ConcreteType<>(a, b);
+    }
+
     public A getA()
     {
         return a;

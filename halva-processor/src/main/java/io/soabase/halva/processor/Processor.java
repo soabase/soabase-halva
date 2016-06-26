@@ -29,6 +29,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -216,6 +217,14 @@ public abstract class Processor extends AbstractProcessor
                     return (DeclaredType)type;
                 }
                 throw new IllegalArgumentException("Cannot convert to DeclaredType: " + element);
+            }
+
+            @Override
+            public TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing)
+            {
+                // copied from MethodSpec.override()
+                ExecutableType executableType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf(enclosing, method);
+                return executableType.getReturnType();
             }
         };
     }

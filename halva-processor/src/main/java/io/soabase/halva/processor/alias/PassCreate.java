@@ -33,8 +33,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -76,6 +79,7 @@ class PassCreate implements Pass
         {
             builder = TypeSpec.classBuilder(aliasQualifiedClassName)
                 .superclass(baseTypeName);
+            addConstructorOverrides(builder, spec.getParameterizedType());
         }
         else
         {
@@ -87,6 +91,36 @@ class PassCreate implements Pass
         addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
         addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
         environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getSimpleName(), builder, typeElement);
+    }
+
+    private void addConstructorOverrides(TypeSpec.Builder builder, DeclaredType parentType)
+    {
+        environment.getElementUtils().getAllMembers((TypeElement)parentType.asElement()).stream()
+            .filter(element -> element.getKind() == ElementKind.CONSTRUCTOR)
+            .filter(element -> element.getModifiers().contains(Modifier.PUBLIC))
+            .forEach(element -> {
+                ExecutableElement executableElement = (ExecutableElement)element;
+                MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
+                CodeBlock.Builder constructorCodeBuilder = CodeBlock.builder().add("super(");
+
+                ExecutableType executableType = (ExecutableType)environment.getTypeUtils().asMemberOf(parentType, executableElement);
+                List<? extends TypeMirror> resolvedParameterTypes = executableType.getParameterTypes();
+                int index = 0;
+                for ( TypeMirror parameterType : resolvedParameterTypes )
+                {
+                    VariableElement variableElement = executableElement.getParameters().get(index);
+                    constructorBuilder.addParameter(ParameterSpec.builder(ClassName.get(parameterType), variableElement.getSimpleName().toString()).build());
+                    if ( index > 0 )
+                    {
+                        constructorCodeBuilder.add(", ");
+                    }
+                    constructorCodeBuilder.add(variableElement.getSimpleName().toString());
+                    ++index;
+                }
+                constructorCodeBuilder.addStatement(")");
+                constructorBuilder.addCode(constructorCodeBuilder.build());
+                builder.addMethod(constructorBuilder.build());
+            });
     }
 
     private void addTypeAliasType(TypeSpec.Builder builder, ClassName aliasClassName, DeclaredType parentType)
@@ -147,24 +181,38 @@ class PassCreate implements Pass
                         .map(parameter -> parameter.getSimpleName().toString())
                         .collect(Collectors.joining(", "));
 
-                    CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
+                    MethodSpec.Builder methodSpecBuilder = MethodSpec.overriding(method, parentType, environment.getTypeUtils());
                     if ( method.getReturnType().getKind() == TypeKind.VOID )
                     {
+                        CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
                         codeBlockBuilder.addStatement("instance.$L($L)", method.getSimpleName(), arguments);
+                        methodSpecBuilder.addCode(codeBlockBuilder.build());
                     }
                     else if ( isEquals(method) )
                     {
                         Name name = method.getParameters().get(0).getSimpleName();
+                        CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
                         codeBlockBuilder.addStatement("return (this == $L) || instance.equals($L)", name, name);
+                        methodSpecBuilder.addCode(codeBlockBuilder.build());
                     }
                     else
                     {
-                        codeBlockBuilder.addStatement("return instance.$L($L)", method.getSimpleName(), arguments);
+                        if ( environment.getTypeUtils().isSameType(environment.getResolvedReturnType(method, parentType), parentType) )
+                        {
+                            CodeBlock.Builder codeBlockBuilder = CodeBlock.builder()
+                                .addStatement("return $T(instance.$L($L))", aliasClassName, method.getSimpleName(), arguments);
+                            methodSpecBuilder.addCode(codeBlockBuilder.build());
+                            methodSpecBuilder.returns(aliasClassName);
+                        }
+                        else
+                        {
+                            CodeBlock.Builder codeBlockBuilder = CodeBlock.builder()
+                                .addStatement("return instance.$L($L)", method.getSimpleName(), arguments);
+                            methodSpecBuilder.addCode(codeBlockBuilder.build());
+                        }
                     }
-                    MethodSpec methodSpec = MethodSpec.overriding(method, parentType, environment.getTypeUtils())
-                        .addCode(codeBlockBuilder.build())
-                        .build();
-                    builder.addMethod(methodSpec);
+
+                    builder.addMethod(methodSpecBuilder.build());
                 }
             }
         });

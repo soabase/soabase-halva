@@ -7,9 +7,6 @@ javac compilation (you may need to [enable Java Annotation processing](../../../
 
 #### Declaring the Type to be Aliased
 
-Halva can only alias interfaces. Aliasing concrete classes would most likely require byte code writing. But we can investigate it if 
-there's a need for it. The general form for aliasing is:
-
 ```java
 @TypeAlias interface BaseNameForTheNewClass extends ClassToBeAliased{}
 ```

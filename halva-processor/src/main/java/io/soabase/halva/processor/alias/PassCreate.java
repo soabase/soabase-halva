@@ -71,9 +71,18 @@ class PassCreate implements Pass
         Collection<Modifier> modifiers = environment.getModifiers(typeElement);
         TypeName baseTypeName = ClassName.get(spec.getParameterizedType());
 
-        TypeSpec.Builder builder = TypeSpec.interfaceBuilder(aliasQualifiedClassName)
-            .addSuperinterface(baseTypeName)
-            .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
+        TypeSpec.Builder builder;
+        if ( typeElement.getKind() == ElementKind.CLASS )
+        {
+            builder = TypeSpec.classBuilder(aliasQualifiedClassName)
+                .superclass(baseTypeName);
+        }
+        else
+        {
+            builder = TypeSpec.interfaceBuilder(aliasQualifiedClassName)
+                .addSuperinterface(baseTypeName);
+        }
+        builder.addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
         addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
         addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
@@ -132,7 +141,7 @@ class PassCreate implements Pass
             {
                 ExecutableElement method = (ExecutableElement)element;
                 Set<Modifier> modifiers = method.getModifiers();
-                if ( !modifiers.contains(Modifier.PRIVATE) && !modifiers.contains(Modifier.FINAL) && !modifiers.contains(Modifier.STATIC) && !modifiers.contains(Modifier.DEFAULT) )
+                if ( modifiers.contains(Modifier.PUBLIC) && !modifiers.contains(Modifier.NATIVE) && !modifiers.contains(Modifier.FINAL) && !modifiers.contains(Modifier.STATIC) && !modifiers.contains(Modifier.DEFAULT) )
                 {
                     String arguments = method.getParameters().stream()
                         .map(parameter -> parameter.getSimpleName().toString())

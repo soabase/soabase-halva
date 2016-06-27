@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.processor.caseclass;
 
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import java.util.Optional;
 class CaseClassItem
 {
     private final Optional<String> name;
+    private final ExecutableElement element;
     private final Optional<TypeMirror> type;
     private final Optional<TypeMirror> erasedType;
     private final boolean hasDefaultValue;
@@ -34,11 +36,13 @@ class CaseClassItem
         erasedType = Optional.empty();
         hasDefaultValue = false;
         mutable = false;
+        element = null;
     }
 
-    CaseClassItem(String name, TypeMirror type, TypeMirror erasedType, boolean hasDefaultValue, boolean mutable)
+    CaseClassItem(String name, ExecutableElement element, TypeMirror type, TypeMirror erasedType, boolean hasDefaultValue, boolean mutable)
     {
         this.name = Optional.of(name);
+        this.element = element;
         this.type = Optional.of(type);
         this.erasedType = Optional.of(erasedType);
         this.hasDefaultValue = hasDefaultValue;
@@ -48,6 +52,11 @@ class CaseClassItem
         {
             System.out.println();
         }
+    }
+
+    ExecutableElement getElement()
+    {
+        return element;
     }
 
     String getName()

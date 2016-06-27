@@ -21,7 +21,9 @@ import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +59,7 @@ class Templates
         {
             fieldBuilder.addModifiers(Modifier.VOLATILE);
         }
-        if ( json )
+        if ( json && !checkParentJsonAnnotations(item.getElement(), fieldBuilder) )
         {
             AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.annotation", "JsonProperty")).build();
             fieldBuilder.addAnnotation(annotationSpec);
@@ -136,10 +138,10 @@ class Templates
         }
     }
 
-    void addBuilderSetterItem(CaseClassItem item, TypeSpec.Builder builder, TypeName builderClassName)
+    void addBuilderSetterItem(CaseClassItem item, TypeSpec.Builder builder, TypeName builderClassName, boolean json)
     {
         TypeName type = TypeName.get(item.getType());
-        addField(item, builder, type, false, false, false);
+        addField(item, builder, type, false, false, json);
         addBuilderSetter(item, builder, type, builderClassName, Modifier.PUBLIC);
     }
 
@@ -545,7 +547,7 @@ class Templates
             builder.addTypeVariables(typeVariableNames.get());
         }
 
-        spec.getItems().forEach(item -> addBuilderSetterItem(item, builder, builderClassName));
+        spec.getItems().forEach(item -> addBuilderSetterItem(item, builder, builderClassName, json));
 
         return builder.build();
     }
@@ -562,5 +564,21 @@ class Templates
             localCaseClassName = caseClassName;
         }
         return localCaseClassName;
+    }
+
+    private boolean checkParentJsonAnnotations(Element element, FieldSpec.Builder fieldBuilder)
+    {
+        return element.getAnnotationMirrors().stream().filter(annotation -> {
+            if ( annotation.getAnnotationType().asElement().toString().equals("com.fasterxml.jackson.annotation.JsonProperty")
+                || annotation.getAnnotationType().asElement().toString().equals("com.fasterxml.jackson.annotation.JsonIgnore") )
+            {
+                AnnotationSpec.Builder annotationSpec = AnnotationSpec.builder(ClassName.get((TypeElement)annotation.getAnnotationType().asElement()));
+                annotation.getElementValues().entrySet().forEach(entry ->
+                    annotationSpec.addMember(entry.getKey().getSimpleName().toString(), "$S", entry.getValue().getValue()));
+                fieldBuilder.addAnnotation(annotationSpec.build());
+                return true;
+            }
+            return false;
+        }).count() > 0;
     }
 }

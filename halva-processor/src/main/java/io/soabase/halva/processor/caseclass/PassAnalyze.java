@@ -95,7 +95,7 @@ class PassAnalyze implements Pass
                             }
                         }
 
-                        CaseClassItem caseClassItem = new CaseClassItem(executable.getSimpleName().toString(), executable.getReturnType(), environment.getTypeUtils().erasure(executable.getReturnType()), executable.isDefault(), mutable);
+                        CaseClassItem caseClassItem = new CaseClassItem(executable.getSimpleName().toString(), executable, executable.getReturnType(), environment.getTypeUtils().erasure(executable.getReturnType()), executable.isDefault(), mutable);
                         caseClassItems.add(caseClassItem);
                     } while ( false );
                 });

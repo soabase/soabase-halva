@@ -18,10 +18,14 @@ package io.soabase.halva.caseclass;
 
 import com.company.JsonTest;
 import com.company.JsonTestCase;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import java.io.IOException;
+
+import static io.soabase.halva.caseclass.JsonWithOverridesCase.JsonWithOverridesCase;
 
 public class TestJson
 {
@@ -35,6 +39,30 @@ public class TestJson
             + "}";
         JsonTest deserialized = new ObjectMapper().readerFor(JsonTestCase.class).readValue(json);
         Assert.assertEquals(JsonTestCase.builder().firstName("John").lastName("Galt").age(42).build(), deserialized);
+    }
+
+    @CaseClass(json = true)
+    interface JsonWithOverrides
+    {
+        @JsonProperty("nombre")
+        String name();
+
+        @JsonIgnore
+        int iAmNothing();
+
+        int age();
+
+        String type();
+    }
+
+    @Test
+    public void testJsonWithOverrides() throws IOException
+    {
+        JsonWithOverridesCase object = JsonWithOverridesCase("me", -100, 32, "large");
+        String json = new ObjectMapper().writeValueAsString(object);
+        Assert.assertEquals("{\"age\":32,\"type\":\"large\",\"nombre\":\"me\"}", json);
+        JsonWithOverridesCase deserialized = new ObjectMapper().readerFor(JsonWithOverridesCase.class).readValue(json);
+        Assert.assertEquals(object.copy().iAmNothing(0).build(), deserialized);
     }
 
     @Test

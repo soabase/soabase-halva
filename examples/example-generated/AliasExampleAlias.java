@@ -1,4 +1,4 @@
-// Auto generated from com.company.AliasExample by Soabase TypeAlias annotation processor
+// Auto generated from com.company.AliasExample by Soabase io.soabase.halva.alias.TypeAlias annotation processor
 package com.company;
 
 import io.soabase.halva.alias.TypeAliasType;
@@ -13,7 +13,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.alias.TypeAlias")
 public interface AliasExampleAlias extends ConsList<Pair<String, Integer>> {
     TypeAliasType<ConsList<Pair<String, Integer>>, AliasExampleAlias> TypeAliasType = new TypeAliasType<>(new AnyType<ConsList<Pair<String, Integer>>>(){}, new AnyType<AliasExampleAlias>(){}, AliasExampleAlias::AliasExampleAlias);
 
@@ -155,18 +157,18 @@ public interface AliasExampleAlias extends ConsList<Pair<String, Integer>> {
             }
 
             @Override
-            public ConsList<Pair<String, Integer>> tail() {
-                return instance.tail();
+            public AliasExampleAlias tail() {
+                return AliasExampleAlias(instance.tail());
             }
 
             @Override
-            public ConsList<Pair<String, Integer>> concat(ConsList<Pair<String, Integer>> arg0) {
-                return instance.concat(arg0);
+            public AliasExampleAlias concat(ConsList<Pair<String, Integer>> arg0) {
+                return AliasExampleAlias(instance.concat(arg0));
             }
 
             @Override
-            public ConsList<Pair<String, Integer>> cons(Pair<String, Integer> arg0) {
-                return instance.cons(arg0);
+            public AliasExampleAlias cons(Pair<String, Integer> arg0) {
+                return AliasExampleAlias(instance.cons(arg0));
             }
         };
     }

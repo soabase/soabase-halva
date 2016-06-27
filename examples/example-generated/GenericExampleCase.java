@@ -1,4 +1,4 @@
-// Auto generated from com.company.GenericExample by Soabase CaseClass annotation processor
+// Auto generated from com.company.GenericExample by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
 import io.soabase.halva.tuple.ClassTuplable;
@@ -11,7 +11,9 @@ import java.lang.Class;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.caseclass.CaseClass")
 public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializable, Tuplable, ClassTuplable {
     private static final Class classTuplableClass = GenericExampleCaseTu("", "").getClass();
 

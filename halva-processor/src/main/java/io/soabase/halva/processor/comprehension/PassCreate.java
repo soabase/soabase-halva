@@ -64,7 +64,7 @@ class PassCreate implements Pass
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName generatedQualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(typeElement, spec.getAnnotationReader()));
+        ClassName generatedQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
 
         environment.log("Generating " + MonadicFor.class.getSimpleName() + " for " + templateQualifiedClassName + " as " + generatedQualifiedClassName);
 
@@ -85,7 +85,7 @@ class PassCreate implements Pass
             addFilter(builder, generatedQualifiedClassName);
         }
 
-        environment.createSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, MonadicFor.class.getSimpleName(), builder, typeElement);
+        environment.createSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, MonadicFor.class.getName(), builder, typeElement);
     }
 
     private boolean hasFilter(MonadicSpec spec)

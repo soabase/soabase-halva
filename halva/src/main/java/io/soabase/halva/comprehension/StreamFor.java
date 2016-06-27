@@ -1,4 +1,4 @@
-// Auto generated from io.soabase.halva.comprehension.StreamForFactory by Soabase MonadicFor annotation processor
+// Auto generated from io.soabase.halva.comprehension.StreamForFactory by Soabase io.soabase.halva.comprehension.MonadicFor annotation processor
 package io.soabase.halva.comprehension;
 
 import io.soabase.halva.any.AnyVal;
@@ -6,7 +6,9 @@ import java.lang.Boolean;
 import java.lang.SuppressWarnings;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.comprehension.MonadicFor")
 public class StreamFor {
     private final MonadicForImpl<Stream> delegate;
 

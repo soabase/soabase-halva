@@ -1,4 +1,4 @@
-// Auto generated from com.company.ExampleObject by Soabase CaseObject annotation processor
+// Auto generated from com.company.ExampleObject by Soabase io.soabase.halva.caseclass.CaseObject annotation processor
 package com.company;
 
 import io.soabase.halva.tuple.ClassTuplable;
@@ -11,7 +11,9 @@ import java.lang.Class;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.caseclass.CaseObject")
 public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable, ClassTuplable {
     public static final ExampleObjectCase ExampleObjectCase = new ExampleObjectCase();
 

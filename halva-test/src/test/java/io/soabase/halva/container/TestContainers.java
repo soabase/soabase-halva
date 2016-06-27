@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor.comprehension;
+package io.soabase.halva.container;
 
-import io.soabase.halva.processor.Processor;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
+import com.company.ExampleContainer;
+import org.junit.Assert;
+import org.junit.Test;
 
-@SupportedAnnotationTypes({"io.soabase.halva.comprehension.MonadicFor"})
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class MonadicForClassProcessor extends Processor
+import static com.company.ExampleContainer.Stack.Stack;
+import static io.soabase.halva.sugar.Sugar.List;
+
+public class TestContainers
 {
-    public MonadicForClassProcessor()
+    @Test
+    public void testBasic()
     {
-        super(new MonadicForPassFactory());
+        ExampleContainer.Stack stack = Stack(List(List("one", "two", "three"), List("four", "five")));
+        ExampleContainer.MyStack myStack = ExampleContainer.MyStack.MyStack(stack, 10);
+        Assert.assertEquals(10, myStack.value());
+        Assert.assertEquals(2, myStack.stack().size());
     }
 }

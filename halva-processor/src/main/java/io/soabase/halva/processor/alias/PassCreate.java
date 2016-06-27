@@ -67,7 +67,7 @@ class PassCreate implements Pass
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName aliasQualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(typeElement, spec.getAnnotationReader()));
+        ClassName aliasQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
 
         environment.log("Generating TypeAlias for " + templateQualifiedClassName + " as " + aliasQualifiedClassName);
 
@@ -90,7 +90,7 @@ class PassCreate implements Pass
 
         addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
         addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
-        environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getSimpleName(), builder, typeElement);
+        environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getName(), builder, typeElement);
     }
 
     private void addConstructorOverrides(TypeSpec.Builder builder, DeclaredType parentType)

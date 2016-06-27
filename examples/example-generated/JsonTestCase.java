@@ -1,7 +1,6 @@
-// Auto generated from com.company.JsonTest by Soabase CaseClass annotation processor
+// Auto generated from com.company.JsonTest by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
-import com.company.JsonTestCase.Builder;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,10 +17,12 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import javax.annotation.Generated;
 
 @JsonDeserialize(
-        builder = Builder.class
+        builder = JsonTestCase.Builder.class
 )
+@Generated("io.soabase.halva.caseclass.CaseClass")
 public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTuplable {
     private static final Class classTuplableClass = JsonTestCaseTu("", "", "").getClass();
 

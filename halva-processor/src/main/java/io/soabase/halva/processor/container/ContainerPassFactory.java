@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor.alias;
+package io.soabase.halva.processor.container;
 
-import io.soabase.halva.processor.Processor;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
+import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.Pass;
+import io.soabase.halva.processor.PassFactory;
+import io.soabase.halva.processor.WorkItem;
+import java.util.List;
+import java.util.Optional;
 
-@SupportedAnnotationTypes("io.soabase.halva.alias.TypeAlias")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class TypeAliasProcessor extends Processor
+public class ContainerPassFactory implements PassFactory
 {
-    public TypeAliasProcessor()
+    @Override
+    public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
     {
-        super(new AliasPassFactory());
+        return Optional.of(new PassMain(environment, workItems));
     }
 }

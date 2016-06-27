@@ -1,4 +1,4 @@
-// Auto generated from com.company.FutureForFactory by Soabase MonadicFor annotation processor
+// Auto generated from com.company.FutureForFactory by Soabase io.soabase.halva.comprehension.MonadicFor annotation processor
 package com.company;
 
 import io.soabase.halva.any.AnyVal;
@@ -6,7 +6,9 @@ import io.soabase.halva.comprehension.MonadicForImpl;
 import java.lang.SuppressWarnings;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.comprehension.MonadicFor")
 public class FutureFor {
     private final MonadicForImpl<CompletableFuture> delegate;
 

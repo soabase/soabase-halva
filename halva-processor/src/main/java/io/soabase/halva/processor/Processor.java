@@ -15,10 +15,17 @@
  */
 package io.soabase.halva.processor;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import io.soabase.halva.alias.TypeAlias;
+import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.caseclass.CaseObject;
+import io.soabase.halva.comprehension.MonadicFor;
+import io.soabase.halva.implicit.ImplicitClass;
+import javax.annotation.Generated;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
@@ -178,6 +185,12 @@ public abstract class Processor extends AbstractProcessor
             @Override
             public void createSourceFile(String packageName, ClassName templateQualifiedClassName, ClassName generatedQualifiedClassName, String annotationType, TypeSpec.Builder builder, TypeElement element)
             {
+                AnnotationSpec generated = AnnotationSpec
+                    .builder(Generated.class)
+                    .addMember("value", "\"" + getAnnotationName(annotationType) + "\"")
+                    .build();
+                builder.addAnnotation(generated);
+
                 TypeSpec classSpec = builder.build();
                 JavaFile javaFile = JavaFile.builder(packageName, classSpec)
                     .addFileComment("Auto generated from $L by Soabase " + annotationType + " annotation processor", templateQualifiedClassName)
@@ -227,5 +240,18 @@ public abstract class Processor extends AbstractProcessor
                 return executableType.getReturnType();
             }
         };
+    }
+
+    private static String getAnnotationName(String str)
+    {
+        Class[] classes = {TypeAlias.class, CaseClass.class, CaseObject.class, MonadicFor.class, ImplicitClass.class};
+        for ( Class clazz : classes )
+        {
+            if ( clazz.getSimpleName().equals(str) )
+            {
+                return clazz.getName();
+            }
+        }
+        return str;
     }
 }

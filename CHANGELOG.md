@@ -1,5 +1,18 @@
 # Change Log
 
+## [halva-0.1.3](https://github.com/Randgalt/halva/tree/halva-0.1.3) (2016-06-27)
+[Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.2...halva-0.1.3)
+
+**Closed issues:**
+
+- TypeAliases - a few more issues/thoughts from using it [\#24](https://github.com/Randgalt/halva/issues/24)
+- Support type aliases of concrete types, constructor overrides, co-variant returns [\#23](https://github.com/Randgalt/halva/issues/23)
+- Fix documentation re type aliases [\#22](https://github.com/Randgalt/halva/issues/22)
+- More thoughts on pattern matching syntax [\#21](https://github.com/Randgalt/halva/issues/21)
+- Alias list extraction methods [\#20](https://github.com/Randgalt/halva/issues/20)
+- Support custom JsonProperty annotation in case class interfaces [\#19](https://github.com/Randgalt/halva/issues/19)
+- No need for Guard class and SimplePredicate [\#17](https://github.com/Randgalt/halva/issues/17)
+
 ## [halva-0.1.2](https://github.com/Randgalt/halva/tree/halva-0.1.2) (2016-06-22)
 [Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.1...halva-0.1.2)
 

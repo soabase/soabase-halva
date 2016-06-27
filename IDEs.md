@@ -8,3 +8,6 @@ Halva's `@CaseClass`, `@CaseObject`, `@TypeAlias`, and `@ImplicitClass` generate
 * Maven - should do this by default. If not, you can add an execution for it. [Example Here](https://github.com/Randgalt/halva/blob/master/examples/pom.xml).
 * [Gradle](http://blog.jdriven.com/2016/03/gradle-goodness-enable-compiler-annotation-processing-intellij-idea/)
 
+#### Top Level vs Nested Classes
+
+Normally, Halva creates top level classes. However, you can change this. See details here regarding [Type Containers](../../tree/master/halva/src/main/java/io/soabase/halva/container/README.md).

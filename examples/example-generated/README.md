@@ -11,3 +11,5 @@ Here are some examples of annotated source "templates" and the resulting generat
 | [AliasExample.java](AliasExample.java) | [AliasExampleAlias.java](AliasExampleAlias.java)  |  Example Type Alias |
 | [ExampleImplicit.java](ExampleImplicit.java) <br> [ExampleImplicitContext1.java](ExampleImplicitContext1.java) <br> [ExampleImplicitContext2.java](ExampleImplicitContext2.java) | [ExampleImplicitImpl.java](ExampleImplicitImpl.java) | Example Implicit Class and associated Implicit Context classes |
 | [ExampleImplicitInterface.java](ExampleImplicitInterface.java) | [ExampleImplicitInterfaceImpl.java](ExampleImplicitInterfaceImpl.java) | Example Implicit interface (uses implicit contexts above) |
+| [ExampleContainer_.java](ExampleContainer_.java)         | [ExampleContainer.java](ExampleContainer.java)  | Example Type Container |
+| [OptionalForFactory.java](OptionalForFactory.java)         | [OptionalFor.java](OptionalFor.java)  | Example custom Monadic For |

@@ -1,4 +1,4 @@
-// Auto generated from com.company.Example by Soabase CaseClass annotation processor
+// Auto generated from com.company.Example by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
 import io.soabase.halva.tuple.ClassTuplable;
@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.caseclass.CaseClass")
 public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplable {
     private static final Class classTuplableClass = ExampleCaseTu("", "", "", "", "").getClass();
 

@@ -1,4 +1,4 @@
-// Auto generated from com.company.Test by Soabase CaseClass annotation processor
+// Auto generated from com.company.Test by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
 import io.soabase.halva.tuple.ClassTuplable;
@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.caseclass.CaseClass")
 public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
     private static final Class classTuplableClass = TestCaseTu("", "", "", "", "", "", "", "", "", "", "", "").getClass();
 

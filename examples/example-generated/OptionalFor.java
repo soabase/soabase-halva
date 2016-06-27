@@ -1,4 +1,4 @@
-// Auto generated from com.company.OptionalForFactory by Soabase MonadicFor annotation processor
+// Auto generated from com.company.OptionalForFactory by Soabase io.soabase.halva.comprehension.MonadicFor annotation processor
 package com.company;
 
 import io.soabase.halva.any.AnyVal;
@@ -7,7 +7,9 @@ import java.lang.Boolean;
 import java.lang.SuppressWarnings;
 import java.util.Optional;
 import java.util.function.Supplier;
+import javax.annotation.Generated;
 
+@Generated("io.soabase.halva.comprehension.MonadicFor")
 public class OptionalFor {
     private final MonadicForImpl<Optional> delegate;
 

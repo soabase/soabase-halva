@@ -22,7 +22,7 @@ import io.soabase.halva.processor.WorkItem;
 import java.util.List;
 import java.util.Optional;
 
-class MonadicForPassFactory implements PassFactory
+public class MonadicForPassFactory implements PassFactory
 {
     @Override
     public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)

@@ -32,9 +32,11 @@ public class AnnotationReader
 {
     private final String annotationName;
     private final Map<? extends ExecutableElement, ? extends AnnotationValue> values;
+    private final String annotationFullName;
 
-    AnnotationReader(ProcessingEnvironment processingEnv, Element element, String annotationName)
+    AnnotationReader(ProcessingEnvironment processingEnv, Element element, String annotationFullName, String annotationName)
     {
+        this.annotationFullName = annotationFullName;
         Optional<? extends AnnotationMirror> annotation = (element == null) ? Optional.empty() :
             element.getAnnotationMirrors().stream()
             .filter(mirror -> element.getAnnotationMirrors().get(0).getAnnotationType().asElement().getSimpleName().toString().equals(annotationName))
@@ -50,6 +52,11 @@ public class AnnotationReader
     public String getName()
     {
         return annotationName;
+    }
+
+    public String getFullName()
+    {
+        return annotationFullName;
     }
 
     public boolean getBoolean(String named)

@@ -100,7 +100,7 @@ class PassCreate implements Pass
         }
 
         spec.getItems().forEach(item -> addItem(builder, spec, item));
-        environment.createSourceFile(packageName, templateQualifiedClassName, implicitQualifiedClassName, ImplicitClass.class.getSimpleName(), builder, typeElement);
+        environment.createSourceFile(packageName, templateQualifiedClassName, implicitQualifiedClassName, ImplicitClass.class.getName(), builder, typeElement);
     }
 
     private void addImplicitInterface(TypeSpec.Builder builder, ImplicitSpec spec, TypeMirror implicitInterface)

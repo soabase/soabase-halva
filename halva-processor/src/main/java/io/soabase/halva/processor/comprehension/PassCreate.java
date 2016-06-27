@@ -85,7 +85,7 @@ class PassCreate implements Pass
             addFilter(builder, generatedQualifiedClassName);
         }
 
-        environment.createSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, MonadicFor.class.getSimpleName(), builder, typeElement);
+        environment.createSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, MonadicFor.class.getName(), builder, typeElement);
     }
 
     private boolean hasFilter(MonadicSpec spec)

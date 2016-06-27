@@ -1,18 +1,3 @@
-/**
- * Copyright 2016 Jordan Zimmerman
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.soabase.halva.processor;
 
 import com.squareup.javapoet.AnnotationSpec;
@@ -25,10 +10,17 @@ import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.comprehension.MonadicFor;
 import io.soabase.halva.implicit.ImplicitClass;
+import io.soabase.halva.processor.alias.AliasPassFactory;
+import io.soabase.halva.processor.caseclass.CaseClassPassFactory;
+import io.soabase.halva.processor.comprehension.MonadicForPassFactory;
+import io.soabase.halva.processor.implicit.ImplicitPassFactory;
 import javax.annotation.Generated;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -46,60 +38,65 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public abstract class Processor extends AbstractProcessor
-{
-    private final PassFactory passFactory;
+import static io.soabase.halva.sugar.Sugar.Map;
+import static io.soabase.halva.tuple.Tuple.Pair;
 
-    protected Processor(PassFactory passFactory)
-    {
-        this.passFactory = passFactory;
-    }
+@SupportedAnnotationTypes({
+    "io.soabase.halva.caseclass.CaseClass",
+    "io.soabase.halva.caseclass.CaseObject",
+    "io.soabase.halva.alias.TypeAlias",
+    "io.soabase.halva.comprehension.MonadicFor",
+    "io.soabase.halva.implicit.ImplicitClass"
+})
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
+public class MasterProcessor extends AbstractProcessor
+{
+    private static final Map<String, PassFactory> factories = Map(
+        Pair(TypeAlias.class.getName(), new AliasPassFactory()),
+        Pair(CaseClass.class.getName(), new CaseClassPassFactory()),
+        Pair(CaseObject.class.getName(), new CaseClassPassFactory()),
+        Pair(MonadicFor.class.getName(), new MonadicForPassFactory()),
+        Pair(ImplicitClass.class.getName(), new ImplicitPassFactory())
+    );
 
     @Override
-    public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
     {
-        List<WorkItem> workItems = annotations.stream().flatMap(annotation -> {
+        Map<String, List<WorkItem>> workItems = annotations.stream().flatMap(annotation -> {
             Set<? extends Element> elementsAnnotatedWith = environment.getElementsAnnotatedWith(annotation);
             return elementsAnnotatedWith.stream().map(element -> {
-                AnnotationReader annotationReader = new AnnotationReader(processingEnv, element, annotation.getSimpleName().toString());
+                AnnotationReader annotationReader = new AnnotationReader(processingEnv, element, annotation.getQualifiedName().toString(), annotation.getSimpleName().toString());
                 return new WorkItem(element, annotationReader);
             });
-        }).collect(Collectors.toList());
+        })
+        .collect(Collectors.groupingBy(item -> item.getAnnotationReader().getFullName()));
 
         Environment internalEnvironment = makeEnvironment();
-        Optional<Pass> pass = passFactory.firstPass(internalEnvironment, workItems);
-        while ( pass.isPresent() )
-        {
-            Pass actualPass = pass.get();
-            internalEnvironment.debug(getClass().getSimpleName() + "-" + actualPass.getClass().getSimpleName());
-            pass = actualPass.process();
-        }
+        workItems.entrySet().forEach(entry -> {
+            PassFactory passFactory = factories.get(entry.getKey());
+            if ( passFactory == null )
+            {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + entry.getKey());
+            }
+            else
+            {
+                Optional<Pass> pass = passFactory.firstPass(internalEnvironment, entry.getValue());
+                while ( pass.isPresent() )
+                {
+                    Pass actualPass = pass.get();
+                    internalEnvironment.debug(getClass().getSimpleName() + "-" + actualPass.getClass().getSimpleName());
+                    pass = actualPass.process();
+                }
+            }
+        });
         return true;
     }
-
-    public static Optional<List<TypeVariableName>> addTypeVariableNames(Consumer<List<TypeVariableName>> applier, List<? extends TypeParameterElement> elements)
-    {
-        Optional<List<TypeVariableName>> typeVariableNames;
-        if ( elements.size() > 0 )
-        {
-            List<TypeVariableName> localTypeVariableNames = elements.stream()
-                .map(TypeVariableName::get)
-                .collect(Collectors.toList());
-            applier.accept(localTypeVariableNames);
-            typeVariableNames = Optional.of(localTypeVariableNames);
-        }
-        else
-        {
-            typeVariableNames = Optional.empty();
-        }
-        return typeVariableNames;
-    }
-
 
     private Environment makeEnvironment()
     {
@@ -179,7 +176,20 @@ public abstract class Processor extends AbstractProcessor
             @Override
             public Optional<List<TypeVariableName>> addTypeVariableNames(Consumer<List<TypeVariableName>> applier, List<? extends TypeParameterElement> elements)
             {
-                return Processor.addTypeVariableNames(applier, elements);
+                Optional<List<TypeVariableName>> typeVariableNames;
+                if ( elements.size() > 0 )
+                {
+                    List<TypeVariableName> localTypeVariableNames = elements.stream()
+                        .map(TypeVariableName::get)
+                        .collect(Collectors.toList());
+                    applier.accept(localTypeVariableNames);
+                    typeVariableNames = Optional.of(localTypeVariableNames);
+                }
+                else
+                {
+                    typeVariableNames = Optional.empty();
+                }
+                return typeVariableNames;
             }
 
             @Override
@@ -187,7 +197,7 @@ public abstract class Processor extends AbstractProcessor
             {
                 AnnotationSpec generated = AnnotationSpec
                     .builder(Generated.class)
-                    .addMember("value", "\"" + getAnnotationName(annotationType) + "\"")
+                    .addMember("value", "\"" + annotationType + "\"")
                     .build();
                 builder.addAnnotation(generated);
 
@@ -240,18 +250,5 @@ public abstract class Processor extends AbstractProcessor
                 return executableType.getReturnType();
             }
         };
-    }
-
-    private static String getAnnotationName(String str)
-    {
-        Class[] classes = {TypeAlias.class, CaseClass.class, CaseObject.class, MonadicFor.class, ImplicitClass.class};
-        for ( Class clazz : classes )
-        {
-            if ( clazz.getSimpleName().equals(str) )
-            {
-                return clazz.getName();
-            }
-        }
-        return str;
     }
 }

@@ -90,7 +90,7 @@ class PassCreate implements Pass
 
         addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
         addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
-        environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getSimpleName(), builder, typeElement);
+        environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getName(), builder, typeElement);
     }
 
     private void addConstructorOverrides(TypeSpec.Builder builder, DeclaredType parentType)

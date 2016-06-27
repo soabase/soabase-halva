@@ -10,7 +10,7 @@
 * [Tuples](src/main/java/io/soabase/halva/tuple/README.md)
 * [Constructor Sugars](src/main/java/io/soabase/halva/sugar/README.md)
 * [Type Containers](src/main/java/io/soabase/halva/container/README.md)
-* [Custom Monadic Fors](src/main/java/io/soabase/halva/sugar/CUSTOM.md)
-* [Anys](src/main/java/io/soabase/halva/sugar/README.md)
+* [Custom Monadic Fors](src/main/java/io/soabase/halva/comprehension/CUSTOM.md)
+* [Anys](src/main/java/io/soabase/halva/any/README.md)
 
 

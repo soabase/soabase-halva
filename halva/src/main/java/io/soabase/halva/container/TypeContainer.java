@@ -26,7 +26,7 @@ public @interface TypeContainer
 {
     /**
      * Suffix for the generated class. i.e. if the template is "Foo" the generated class is
-     * named "FooFor" (or whatever the suffix is)
+     * named "FooContainer" (or whatever the suffix is)
      *
      * @return suffix
      */
@@ -41,5 +41,11 @@ public @interface TypeContainer
      */
     String unsuffix() default "_";
 
+    /**
+     * If true, generated classes inside the container are renamed as normal. If false,
+     * they retain their declared names.
+     *
+     * @return true/false
+     */
     boolean renameContained() default false;
 }

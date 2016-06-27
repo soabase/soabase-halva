@@ -28,7 +28,7 @@ To see the results of what Halva can do, please look at the [Simple Interpreter 
 * [Tuples](../../tree/master/halva/src/main/java/io/soabase/halva/tuple/README.md)
 * [Constructor Sugars](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/README.md)
 * [Type Containers](../../tree/master/halva/src/main/java/io/soabase/halva/container/README.md)
-* [Custom Monadic Fors](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/CUSTOM.md)
+* [Custom Monadic Fors](../../tree/master/halva/src/main/java/io/soabase/halva/comprehension/CUSTOM.md)
 * [Anys](../../tree/master/halva/src/main/java/io/soabase/halva/sugar/README.md)
 
 ### Example Generated Files

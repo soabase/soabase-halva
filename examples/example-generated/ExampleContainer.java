@@ -23,129 +23,6 @@ import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.container.TypeContainer")
 public class ExampleContainer {
-    public static class MyStack implements ExampleContainer_.MyStack, Serializable, Tuplable, ClassTuplable {
-        private static final Class classTuplableClass = MyStackTu("", "").getClass();
-
-        private final Stack stack;
-
-        private final int value;
-
-        protected MyStack(Stack stack, int value) {
-            if ( stack == null ) {
-                throw new IllegalArgumentException("\"stack\" does not have a default value");
-            }
-            this.stack = stack;
-            this.value = value;
-        }
-
-        @Override
-        public Stack stack() {
-            return stack;
-        }
-
-        @Override
-        public int value() {
-            return value;
-        }
-
-        public static Builder builder() {
-            return new Builder();
-        }
-
-        public Builder copy() {
-            return new Builder(this);
-        }
-
-        public static MyStack MyStack(Stack stack, int value) {
-            return new MyStack(stack, value);
-        }
-
-        @Override
-        public boolean equals(Object rhsObj) {
-            if ( this == rhsObj ) {
-                return true;
-            }
-            if ( rhsObj == null || getClass() != rhsObj.getClass() ) {
-                return false;
-            }
-            MyStack rhs = (MyStack)rhsObj;
-            if ( !stack.equals(rhs.stack) ) {
-                return false;
-            }
-            if ( value != rhs.value ) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public Tuple2<Stack, Integer> tuple() {
-            return Tuple.Tu(stack(), value());
-        }
-
-        @Override
-        public int hashCode() {
-            int result = stack.hashCode();
-            result = 31 * result + value;
-            return result;
-        }
-
-        public String debugString() {
-            return "MyStack { " +
-                "stack=" + stack + "; " +
-                "value=" + value + "; " +
-            '}';
-        }
-
-        @Override
-        public String toString() {
-            return "MyStack(" +
-            stack +
-            ", " + value +
-            ')';
-        }
-
-        public static ClassTuple MyStackTu(Object _1, Object _2) {
-            return () -> Tuple.Tu(_1, _2);
-        }
-
-        @Override
-        public Class getClassTuplableClass() {
-            return classTuplableClass;
-        }
-
-        public static final class Builder {
-            private Stack stack;
-
-            private int value;
-
-            private Builder() {
-            }
-
-            private Builder(MyStack rhs) {
-                stack = rhs.stack;
-                value = rhs.value;
-            }
-
-            public MyStack build() {
-                return new MyStack(
-                    stack, 
-                    value
-                );
-            }
-
-            public Builder stack(Stack stack) {
-                this.stack = stack;
-                return this;
-            }
-
-            public Builder value(int value) {
-                this.value = value;
-                return this;
-            }
-        }
-    }
-
     public interface Stack extends ConsList<List<String>> {
         TypeAliasType<ConsList<List<String>>, Stack> TypeAliasType = new TypeAliasType<>(new AnyType<ConsList<List<String>>>(){}, new AnyType<Stack>(){}, Stack::Stack);
 
@@ -301,6 +178,129 @@ public class ExampleContainer {
                     return Stack(instance.cons(arg0));
                 }
             };
+        }
+    }
+
+    public static class MyStack implements ExampleContainer_.MyStack, Serializable, Tuplable, ClassTuplable {
+        private static final Class classTuplableClass = MyStackTu("", "").getClass();
+
+        private final Stack stack;
+
+        private final int value;
+
+        protected MyStack(Stack stack, int value) {
+            if ( stack == null ) {
+                throw new IllegalArgumentException("\"stack\" does not have a default value");
+            }
+            this.stack = stack;
+            this.value = value;
+        }
+
+        @Override
+        public Stack stack() {
+            return stack;
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public Builder copy() {
+            return new Builder(this);
+        }
+
+        public static MyStack MyStack(Stack stack, int value) {
+            return new MyStack(stack, value);
+        }
+
+        @Override
+        public boolean equals(Object rhsObj) {
+            if ( this == rhsObj ) {
+                return true;
+            }
+            if ( rhsObj == null || getClass() != rhsObj.getClass() ) {
+                return false;
+            }
+            MyStack rhs = (MyStack)rhsObj;
+            if ( !stack.equals(rhs.stack) ) {
+                return false;
+            }
+            if ( value != rhs.value ) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public Tuple2<Stack, Integer> tuple() {
+            return Tuple.Tu(stack(), value());
+        }
+
+        @Override
+        public int hashCode() {
+            int result = stack.hashCode();
+            result = 31 * result + value;
+            return result;
+        }
+
+        public String debugString() {
+            return "MyStack { " +
+                "stack=" + stack + "; " +
+                "value=" + value + "; " +
+            '}';
+        }
+
+        @Override
+        public String toString() {
+            return "MyStack(" +
+            stack +
+            ", " + value +
+            ')';
+        }
+
+        public static ClassTuple MyStackTu(Object _1, Object _2) {
+            return () -> Tuple.Tu(_1, _2);
+        }
+
+        @Override
+        public Class getClassTuplableClass() {
+            return classTuplableClass;
+        }
+
+        public static final class Builder {
+            private Stack stack;
+
+            private int value;
+
+            private Builder() {
+            }
+
+            private Builder(MyStack rhs) {
+                stack = rhs.stack;
+                value = rhs.value;
+            }
+
+            public MyStack build() {
+                return new MyStack(
+                    stack, 
+                    value
+                );
+            }
+
+            public Builder stack(Stack stack) {
+                this.stack = stack;
+                return this;
+            }
+
+            public Builder value(int value) {
+                this.value = value;
+                return this;
+            }
         }
     }
 }

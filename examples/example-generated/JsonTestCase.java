@@ -139,10 +139,13 @@ public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTupl
             withPrefix = ""
     )
     public static final class Builder {
+        @JsonProperty
         private String firstName;
 
+        @JsonProperty
         private String lastName;
 
+        @JsonProperty
         private int age;
 
         @JsonCreator

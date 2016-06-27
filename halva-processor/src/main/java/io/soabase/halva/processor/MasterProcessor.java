@@ -10,6 +10,7 @@ import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.comprehension.MonadicFor;
 import io.soabase.halva.implicit.ImplicitClass;
+import io.soabase.halva.implicit.ImplicitContext;
 import io.soabase.halva.processor.alias.AliasPassFactory;
 import io.soabase.halva.processor.caseclass.CaseClassPassFactory;
 import io.soabase.halva.processor.comprehension.MonadicForPassFactory;
@@ -52,34 +53,48 @@ import static io.soabase.halva.tuple.Tuple.Pair;
     "io.soabase.halva.caseclass.CaseObject",
     "io.soabase.halva.alias.TypeAlias",
     "io.soabase.halva.comprehension.MonadicFor",
-    "io.soabase.halva.implicit.ImplicitClass"
+    "io.soabase.halva.implicit.ImplicitClass",
+    "io.soabase.halva.implicit.ImplicitContext"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class MasterProcessor extends AbstractProcessor
 {
+    private static final AliasPassFactory aliasPassFactory = new AliasPassFactory();
+    private static final CaseClassPassFactory caseClassPassFactory = new CaseClassPassFactory();
+    private static final MonadicForPassFactory monadicForPassFactory = new MonadicForPassFactory();
+    private static final ImplicitPassFactory implicitPassFactory = new ImplicitPassFactory();
     private static final Map<String, PassFactory> factories = Map(
-        Pair(TypeAlias.class.getName(), new AliasPassFactory()),
-        Pair(CaseClass.class.getName(), new CaseClassPassFactory()),
-        Pair(CaseObject.class.getName(), new CaseClassPassFactory()),
-        Pair(MonadicFor.class.getName(), new MonadicForPassFactory()),
-        Pair(ImplicitClass.class.getName(), new ImplicitPassFactory())
+        Pair(TypeAlias.class.getName(), aliasPassFactory),
+        Pair(CaseClass.class.getName(), caseClassPassFactory),
+        Pair(CaseObject.class.getName(), caseClassPassFactory),
+        Pair(MonadicFor.class.getName(), monadicForPassFactory),
+        Pair(ImplicitClass.class.getName(), implicitPassFactory),
+        Pair(ImplicitContext.class.getName(), implicitPassFactory)
     );
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
     {
-        Map<String, List<WorkItem>> workItems = annotations.stream().flatMap(annotation -> {
+        Map<PassFactory, List<WorkItem>> workItems = annotations.stream().flatMap(annotation -> {
             Set<? extends Element> elementsAnnotatedWith = environment.getElementsAnnotatedWith(annotation);
             return elementsAnnotatedWith.stream().map(element -> {
                 AnnotationReader annotationReader = new AnnotationReader(processingEnv, element, annotation.getQualifiedName().toString(), annotation.getSimpleName().toString());
                 return new WorkItem(element, annotationReader);
             });
         })
-        .collect(Collectors.groupingBy(item -> item.getAnnotationReader().getFullName()));
+        .collect(Collectors.groupingBy(item -> {
+            PassFactory passFactory = factories.get(item.getAnnotationReader().getFullName());
+            if ( passFactory == null )
+            {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + item.getAnnotationReader().getFullName());
+                return (a, b) -> Optional.empty();
+            }
+            return passFactory;
+        }));
 
         Environment internalEnvironment = makeEnvironment();
         workItems.entrySet().forEach(entry -> {
-            PassFactory passFactory = factories.get(entry.getKey());
+            PassFactory passFactory = entry.getKey();
             if ( passFactory == null )
             {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + entry.getKey());

@@ -372,7 +372,7 @@ class Templates
 
     TypeName getBuilderClassName(ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
     {
-        ClassName rawClassname = ClassName.get(className.packageName() + '.' + className.simpleName(), "Builder");
+        ClassName rawClassname = className.nestedClass("Builder");
         if ( typeVariableNames.isPresent() )
         {
             return ParameterizedTypeName.get(rawClassname, typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()]));

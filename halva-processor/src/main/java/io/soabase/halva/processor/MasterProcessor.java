@@ -1,3 +1,18 @@
+/**
+ * Copyright 2016 Jordan Zimmerman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.soabase.halva.processor;
 
 import com.squareup.javapoet.AnnotationSpec;
@@ -9,11 +24,15 @@ import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.comprehension.MonadicFor;
+import io.soabase.halva.container.TypeContainer;
 import io.soabase.halva.implicit.ImplicitClass;
 import io.soabase.halva.implicit.ImplicitContext;
 import io.soabase.halva.processor.alias.AliasPassFactory;
 import io.soabase.halva.processor.caseclass.CaseClassPassFactory;
 import io.soabase.halva.processor.comprehension.MonadicForPassFactory;
+import io.soabase.halva.processor.container.Container;
+import io.soabase.halva.processor.container.ContainerManager;
+import io.soabase.halva.processor.container.ContainerPassFactory;
 import io.soabase.halva.processor.implicit.ImplicitPassFactory;
 import javax.annotation.Generated;
 import javax.annotation.processing.AbstractProcessor;
@@ -54,7 +73,8 @@ import static io.soabase.halva.tuple.Tuple.Pair;
     "io.soabase.halva.alias.TypeAlias",
     "io.soabase.halva.comprehension.MonadicFor",
     "io.soabase.halva.implicit.ImplicitClass",
-    "io.soabase.halva.implicit.ImplicitContext"
+    "io.soabase.halva.implicit.ImplicitContext",
+    "io.soabase.halva.container.TypeContainer"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class MasterProcessor extends AbstractProcessor
@@ -63,18 +83,22 @@ public class MasterProcessor extends AbstractProcessor
     private static final CaseClassPassFactory caseClassPassFactory = new CaseClassPassFactory();
     private static final MonadicForPassFactory monadicForPassFactory = new MonadicForPassFactory();
     private static final ImplicitPassFactory implicitPassFactory = new ImplicitPassFactory();
+    private static final ContainerPassFactory containerPassFactory = new ContainerPassFactory();
     private static final Map<String, PassFactory> factories = Map(
         Pair(TypeAlias.class.getName(), aliasPassFactory),
         Pair(CaseClass.class.getName(), caseClassPassFactory),
         Pair(CaseObject.class.getName(), caseClassPassFactory),
         Pair(MonadicFor.class.getName(), monadicForPassFactory),
         Pair(ImplicitClass.class.getName(), implicitPassFactory),
-        Pair(ImplicitContext.class.getName(), implicitPassFactory)
+        Pair(ImplicitContext.class.getName(), implicitPassFactory),
+        Pair(TypeContainer.class.getName(), containerPassFactory)
     );
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
     {
+        ContainerManager containerManager = new ContainerManager();
+
         Map<PassFactory, List<WorkItem>> workItems = annotations.stream().flatMap(annotation -> {
             Set<? extends Element> elementsAnnotatedWith = environment.getElementsAnnotatedWith(annotation);
             return elementsAnnotatedWith.stream().map(element -> {
@@ -92,8 +116,18 @@ public class MasterProcessor extends AbstractProcessor
             return passFactory;
         }));
 
-        Environment internalEnvironment = makeEnvironment();
-        workItems.entrySet().forEach(entry -> {
+        Environment internalEnvironment = makeEnvironment(containerManager);
+
+        List<WorkItem> containerItems = workItems.get(containerPassFactory);
+        if ( containerItems != null )
+        {
+            runPasses(internalEnvironment, containerItems, containerPassFactory);
+        }
+
+        workItems.entrySet()
+            .stream()
+            .filter(entry -> entry.getKey() != containerPassFactory)
+            .forEach(entry -> {
             PassFactory passFactory = entry.getKey();
             if ( passFactory == null )
             {
@@ -101,22 +135,81 @@ public class MasterProcessor extends AbstractProcessor
             }
             else
             {
-                Optional<Pass> pass = passFactory.firstPass(internalEnvironment, entry.getValue());
-                while ( pass.isPresent() )
-                {
-                    Pass actualPass = pass.get();
-                    internalEnvironment.debug(getClass().getSimpleName() + "-" + actualPass.getClass().getSimpleName());
-                    pass = actualPass.process();
-                }
+                runPasses(internalEnvironment, entry.getValue(), passFactory);
             }
         });
+
+        buildContainers(containerManager, internalEnvironment);
+
         return true;
     }
 
-    private Environment makeEnvironment()
+    private void buildContainers(ContainerManager containerManager, Environment internalEnvironment)
+    {
+        containerManager.getContainers().forEach(container -> {
+            TypeElement typeElement = container.getElement();
+            String packageName = internalEnvironment.getPackage(typeElement);
+            ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
+            ClassName containerQualifiedClassName = ClassName.get(packageName, internalEnvironment.getGeneratedClassName(typeElement, container.getAnnotationReader()));
+            internalCreateSourceFile(packageName, templateQualifiedClassName, containerQualifiedClassName, TypeContainer.class.getName(), container.build(), typeElement);
+        });
+    }
+
+    private void runPasses(Environment internalEnvironment, List<WorkItem> items, PassFactory passFactory)
+    {
+        Optional<Pass> pass = passFactory.firstPass(internalEnvironment, items);
+        while ( pass.isPresent() )
+        {
+            Pass actualPass = pass.get();
+            internalEnvironment.debug(getClass().getSimpleName() + "-" + actualPass.getClass().getSimpleName());
+            pass = actualPass.process();
+        }
+    }
+
+    private void internalCreateSourceFile(String packageName, ClassName templateQualifiedClassName, ClassName generatedQualifiedClassName, String annotationType, TypeSpec.Builder builder, TypeElement element)
+    {
+        AnnotationSpec generated = AnnotationSpec
+            .builder(Generated.class)
+            .addMember("value", "\"" + annotationType + "\"")
+            .build();
+        builder.addAnnotation(generated);
+
+        TypeSpec classSpec = builder.build();
+        JavaFile javaFile = JavaFile.builder(packageName, classSpec)
+            .addFileComment("Auto generated from $L by Soabase " + annotationType + " annotation processor", templateQualifiedClassName)
+            .indent("    ")
+            .build();
+
+        Filer filer = processingEnv.getFiler();
+        try
+        {
+            JavaFileObject sourceFile = filer.createSourceFile(generatedQualifiedClassName.toString());
+            try ( Writer writer = sourceFile.openWriter() )
+            {
+                javaFile.writeTo(writer);
+            }
+        }
+        catch ( IOException e )
+        {
+            String message = "Could not create source file";
+            if ( e.getMessage() != null )
+            {
+                message = message + ": " + e.getMessage();
+            }
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message, element);
+        }
+    }
+
+    private Environment makeEnvironment(ContainerManager containerManager)
     {
         return new Environment()
         {
+            @Override
+            public ContainerManager getContainerManager()
+            {
+                return containerManager;
+            }
+
             @Override
             public void error(Element element, String message)
             {
@@ -166,8 +259,33 @@ public class MasterProcessor extends AbstractProcessor
             }
 
             @Override
+            public ClassName getQualifiedClassName(TypeElement element, AnnotationReader annotationReader)
+            {
+                String packageName = getPackage(element);
+                String generatedClassName = getGeneratedClassName(element, annotationReader);
+
+                Optional<Container> container = containerManager.getContainer(element);
+                if ( container.isPresent() )
+                {
+                    String containerName = getGeneratedClassName(container.get().getElement(), container.get().getAnnotationReader());
+                    return ClassName.get(packageName, containerName, generatedClassName);
+                }
+
+                return ClassName.get(packageName, generatedClassName);
+            }
+
+            @Override
             public String getGeneratedClassName(TypeElement element, AnnotationReader annotationReader)
             {
+                Optional<Container> container = containerManager.getContainer(element);
+                if ( container.isPresent() )
+                {
+                    if ( !container.get().getAnnotationReader().getBoolean("renameContained") )
+                    {
+                        return element.getSimpleName().toString();
+                    }
+                }
+
                 String suffix = annotationReader.getString("suffix");
                 String unsuffix = annotationReader.getString("unsuffix");
                 String name = element.getSimpleName().toString();
@@ -210,35 +328,14 @@ public class MasterProcessor extends AbstractProcessor
             @Override
             public void createSourceFile(String packageName, ClassName templateQualifiedClassName, ClassName generatedQualifiedClassName, String annotationType, TypeSpec.Builder builder, TypeElement element)
             {
-                AnnotationSpec generated = AnnotationSpec
-                    .builder(Generated.class)
-                    .addMember("value", "\"" + annotationType + "\"")
-                    .build();
-                builder.addAnnotation(generated);
-
-                TypeSpec classSpec = builder.build();
-                JavaFile javaFile = JavaFile.builder(packageName, classSpec)
-                    .addFileComment("Auto generated from $L by Soabase " + annotationType + " annotation processor", templateQualifiedClassName)
-                    .indent("    ")
-                    .build();
-
-                Filer filer = processingEnv.getFiler();
-                try
+                Optional<Container> container = containerManager.getContainer(element);
+                if ( container.isPresent() )
                 {
-                    JavaFileObject sourceFile = filer.createSourceFile(generatedQualifiedClassName.toString());
-                    try ( Writer writer = sourceFile.openWriter() )
-                    {
-                        javaFile.writeTo(writer);
-                    }
+                    container.get().addItem(builder);
                 }
-                catch ( IOException e )
+                else
                 {
-                    String message = "Could not create source file";
-                    if ( e.getMessage() != null )
-                    {
-                        message = message + ": " + e.getMessage();
-                    }
-                    error(element, message);
+                    internalCreateSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, annotationType, builder, element);
                 }
             }
 

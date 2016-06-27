@@ -18,6 +18,7 @@ package io.soabase.halva.processor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import io.soabase.halva.processor.container.ContainerManager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -46,6 +47,8 @@ public interface Environment
 
     String getPackage(TypeElement element);
 
+    ClassName getQualifiedClassName(TypeElement element, AnnotationReader annotationReader);
+
     String getGeneratedClassName(TypeElement element, AnnotationReader annotationReader);
 
     Collection<Modifier> getModifiers(TypeElement element);
@@ -57,4 +60,6 @@ public interface Environment
     DeclaredType typeOfFieldOrMethod(Element element);
 
     TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing);
+
+    ContainerManager getContainerManager();
 }

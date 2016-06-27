@@ -55,7 +55,7 @@ class PassCreateClass implements Pass
     {
         String packageName = environment.getPackage(spec.getAnnotatedElement());
         ClassName originalQualifiedClassName = ClassName.get(packageName, spec.getAnnotatedElement().getSimpleName().toString());
-        ClassName qualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(spec.getAnnotatedElement(), spec.getAnnotationReader()));
+        ClassName qualifiedClassName = environment.getQualifiedClassName(spec.getAnnotatedElement(), spec.getAnnotationReader());
 
         environment.log("Generating " + spec.getAnnotationReader().getName() + " for " + originalQualifiedClassName + " as " + qualifiedClassName);
 

@@ -64,7 +64,7 @@ class PassCreate implements Pass
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
         ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName generatedQualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(typeElement, spec.getAnnotationReader()));
+        ClassName generatedQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
 
         environment.log("Generating " + MonadicFor.class.getSimpleName() + " for " + templateQualifiedClassName + " as " + generatedQualifiedClassName);
 

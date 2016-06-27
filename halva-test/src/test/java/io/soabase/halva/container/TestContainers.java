@@ -18,7 +18,12 @@ package io.soabase.halva.container;
 import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.sugar.ConsList;
+import org.junit.Assert;
+import org.junit.Test;
 import java.util.List;
+
+import static io.soabase.halva.container.TestContainer.Stack.Stack;
+import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestContainers
 {
@@ -27,6 +32,15 @@ public class TestContainers
     {
         @TypeAlias interface Stack extends ConsList<List<String>>{}
 
-        @CaseClass interface MyStack{Stack stack(); int value();}
+        @CaseClass interface MyStack{TestContainer.Stack stack(); int value();}
+    }
+
+    @Test
+    public void testBasic()
+    {
+        TestContainer.Stack stack = Stack(List(List("one", "two", "three"), List("four", "five")));
+        TestContainer.MyStack myStack = TestContainer.MyStack.MyStack(stack, 10);
+        Assert.assertEquals(10, myStack.value());
+        Assert.assertEquals(2, myStack.stack().size());
     }
 }

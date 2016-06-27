@@ -18,5 +18,5 @@ then use the alias and case class like this:
 
 ```java
 ExampleContainer.Stack stack = Stack(List(List("one", "two", "three"), List("four", "five")));
-ExampleContainer.MyStack myStack = ExampleContainer.MyStack.MyStack(stack, 10);
+ExampleContainer.MyStack myStack = MyStack(stack, 10);
 ```

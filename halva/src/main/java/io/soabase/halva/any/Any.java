@@ -34,6 +34,15 @@ public interface Any<T>
     }
 
     /**
+    * Factory method to return type hint.
+    *
+    * @return type hint.
+    */
+    static <T> AnyType<T> type()
+    {
+        return new AnyType<T>(){};
+    }
+    /**
      * Return a new AnyList that matches the given head of a list and the given tail of a list
      *
      * @param head head to match

@@ -32,7 +32,7 @@ public class TestAny
     @Test
     public void testAny()
     {
-        Any<Object> any = new AnyType<Object>(){};
+        Any<Object> any = Any.type();
         assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"));
         assertEquals(Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"), Tuple.Tu("a", any, "b"));
         assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", any, "b"));
@@ -43,7 +43,7 @@ public class TestAny
     @Test
     public void testAnyWithAlias()
     {
-        Any<ConsList<String>> real = new AnyType<ConsList<String>>(){};
+        Any<ConsList<String>> real = Any.type();
         Any<StringList> alias = Any.typeAlias(StringList.TypeAliasType);
 
         ConsList<String> strings = List("A", "B", "C");
@@ -61,8 +61,8 @@ public class TestAny
     @Test
     public void testAliasedCons()
     {
-        Any<String> s = new AnyType<String>(){};
-        Any<Integer> v = new AnyType<Integer>(){};
+        Any<String> s = Any.type();
+        Any<Integer> v = Any.type();
         Any<Environment> e = Any.typeAlias(Environment.TypeAliasType);
         AnyList cons = Any.headAnyTail(Pair(s, v), e);
 

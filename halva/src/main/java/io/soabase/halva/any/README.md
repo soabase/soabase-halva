@@ -27,7 +27,7 @@ An instance of `Any` is a placeholder for any value of the matching type. During
 equality to any instance of the enclosed type and the value of that instance will be captured by the `Any` so that it can used later on. Because of [Type Erasure](https://docs.oracle.com/javase/tutorial/java/generics/genMethods.html) you must use the "type token" idiom to partially-reify type information. Thus, you declare/define an `Any` using this pattern:
 
 ```java
-Any<MyType> anyMyType = new AnyType<MyType>(){}; // the two braces {} are required
+Any<MyType> anyMyType = Any.type();
 ```
 
 Once you have an Any you can use it in pattern matching. E.g.

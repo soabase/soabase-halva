@@ -21,7 +21,6 @@ import io.soabase.halva.processor.AnnotationReader;
 import io.soabase.halva.processor.Environment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

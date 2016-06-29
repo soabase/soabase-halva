@@ -43,9 +43,9 @@ class PassMain implements Pass
 
     private void processItem(WorkItem item)
     {
-        if ( item.getElement().getKind() != ElementKind.INTERFACE )
+        if ( (item.getElement().getKind() != ElementKind.INTERFACE) && (item.getElement().getKind() != ElementKind.CLASS) )
         {
-            environment.error(item.getElement(), "@TypeContainer can only be used with interfaces");
+            environment.error(item.getElement(), "@TypeContainer can only be used with interfaces and classes");
         }
         else
         {

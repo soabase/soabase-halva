@@ -49,8 +49,6 @@ public interface Environment
 
     ClassName getQualifiedClassName(TypeElement element, AnnotationReader annotationReader);
 
-    String getGeneratedClassName(TypeElement element, AnnotationReader annotationReader);
-
     Collection<Modifier> getModifiers(TypeElement element);
 
     void createSourceFile(String packageName, ClassName templateQualifiedClassName, ClassName generatedQualifiedClassName, String annotationType, TypeSpec.Builder builder, TypeElement element);
@@ -62,4 +60,6 @@ public interface Environment
     TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing);
 
     ContainerManager getContainerManager();
+
+    GeneratedManager getGeneratedManager();
 }

@@ -18,41 +18,8 @@ package io.soabase.halva.sugar;
 import java.util.List;
 
 /**
- * A ConstList is an immutable {@link java.util.List} with additioanl functional methods
+ * A ConstList is an immutable {@link java.util.List} with additional functional methods
  */
-public interface ConsList<T> extends List<T>
+public interface ConsList<T> extends List<T>, Consable<T, ConsList<T>>
 {
-    /**
-     * Return the first item of the list
-     *
-     * @return first item
-     * @throws IndexOutOfBoundsException if the list is empty
-     */
-    T head();
-
-    /**
-     * Return a new list that has all the elements of this list except the head
-     *
-     * @return the tail
-     * @throws IndexOutOfBoundsException if the list is empty
-     */
-    ConsList<T> tail();
-
-    /**
-     * Return a new list that is the contents of this list concatenated with the
-     * contents of the given list
-     *
-     * @param rhs list to concatenate
-     * @return new list
-     */
-    ConsList<T> concat(ConsList<T> rhs);
-
-    /**
-     * Return a new list that consists of the given value as the head and this list
-     * as the tail
-     *
-     * @param newHead value
-     * @return new list
-     */
-    ConsList<T> cons(T newHead);
 }

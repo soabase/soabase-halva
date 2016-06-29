@@ -29,6 +29,8 @@ import static io.soabase.halva.caseclass.JsonWithOverridesCase.JsonWithOverrides
 
 public class TestJson
 {
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Test
     public void testFromJson() throws IOException
     {
@@ -37,7 +39,7 @@ public class TestJson
             + "\"lastName\": \"Galt\","
             + "\"age\": 42"
             + "}";
-        JsonTest deserialized = new ObjectMapper().readerFor(JsonTestCase.class).readValue(json);
+        JsonTest deserialized = mapper.readerFor(JsonTestCase.class).readValue(json);
         Assert.assertEquals(JsonTestCase.builder().firstName("John").lastName("Galt").age(42).build(), deserialized);
     }
 
@@ -59,9 +61,9 @@ public class TestJson
     public void testJsonWithOverrides() throws IOException
     {
         JsonWithOverridesCase object = JsonWithOverridesCase("me", -100, 32, "large");
-        String json = new ObjectMapper().writeValueAsString(object);
-        Assert.assertEquals("{\"age\":32,\"type\":\"large\",\"nombre\":\"me\"}", json);
-        JsonWithOverridesCase deserialized = new ObjectMapper().readerFor(JsonWithOverridesCase.class).readValue(json);
+        String json = mapper.writeValueAsString(object);
+        Assert.assertEquals(mapper.readTree("{\"age\":32,\"type\":\"large\",\"nombre\":\"me\"}"), mapper.readTree(json));
+        JsonWithOverridesCase deserialized = mapper.readerFor(JsonWithOverridesCase.class).readValue(json);
         Assert.assertEquals(object.copy().iAmNothing(0).build(), deserialized);
     }
 
@@ -69,8 +71,8 @@ public class TestJson
     public void testToJson() throws IOException
     {
         JsonTestCase object = JsonTestCase.builder().firstName("John").lastName("Galt").age(42).build();
-        String json = new ObjectMapper().writeValueAsString(object);
-        JsonTest deserialized = new ObjectMapper().readerFor(JsonTestCase.class).readValue(json);
+        String json = mapper.writeValueAsString(object);
+        JsonTest deserialized = mapper.readerFor(JsonTestCase.class).readValue(json);
         Assert.assertEquals(object, deserialized);
     }
 }

@@ -61,15 +61,24 @@ class PassCreateClass implements Pass
 
         Collection<Modifier> modifiers = environment.getModifiers(spec.getAnnotatedElement());
         TypeName baseType = TypeName.get(spec.getAnnotatedElement().asType());
-        TypeSpec.Builder builder = TypeSpec.classBuilder(qualifiedClassName)
-            .addSuperinterface(baseType)
-            .addSuperinterface(Serializable.class)
-            .addSuperinterface(Tuplable.class)
-            .addSuperinterface(ClassTuplable.class)
-            .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
+        boolean isCaseObject = spec.getAnnotationReader().getName().equals(CaseObject.class.getSimpleName());
+        TypeSpec.Builder builder;
+        if ( !isCaseObject )
+        {
+            builder = TypeSpec.classBuilder(qualifiedClassName)
+                .addSuperinterface(Serializable.class);
+        }
+        else
+        {
+            builder = TypeSpec.enumBuilder(qualifiedClassName)
+                .addEnumConstant(qualifiedClassName.simpleName());
+        }
+        builder.addSuperinterface(baseType)
+               .addSuperinterface(Tuplable.class)
+               .addSuperinterface(ClassTuplable.class)
+               .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
         Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, spec.getAnnotatedElement().getTypeParameters());
-        boolean isCaseObject = spec.getAnnotationReader().getName().equals(CaseObject.class.getSimpleName());
         boolean json = spec.getAnnotationReader().getBoolean("json");
         if ( json )
         {
@@ -79,20 +88,16 @@ class PassCreateClass implements Pass
             builder.addAnnotation(annotationSpec);
         }
         spec.getItems().forEach(item -> templates.addItem(item, builder, json));
-        templates.addConstructor(spec, builder, isCaseObject);
-        if ( isCaseObject )
+        if ( !isCaseObject )
         {
-            templates.addObjectInstance(builder, qualifiedClassName, typeVariableNames);
-        }
-        else
-        {
+            templates.addConstructor(spec, builder, false);
             templates.addBuilder(spec, builder, qualifiedClassName, json, typeVariableNames);
             templates.addCopy(builder, qualifiedClassName, typeVariableNames);
             templates.addApplyBuilder(spec, builder, qualifiedClassName, typeVariableNames);
+            templates.addEquals(spec, builder, qualifiedClassName);
+            templates.addHashCode(spec, builder);
         }
-        templates.addEquals(spec, builder, qualifiedClassName);
         templates.addTuple(spec, builder);
-        templates.addHashCode(spec, builder);
         templates.addDebugString(spec, builder, qualifiedClassName);
         templates.addToString(spec, builder, qualifiedClassName);
         templates.addClassTuple(spec, builder, qualifiedClassName, json);

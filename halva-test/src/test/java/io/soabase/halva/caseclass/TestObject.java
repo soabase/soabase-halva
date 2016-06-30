@@ -35,5 +35,6 @@ public class TestObject
         Assert.assertEquals("John", ExampleObjectCase.firstName());
         Assert.assertEquals(42, ExampleObjectCase.age());
         testAsExample(ExampleObjectCase);
+        Assert.assertTrue(ExampleObjectCase instanceof Enum);
     }
 }

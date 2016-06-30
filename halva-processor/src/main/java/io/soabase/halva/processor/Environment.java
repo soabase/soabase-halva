@@ -59,6 +59,8 @@ public interface Environment
 
     DeclaredType typeOfFieldOrMethod(Element element);
 
+    TypeMirror getResolvedType(Element method, DeclaredType enclosing);
+
     TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing);
 
     ContainerManager getContainerManager();

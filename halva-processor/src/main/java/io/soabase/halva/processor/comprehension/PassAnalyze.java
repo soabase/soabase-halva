@@ -22,6 +22,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.naming.NamingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,8 +63,9 @@ class PassAnalyze implements Pass
                             break;
                         }
 
-                        TypeElement monadElement = environment.getElementUtils().getTypeElement((declaredType.getTypeArguments().get(0)).toString());
-                        if ( monadElement.getTypeParameters().size() == 0 )
+                        TypeMirror typeParameter = environment.getTypeUtils().erasure(declaredType.getTypeArguments().get(0));
+                        TypeElement monadElement = environment.getElementUtils().getTypeElement(typeParameter.toString());
+                        if ( (monadElement == null) || monadElement.getTypeParameters().size() == 0 )
                         {
                             environment.error(item.getElement(), "MonadicForWrapper argument is not monadic. It must take type parameters: " + monadElement);
                             break;

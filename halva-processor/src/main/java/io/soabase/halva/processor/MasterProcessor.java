@@ -357,9 +357,14 @@ public class MasterProcessor extends AbstractProcessor
             @Override
             public TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing)
             {
+                return ((ExecutableType)getResolvedType(method, enclosing)).getReturnType();
+            }
+
+            @Override
+            public TypeMirror getResolvedType(Element element, DeclaredType enclosing)
+            {
                 // copied from MethodSpec.override()
-                ExecutableType executableType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf(enclosing, method);
-                return executableType.getReturnType();
+                return processingEnv.getTypeUtils().asMemberOf(enclosing, element);
             }
         };
     }

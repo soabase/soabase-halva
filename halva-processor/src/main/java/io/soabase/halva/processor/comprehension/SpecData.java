@@ -34,7 +34,7 @@ class SpecData
     SpecData(MonadicSpec spec)
     {
         typeVariableNames = IntStream.range(0, spec.getMonadElement().getTypeParameters().size())
-            .mapToObj(i -> TypeVariableName.get(Character.toString((char)('A' + i))))
+            .mapToObj(i -> TypeVariableName.get("MF_" + getIndexedName(i)))
             .collect(Collectors.toList());
 
         int monadicParameterPosition = spec.getAnnotationReader().getInt("monadicParameterPosition");
@@ -45,5 +45,10 @@ class SpecData
         monadicTypeName = typeVariableNames.get(monadicParameterPosition);
         parameterizedMonadicName = ParameterizedTypeName.get(ClassName.get(spec.getMonadElement()), typeVariableNames.toArray(new TypeName[typeVariableNames.size()]));
         anyName = ParameterizedTypeName.get(ClassName.get(AnyVal.class), monadicTypeName);
+    }
+
+    private String getIndexedName(int i)
+    {
+        return Character.toString((char)('A' + i));
     }
 }

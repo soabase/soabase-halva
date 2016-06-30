@@ -74,12 +74,19 @@ class PassCreate implements Pass
         Collection<Modifier> modifiers = environment.getModifiers(typeElement);
         TypeSpec.Builder builder = TypeSpec.classBuilder(generatedQualifiedClassName)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
+        Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, typeElement.getTypeParameters());
+
+        TypeName resolvedName = generatedQualifiedClassName;
+        if ( typeVariableNames.isPresent() )
+        {
+            resolvedName = ParameterizedTypeName.get(generatedQualifiedClassName, typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()]));
+        }
 
         addConstructorAndDelegate(builder, spec);
-        addStaticBuilder(builder, spec, generatedQualifiedClassName);
-        addForComp(builder, generatedQualifiedClassName, specData);
+        addStaticBuilder(builder, spec, resolvedName, typeVariableNames);
+        addForComp(builder, resolvedName, specData);
         addYield(builder, specData);
-        addLetComp(builder, generatedQualifiedClassName);
+        addLetComp(builder, resolvedName);
         if ( hasFilter )
         {
             addFilter(builder, generatedQualifiedClassName);
@@ -131,7 +138,7 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addLetComp(TypeSpec.Builder builder, ClassName generatedQualifiedClassName)
+    private void addLetComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName)
     {
         ParameterizedTypeName supplierName = ParameterizedTypeName.get(ClassName.get(Supplier.class), TypeVariableName.get("R"));
         ParameterizedTypeName anyName = ParameterizedTypeName.get(ClassName.get(AnyVal.class), TypeVariableName.get("R"));
@@ -172,7 +179,7 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addForComp(TypeSpec.Builder builder, ClassName generatedQualifiedClassName, SpecData specData)
+    private void addForComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName, SpecData specData)
     {
         ParameterizedTypeName supplierName = ParameterizedTypeName.get(ClassName.get(Supplier.class), WildcardTypeName.subtypeOf(specData.parameterizedMonadicName));
 
@@ -192,16 +199,39 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, ClassName generatedQualifiedClassName)
+    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, TypeName generatedQualifiedClassName, Optional<List<TypeVariableName>> typeVariableNames)
     {
-        CodeBlock.Builder codeBuilder = CodeBlock.builder()
-            .addStatement("return new $T(new $T<>(new $T()))", generatedQualifiedClassName, ClassName.get(MonadicForImpl.class), spec.getAnnotatedElement());
+        CodeBlock.Builder codeBuilder;
+        if ( typeVariableNames.isPresent() )
+        {
+            codeBuilder = CodeBlock.builder()
+                .addStatement("return new $T(new $T<$T>(new $T()))",
+                    generatedQualifiedClassName,
+                    ClassName.get(MonadicForImpl.class),
+                    environment.getTypeUtils().erasure(spec.getMonadElement().asType()),
+                    environment.getTypeUtils().erasure(spec.getAnnotatedElement().asType())
+                 );
+        }
+        else
+        {
+            codeBuilder = CodeBlock.builder()
+                .addStatement("return new $T(new $T<>(new $T()))",
+                    generatedQualifiedClassName,
+                    ClassName.get(MonadicForImpl.class),
+                    spec.getAnnotatedElement()
+                 );
+        }
 
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("start")
             .returns(generatedQualifiedClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addCode(codeBuilder.build())
             ;
+
+        if ( typeVariableNames.isPresent() )
+        {
+            methodBuilder.addTypeVariables(typeVariableNames.get());
+        }
 
         builder.addMethod(methodBuilder.build());
     }

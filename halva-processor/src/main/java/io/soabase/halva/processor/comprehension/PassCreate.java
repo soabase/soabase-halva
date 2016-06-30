@@ -20,6 +20,7 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.comprehension.MonadicFor;
 import io.soabase.halva.comprehension.MonadicForImpl;
 import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.GeneratedClass;
 import io.soabase.halva.processor.Pass;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -63,29 +64,28 @@ class PassCreate implements Pass
     {
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
-        ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName generatedQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
+        GeneratedClass generatedClass = environment.getGeneratedManager().resolve(typeElement);
 
-        environment.log("Generating " + MonadicFor.class.getSimpleName() + " for " + templateQualifiedClassName + " as " + generatedQualifiedClassName);
+        environment.log("Generating " + MonadicFor.class.getSimpleName() + " for " + generatedClass.getOriginal() + " as " + generatedClass.getGenerated());
 
         SpecData specData = new SpecData(spec);
         boolean hasFilter = hasFilter(spec);
 
         Collection<Modifier> modifiers = environment.getModifiers(typeElement);
-        TypeSpec.Builder builder = TypeSpec.classBuilder(generatedQualifiedClassName)
+        TypeSpec.Builder builder = TypeSpec.classBuilder(generatedClass.getGenerated())
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
         addConstructorAndDelegate(builder, spec);
-        addStaticBuilder(builder, spec, generatedQualifiedClassName);
-        addForComp(builder, generatedQualifiedClassName, specData);
+        addStaticBuilder(builder, spec, generatedClass.getGenerated());
+        addForComp(builder, generatedClass.getGenerated(), specData);
         addYield(builder, specData);
-        addLetComp(builder, generatedQualifiedClassName);
+        addLetComp(builder, generatedClass.getGenerated());
         if ( hasFilter )
         {
-            addFilter(builder, generatedQualifiedClassName);
+            addFilter(builder, generatedClass.getGenerated());
         }
 
-        environment.createSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, MonadicFor.class.getName(), builder, typeElement);
+        environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), MonadicFor.class.getName(), builder, typeElement);
     }
 
     private boolean hasFilter(MonadicSpec spec)

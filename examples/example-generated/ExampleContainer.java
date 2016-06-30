@@ -157,6 +157,26 @@ public class ExampleContainer {
                 }
 
                 @Override
+                public List<String> head() {
+                    return instance.head();
+                }
+
+                @Override
+                public Stack tail() {
+                    return Stack(instance.tail());
+                }
+
+                @Override
+                public Stack concat(ConsList<List<String>> arg0) {
+                    return Stack(instance.concat(arg0));
+                }
+
+                @Override
+                public Stack cons(List<String> arg0) {
+                    return Stack(instance.cons(arg0));
+                }
+
+                @Override
                 public int size() {
                     return instance.size();
                 }
@@ -279,26 +299,6 @@ public class ExampleContainer {
                 @Override
                 public List<List<String>> subList(int arg0, int arg1) {
                     return instance.subList(arg0, arg1);
-                }
-
-                @Override
-                public List<String> head() {
-                    return instance.head();
-                }
-
-                @Override
-                public Stack tail() {
-                    return Stack(instance.tail());
-                }
-
-                @Override
-                public Stack concat(ConsList<List<String>> arg0) {
-                    return Stack(instance.concat(arg0));
-                }
-
-                @Override
-                public Stack cons(List<String> arg0) {
-                    return Stack(instance.cons(arg0));
                 }
             };
         }

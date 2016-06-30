@@ -18,6 +18,7 @@ package io.soabase.halva.processor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.alias.TypeAlias;
@@ -49,6 +50,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -251,9 +253,30 @@ public class MasterProcessor extends AbstractProcessor
                     }
 
                     @Override
-                    public ClassName resolve(ClassName original)
+                    public TypeName toTypeName(TypeMirror type)
                     {
-                        return generatedMap.getOrDefault(original, original);
+                        if ( type.getKind() == TypeKind.DECLARED )
+                        {
+                            Element element = ((DeclaredType)type).asElement();
+                            if ( element instanceof TypeElement )
+                            {
+                                return resolve(ClassName.get((TypeElement)element)).get();
+                            }
+                        }
+                        return TypeName.get(type);
+                    }
+
+                    @Override
+                    public GeneratedClass resolve(TypeElement element)
+                    {
+                        return resolve(ClassName.get(element));
+                    }
+
+                    @Override
+                    public GeneratedClass resolve(ClassName original)
+                    {
+                        ClassName generated = generatedMap.get(original);
+                        return new GeneratedClass(original, generated);
                     }
                 };
             }
@@ -274,12 +297,6 @@ public class MasterProcessor extends AbstractProcessor
             public void log(String message)
             {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message);
-            }
-
-            @Override
-            public void debug(String message)
-            {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.OTHER, message);
             }
 
             @Override
@@ -310,22 +327,6 @@ public class MasterProcessor extends AbstractProcessor
                     }
                 }
                 return element.getEnclosingElement().toString();
-            }
-
-            @Override
-            public ClassName getQualifiedClassName(TypeElement element, AnnotationReader annotationReader)
-            {
-                String packageName = getPackage(element);
-                String generatedClassName = getDesiredSimpleName(containerManager, element, annotationReader);
-
-                Optional<Container> container = containerManager.getContainer(element);
-                if ( container.isPresent() )
-                {
-                    String containerName = getDesiredSimpleName(containerManager, container.get().getElement(), container.get().getAnnotationReader());
-                    return ClassName.get(packageName, containerName, generatedClassName);
-                }
-
-                return ClassName.get(packageName, generatedClassName);
             }
 
             @Override

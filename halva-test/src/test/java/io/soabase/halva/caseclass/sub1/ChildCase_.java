@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor;
+package io.soabase.halva.caseclass.sub1;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
+import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.caseclass.sub2.ParentCase_;
 
-public interface GeneratedManager
+@CaseClass
+public interface ChildCase_
 {
-    void registerGenerated(TypeElement element, AnnotationReader annotationReader);
-
-    TypeName toTypeName(TypeMirror type);
-
-    GeneratedClass resolve(TypeElement element);
-
-    GeneratedClass resolve(ClassName original);
+    String name();
+    ParentCase_ parent();
 }

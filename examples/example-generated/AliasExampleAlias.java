@@ -27,6 +27,26 @@ public interface AliasExampleAlias extends ConsList<Pair<String, Integer>> {
             }
 
             @Override
+            public Pair<String, Integer> head() {
+                return instance.head();
+            }
+
+            @Override
+            public AliasExampleAlias tail() {
+                return AliasExampleAlias(instance.tail());
+            }
+
+            @Override
+            public AliasExampleAlias concat(ConsList<Pair<String, Integer>> arg0) {
+                return AliasExampleAlias(instance.concat(arg0));
+            }
+
+            @Override
+            public AliasExampleAlias cons(Pair<String, Integer> arg0) {
+                return AliasExampleAlias(instance.cons(arg0));
+            }
+
+            @Override
             public int size() {
                 return instance.size();
             }
@@ -149,26 +169,6 @@ public interface AliasExampleAlias extends ConsList<Pair<String, Integer>> {
             @Override
             public List<Pair<String, Integer>> subList(int arg0, int arg1) {
                 return instance.subList(arg0, arg1);
-            }
-
-            @Override
-            public Pair<String, Integer> head() {
-                return instance.head();
-            }
-
-            @Override
-            public AliasExampleAlias tail() {
-                return AliasExampleAlias(instance.tail());
-            }
-
-            @Override
-            public AliasExampleAlias concat(ConsList<Pair<String, Integer>> arg0) {
-                return AliasExampleAlias(instance.concat(arg0));
-            }
-
-            @Override
-            public AliasExampleAlias cons(Pair<String, Integer> arg0) {
-                return AliasExampleAlias(instance.cons(arg0));
             }
         };
     }

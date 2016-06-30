@@ -26,6 +26,7 @@ import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.implicit.ImplicitClass;
 import io.soabase.halva.implicit.Implicitly;
 import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.GeneratedClass;
 import io.soabase.halva.processor.Pass;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -64,12 +65,11 @@ class PassCreate implements Pass
     {
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
-        ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName implicitQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
+        GeneratedClass generatedClass = environment.getGeneratedManager().resolve(typeElement);
 
-        environment.log("Generating ImplicitClass for " + templateQualifiedClassName + " as " + implicitQualifiedClassName);
+        environment.log("Generating ImplicitClass for " + generatedClass.getOriginal() + " as " + generatedClass.getGenerated());
         List<Modifier> modifiers = typeElement.getModifiers().stream().filter(m -> m != Modifier.STATIC).collect(Collectors.toList());
-        TypeSpec.Builder builder = TypeSpec.classBuilder(implicitQualifiedClassName)
+        TypeSpec.Builder builder = TypeSpec.classBuilder(generatedClass.getGenerated())
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]))
             ;
 
@@ -100,7 +100,7 @@ class PassCreate implements Pass
         }
 
         spec.getItems().forEach(item -> addItem(builder, spec, item));
-        environment.createSourceFile(packageName, templateQualifiedClassName, implicitQualifiedClassName, ImplicitClass.class.getName(), builder, typeElement);
+        environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), ImplicitClass.class.getName(), builder, typeElement);
     }
 
     private void addImplicitInterface(TypeSpec.Builder builder, ImplicitSpec spec, TypeMirror implicitInterface)

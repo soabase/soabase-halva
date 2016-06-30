@@ -39,15 +39,11 @@ public interface Environment
 
     void log(String message);
 
-    void debug(String message);
-
     Elements getElementUtils();
 
     Types getTypeUtils();
 
     String getPackage(TypeElement element);
-
-    ClassName getQualifiedClassName(TypeElement element, AnnotationReader annotationReader);
 
     Collection<Modifier> getModifiers(TypeElement element);
 

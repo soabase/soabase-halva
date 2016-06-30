@@ -16,17 +16,30 @@
 package io.soabase.halva.processor;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 
-public interface GeneratedManager
+public class GeneratedClass
 {
-    void registerGenerated(TypeElement element, AnnotationReader annotationReader);
+    private final ClassName original;
+    private final ClassName generated;
 
-    TypeName toTypeName(TypeMirror type);
+    public GeneratedClass(ClassName original, ClassName generated)
+    {
+        this.original = original;
+        this.generated = generated;
+    }
 
-    GeneratedClass resolve(TypeElement element);
+    public ClassName get()
+    {
+        return (generated != null) ? generated : original;
+    }
 
-    GeneratedClass resolve(ClassName original);
+    public ClassName getOriginal()
+    {
+        return original;
+    }
+
+    public ClassName getGenerated()
+    {
+        return generated;
+    }
 }

@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor;
+package io.soabase.halva.caseclass;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
+import io.soabase.halva.caseclass.sub1.ChildCase;
+import io.soabase.halva.caseclass.sub2.ParentCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public interface GeneratedManager
+import static io.soabase.halva.caseclass.sub1.ChildCase.ChildCase;
+import static io.soabase.halva.caseclass.sub2.ParentCase.ParentCase;
+
+public class TestCrossReference
 {
-    void registerGenerated(TypeElement element, AnnotationReader annotationReader);
-
-    TypeName toTypeName(TypeMirror type);
-
-    GeneratedClass resolve(TypeElement element);
-
-    GeneratedClass resolve(ClassName original);
+    @Test
+    public void testParentChild()
+    {
+        ParentCase parent = ParentCase(10, 20);
+        ChildCase child = ChildCase("test", parent);
+        Assert.assertEquals(parent, child.parent());
+    }
 }

@@ -18,33 +18,20 @@ package io.soabase.halva.processor.caseclass;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import java.util.Optional;
 
 class CaseClassItem
 {
-    private final Optional<String> name;
+    private final String name;
     private final ExecutableElement element;
-    private final Optional<TypeMirror> type;
-    private final Optional<TypeMirror> erasedType;
+    private final TypeMirror type;
     private final boolean hasDefaultValue;
     private final boolean mutable;
 
-    CaseClassItem()
+    CaseClassItem(String name, ExecutableElement element, TypeMirror type, boolean hasDefaultValue, boolean mutable)
     {
-        name = Optional.empty();
-        type = Optional.empty();
-        erasedType = Optional.empty();
-        hasDefaultValue = false;
-        mutable = false;
-        element = null;
-    }
-
-    CaseClassItem(String name, ExecutableElement element, TypeMirror type, TypeMirror erasedType, boolean hasDefaultValue, boolean mutable)
-    {
-        this.name = Optional.of(name);
+        this.name = name;
         this.element = element;
-        this.type = Optional.of(type);
-        this.erasedType = Optional.of(erasedType);
+        this.type = type;
         this.hasDefaultValue = hasDefaultValue;
         this.mutable = mutable;
 
@@ -61,17 +48,12 @@ class CaseClassItem
 
     String getName()
     {
-        return name.orElseThrow(() -> new RuntimeException("Error CaseClassField accessed"));
+        return name;
     }
 
     TypeMirror getType()
     {
-        return type.orElseThrow(() -> new RuntimeException("Error/Ignore CaseClassField accessed"));
-    }
-
-    TypeMirror getErasedType()
-    {
-        return erasedType.orElseThrow(() -> new RuntimeException("Error/Ignore CaseClassField accessed"));
+        return type;
     }
 
     boolean hasDefaultValue()
@@ -90,7 +72,6 @@ class CaseClassItem
         return "CaseClassItem{" +
             "name=" + name +
             ", type=" + type +
-            ", erasedType=" + erasedType +
             ", hasDefaultValue=" + hasDefaultValue +
             ", mutable=" + mutable +
             '}';

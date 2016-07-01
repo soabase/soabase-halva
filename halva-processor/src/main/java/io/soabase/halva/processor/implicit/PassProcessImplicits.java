@@ -91,6 +91,7 @@ class PassProcessImplicits implements Pass
                     }
                 });
 
+                environment.getGeneratedManager().registerGenerated(typeElement, item.getAnnotationReader());
                 specs.add(new ImplicitSpec(typeElement, item.getAnnotationReader(), items));
             } while ( false );
         });

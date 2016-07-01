@@ -27,6 +27,7 @@ import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.GeneratedClass;
 import io.soabase.halva.processor.Pass;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -66,10 +67,9 @@ class PassCreate implements Pass
     {
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
-        ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName aliasQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
+        GeneratedClass generatedClass = environment.getGeneratedManager().resolve(typeElement);
 
-        environment.log("Generating TypeAlias for " + templateQualifiedClassName + " as " + aliasQualifiedClassName);
+        environment.log("Generating TypeAlias for " + generatedClass.getOriginal() + " as " + generatedClass.getGenerated());
 
         Collection<Modifier> modifiers = environment.getModifiers(typeElement);
         TypeName baseTypeName = ClassName.get(spec.getParameterizedType());
@@ -77,20 +77,20 @@ class PassCreate implements Pass
         TypeSpec.Builder builder;
         if ( typeElement.getKind() == ElementKind.CLASS )
         {
-            builder = TypeSpec.classBuilder(aliasQualifiedClassName)
+            builder = TypeSpec.classBuilder(generatedClass.getGenerated())
                 .superclass(baseTypeName);
             addConstructorOverrides(builder, spec.getParameterizedType());
         }
         else
         {
-            builder = TypeSpec.interfaceBuilder(aliasQualifiedClassName)
+            builder = TypeSpec.interfaceBuilder(generatedClass.getGenerated())
                 .addSuperinterface(baseTypeName);
         }
         builder.addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
 
-        addTypeAliasType(builder, aliasQualifiedClassName, spec.getParameterizedType());
-        addDelegation(builder, aliasQualifiedClassName, spec.getParameterizedType());
-        environment.createSourceFile(packageName, templateQualifiedClassName, aliasQualifiedClassName, TypeAlias.class.getName(), builder, typeElement);
+        addTypeAliasType(builder, generatedClass.getGenerated(), spec.getParameterizedType());
+        addDelegation(builder, generatedClass.getGenerated(), spec.getParameterizedType());
+        environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), TypeAlias.class.getName(), builder, typeElement);
     }
 
     private void addConstructorOverrides(TypeSpec.Builder builder, DeclaredType parentType)

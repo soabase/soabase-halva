@@ -85,6 +85,7 @@ class PassAnalyze implements Pass
 
                 if ( foundMonadElement.isPresent() )
                 {
+                    environment.getGeneratedManager().registerGenerated(element, item.getAnnotationReader());
                     monadicSpecs.add(new MonadicSpec(element, foundMonadElement.get(), item.getAnnotationReader()));
                 }
             }

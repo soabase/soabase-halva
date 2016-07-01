@@ -22,6 +22,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.caseclass.CaseObject;
 import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.GeneratedClass;
 import io.soabase.halva.processor.Pass;
 import io.soabase.halva.tuple.ClassTuplable;
 import io.soabase.halva.tuple.Tuplable;
@@ -54,14 +55,13 @@ class PassCreateClass implements Pass
     private void processOneSpec(CaseClassSpec spec)
     {
         String packageName = environment.getPackage(spec.getAnnotatedElement());
-        ClassName originalQualifiedClassName = ClassName.get(packageName, spec.getAnnotatedElement().getSimpleName().toString());
-        ClassName qualifiedClassName = environment.getQualifiedClassName(spec.getAnnotatedElement(), spec.getAnnotationReader());
+        GeneratedClass generatedClass = environment.getGeneratedManager().resolve(spec.getAnnotatedElement());
 
-        environment.log("Generating " + spec.getAnnotationReader().getName() + " for " + originalQualifiedClassName + " as " + qualifiedClassName);
+        environment.log("Generating " + spec.getAnnotationReader().getName() + " for " + generatedClass.getOriginal() + " as " + generatedClass.getGenerated());
 
         Collection<Modifier> modifiers = environment.getModifiers(spec.getAnnotatedElement());
         TypeName baseType = TypeName.get(spec.getAnnotatedElement().asType());
-        TypeSpec.Builder builder = TypeSpec.classBuilder(qualifiedClassName)
+        TypeSpec.Builder builder = TypeSpec.classBuilder(generatedClass.getGenerated())
             .addSuperinterface(baseType)
             .addSuperinterface(Serializable.class)
             .addSuperinterface(Tuplable.class)
@@ -74,7 +74,7 @@ class PassCreateClass implements Pass
         if ( json )
         {
             AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.databind.annotation", "JsonDeserialize"))
-                .addMember("builder", "$T.class", templates.getBuilderClassName(qualifiedClassName, typeVariableNames))
+                .addMember("builder", "$T.class", templates.getBuilderClassName(generatedClass.getGenerated(), typeVariableNames))
                 .build();
             builder.addAnnotation(annotationSpec);
         }
@@ -82,21 +82,21 @@ class PassCreateClass implements Pass
         templates.addConstructor(spec, builder, isCaseObject);
         if ( isCaseObject )
         {
-            templates.addObjectInstance(builder, qualifiedClassName, typeVariableNames);
+            templates.addObjectInstance(builder, generatedClass.getGenerated(), typeVariableNames);
         }
         else
         {
-            templates.addBuilder(spec, builder, qualifiedClassName, json, typeVariableNames);
-            templates.addCopy(builder, qualifiedClassName, typeVariableNames);
-            templates.addApplyBuilder(spec, builder, qualifiedClassName, typeVariableNames);
+            templates.addBuilder(spec, builder, generatedClass.getGenerated(), json, typeVariableNames);
+            templates.addCopy(builder, generatedClass.getGenerated(), typeVariableNames);
+            templates.addApplyBuilder(spec, builder, generatedClass.getGenerated(), typeVariableNames);
         }
-        templates.addEquals(spec, builder, qualifiedClassName);
+        templates.addEquals(spec, builder, generatedClass.getGenerated());
         templates.addTuple(spec, builder);
         templates.addHashCode(spec, builder);
-        templates.addDebugString(spec, builder, qualifiedClassName);
-        templates.addToString(spec, builder, qualifiedClassName);
-        templates.addClassTuple(spec, builder, qualifiedClassName, json);
+        templates.addDebugString(spec, builder, generatedClass.getGenerated());
+        templates.addToString(spec, builder, generatedClass.getGenerated());
+        templates.addClassTuple(spec, builder, generatedClass.getGenerated(), json);
 
-        environment.createSourceFile(packageName, originalQualifiedClassName, qualifiedClassName, spec.getAnnotationReader().getFullName(), builder, spec.getAnnotatedElement());
+        environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), spec.getAnnotationReader().getFullName(), builder, spec.getAnnotatedElement());
     }
 }

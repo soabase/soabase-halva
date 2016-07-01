@@ -18,8 +18,46 @@ package io.soabase.halva.processor;
 import java.util.List;
 import java.util.Optional;
 
-@FunctionalInterface
-public interface PassFactory
+public interface PassFactory extends Comparable<PassFactory>
 {
+    enum Priority
+    {
+        FIRST(0),
+        SECOND(1),
+        THIRD(2),
+        FOURTH(3),
+        LAST(4)
+        ;
+
+        public int getValue()
+        {
+            return value;
+        }
+
+        private final int value;
+
+        Priority(int value)
+        {
+            this.value = value;
+        }
+    }
+
+    Priority getPriority();
+
     Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems);
+
+    @Override
+    default int compareTo(PassFactory rhs)
+    {
+        if ( rhs == null )
+        {
+            return -1;
+        }
+        int diff = getPriority().getValue() - rhs.getPriority().getValue();
+        if ( diff == 0 )
+        {
+            diff = hashCode() - rhs.hashCode();
+        }
+        return (diff < 0) ? -1 : ((diff > 0) ? 1 : 0);
+    }
 }

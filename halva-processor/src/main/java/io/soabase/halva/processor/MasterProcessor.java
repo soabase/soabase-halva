@@ -18,6 +18,7 @@ package io.soabase.halva.processor;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import io.soabase.halva.alias.TypeAlias;
@@ -49,6 +50,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -57,10 +59,12 @@ import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -98,6 +102,7 @@ public class MasterProcessor extends AbstractProcessor
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment environment)
     {
         ContainerManager containerManager = new ContainerManager();
+        Map<ClassName, ClassName> generatedMap = new HashMap<>();
 
         Map<PassFactory, List<WorkItem>> workItems = annotations.stream().flatMap(annotation -> {
             Set<? extends Element> elementsAnnotatedWith = environment.getElementsAnnotatedWith(annotation);
@@ -111,37 +116,43 @@ public class MasterProcessor extends AbstractProcessor
             if ( passFactory == null )
             {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + item.getAnnotationReader().getFullName());
-                return (a, b) -> Optional.empty();
+                return new NullPassFactory();
             }
             return passFactory;
         }));
 
-        Environment internalEnvironment = makeEnvironment(containerManager);
+        Environment internalEnvironment = makeEnvironment(containerManager, generatedMap);
 
-        List<WorkItem> containerItems = workItems.get(containerPassFactory);
-        if ( containerItems != null )
-        {
-            runPasses(internalEnvironment, containerItems, containerPassFactory);
-        }
-
-        workItems.entrySet()
-            .stream()
-            .filter(entry -> entry.getKey() != containerPassFactory)
-            .forEach(entry -> {
-            PassFactory passFactory = entry.getKey();
-            if ( passFactory == null )
-            {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + entry.getKey());
-            }
-            else
-            {
-                runPasses(internalEnvironment, entry.getValue(), passFactory);
-            }
-        });
+        TreeMap<PassFactory, List<WorkItem>> sortedWorkItems = new TreeMap<>(workItems);
+        processWorkitems(sortedWorkItems, internalEnvironment);
 
         buildContainers(containerManager, internalEnvironment);
 
         return true;
+    }
+
+    private void processWorkitems(Map<PassFactory, List<WorkItem>> workItems, Environment internalEnvironment)
+    {
+        List<Optional<Pass>> secondaryPasses = workItems.entrySet().stream()
+            .map(entry -> {
+                PassFactory passFactory = entry.getKey();
+                if ( passFactory == null )
+                {
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + entry.getKey());
+                    return Optional.<Pass>empty();
+                }
+
+                Optional<Pass> pass = passFactory.firstPass(internalEnvironment, entry.getValue());
+                return pass.isPresent() ? pass.get().process() : pass;
+            })
+            .collect(Collectors.toList());
+
+        secondaryPasses.forEach(pass -> {
+            while ( pass.isPresent() )
+            {
+                pass = pass.get().process();
+            }
+        });
     }
 
     private void buildContainers(ContainerManager containerManager, Environment internalEnvironment)
@@ -150,20 +161,9 @@ public class MasterProcessor extends AbstractProcessor
             TypeElement typeElement = container.getElement();
             String packageName = internalEnvironment.getPackage(typeElement);
             ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-            ClassName containerQualifiedClassName = ClassName.get(packageName, internalEnvironment.getGeneratedClassName(typeElement, container.getAnnotationReader()));
-            internalCreateSourceFile(packageName, templateQualifiedClassName, containerQualifiedClassName, TypeContainer.class.getName(), container.build(), typeElement);
+            ClassName containerQualifiedClassName = ClassName.get(packageName, getDesiredSimpleName(containerManager, typeElement, container.getAnnotationReader()));
+            internalCreateSourceFile(packageName, templateQualifiedClassName, containerQualifiedClassName, TypeContainer.class.getName(), container.build(containerQualifiedClassName), typeElement);
         });
-    }
-
-    private void runPasses(Environment internalEnvironment, List<WorkItem> items, PassFactory passFactory)
-    {
-        Optional<Pass> pass = passFactory.firstPass(internalEnvironment, items);
-        while ( pass.isPresent() )
-        {
-            Pass actualPass = pass.get();
-            internalEnvironment.debug(getClass().getSimpleName() + "-" + actualPass.getClass().getSimpleName());
-            pass = actualPass.process();
-        }
     }
 
     private void internalCreateSourceFile(String packageName, ClassName templateQualifiedClassName, ClassName generatedQualifiedClassName, String annotationType, TypeSpec.Builder builder, TypeElement element)
@@ -200,10 +200,89 @@ public class MasterProcessor extends AbstractProcessor
         }
     }
 
-    private Environment makeEnvironment(ContainerManager containerManager)
+    private String getDesiredSimpleName(ContainerManager containerManager, TypeElement element, AnnotationReader annotationReader)
+    {
+        Optional<Container> container = containerManager.getContainer(element);
+        if ( container.isPresent() )
+        {
+            if ( !container.get().getAnnotationReader().getBoolean("renameContained") )
+            {
+                return element.getSimpleName().toString();
+            }
+        }
+
+        String suffix = annotationReader.getString("suffix");
+        String unsuffix = annotationReader.getString("unsuffix");
+        String name = element.getSimpleName().toString();
+        if ( (unsuffix.length() > 0) && name.endsWith(unsuffix) )
+        {
+            return name.substring(0, name.length() - unsuffix.length());
+        }
+        return name + suffix;
+    }
+
+    private ClassName getQualifiedClassName(ContainerManager containerManager, String packageName, TypeElement element, AnnotationReader annotationReader)
+    {
+        String generatedClassName = getDesiredSimpleName(containerManager, element, annotationReader);
+
+        Optional<Container> container = containerManager.getContainer(element);
+        if ( container.isPresent() )
+        {
+            String containerName = getDesiredSimpleName(containerManager, container.get().getElement(), container.get().getAnnotationReader());
+            return ClassName.get(packageName, containerName, generatedClassName);
+        }
+
+        return ClassName.get(packageName, generatedClassName);
+    }
+
+    private Environment makeEnvironment(ContainerManager containerManager, Map<ClassName, ClassName> generatedMap)
     {
         return new Environment()
         {
+            @Override
+            public GeneratedManager getGeneratedManager()
+            {
+                return new GeneratedManager()
+                {
+                    @Override
+                    public void registerGenerated(TypeElement element, AnnotationReader annotationReader)
+                    {
+                        ClassName qualifiedClassName = MasterProcessor.this.getQualifiedClassName(containerManager, getPackage(element), element, annotationReader);
+                        generatedMap.put(ClassName.get(element), qualifiedClassName);
+                    }
+
+                    @Override
+                    public TypeName toTypeName(TypeMirror type)
+                    {
+                        if ( type.getKind() == TypeKind.DECLARED )
+                        {
+                            Element element = ((DeclaredType)type).asElement();
+                            if ( element instanceof TypeElement )
+                            {
+                                GeneratedClass resolved = internalResolve(ClassName.get((TypeElement)element));
+                                if ( resolved.hasGenerated() )
+                                {
+                                    return resolved.getGenerated();
+                                }
+                            }
+                        }
+                        return ClassName.get(type);
+                    }
+
+                    @Override
+                    public GeneratedClass resolve(TypeElement element)
+                    {
+                        return internalResolve(ClassName.get(element));
+                    }
+
+                    private GeneratedClass internalResolve(ClassName original)
+                    {
+                        ClassName generated = generatedMap.get(original);
+                        return new GeneratedClass(original, generated);
+                    }
+                };
+            }
+
             @Override
             public ContainerManager getContainerManager()
             {
@@ -220,12 +299,6 @@ public class MasterProcessor extends AbstractProcessor
             public void log(String message)
             {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message);
-            }
-
-            @Override
-            public void debug(String message)
-            {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.OTHER, message);
             }
 
             @Override
@@ -256,44 +329,6 @@ public class MasterProcessor extends AbstractProcessor
                     }
                 }
                 return element.getEnclosingElement().toString();
-            }
-
-            @Override
-            public ClassName getQualifiedClassName(TypeElement element, AnnotationReader annotationReader)
-            {
-                String packageName = getPackage(element);
-                String generatedClassName = getGeneratedClassName(element, annotationReader);
-
-                Optional<Container> container = containerManager.getContainer(element);
-                if ( container.isPresent() )
-                {
-                    String containerName = getGeneratedClassName(container.get().getElement(), container.get().getAnnotationReader());
-                    return ClassName.get(packageName, containerName, generatedClassName);
-                }
-
-                return ClassName.get(packageName, generatedClassName);
-            }
-
-            @Override
-            public String getGeneratedClassName(TypeElement element, AnnotationReader annotationReader)
-            {
-                Optional<Container> container = containerManager.getContainer(element);
-                if ( container.isPresent() )
-                {
-                    if ( !container.get().getAnnotationReader().getBoolean("renameContained") )
-                    {
-                        return element.getSimpleName().toString();
-                    }
-                }
-
-                String suffix = annotationReader.getString("suffix");
-                String unsuffix = annotationReader.getString("unsuffix");
-                String name = element.getSimpleName().toString();
-                if ( (unsuffix.length() > 0) && name.endsWith(unsuffix) )
-                {
-                    return name.substring(0, name.length() - unsuffix.length());
-                }
-                return name + suffix;
             }
 
             @Override
@@ -367,5 +402,20 @@ public class MasterProcessor extends AbstractProcessor
                 return processingEnv.getTypeUtils().asMemberOf(enclosing, element);
             }
         };
+    }
+
+    private static class NullPassFactory implements PassFactory
+    {
+        @Override
+        public Priority getPriority()
+        {
+            return Priority.LAST;
+        }
+
+        @Override
+        public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
+        {
+            return Optional.empty();
+        }
     }
 }

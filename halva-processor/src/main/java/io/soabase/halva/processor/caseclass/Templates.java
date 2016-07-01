@@ -33,10 +33,12 @@ import java.util.stream.IntStream;
 class Templates
 {
     private final Initializers initializers;
+    private final Environment environment;
 
     Templates(Environment environment)
     {
         initializers = new Initializers(environment);
+        this.environment = environment;
     }
 
     void addField(CaseClassItem item, TypeSpec.Builder builder, TypeName type, boolean makeFinal, boolean makeVolatile, boolean json)
@@ -113,14 +115,14 @@ class Templates
 
     void addGetterItem(CaseClassItem item, TypeSpec.Builder builder, boolean json)
     {
-        TypeName type = ClassName.get(item.getType());
+        TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
         addField(item, builder, type, true, false, json);
         addGetter(item, builder, type, Modifier.PUBLIC);
     }
 
     void addSetterItem(CaseClassItem item, TypeSpec.Builder builder, boolean json)
     {
-        TypeName type = TypeName.get(item.getType());
+        TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
         addField(item, builder, type, false, true, json);
         addGetter(item, builder, type, Modifier.PUBLIC);
         addSetter(item, builder, type, Modifier.PUBLIC);
@@ -140,7 +142,7 @@ class Templates
 
     void addBuilderSetterItem(CaseClassItem item, TypeSpec.Builder builder, TypeName builderClassName, boolean json)
     {
-        TypeName type = TypeName.get(item.getType());
+        TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
         addField(item, builder, type, false, false, json);
         addBuilderSetter(item, builder, type, builderClassName, Modifier.PUBLIC);
     }
@@ -152,7 +154,7 @@ class Templates
             .addModifiers(makePrivate ? Modifier.PRIVATE : Modifier.PROTECTED);
         spec.getItems().stream()
             .forEach(item -> {
-                TypeName type = TypeName.get(item.getType());
+                TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
                 constructor.addParameter(item.hasDefaultValue() ? type.box() : type, item.getName());
                 constructor.addStatement("this.$L = $L", item.getName(), item.getName());
             });
@@ -170,7 +172,7 @@ class Templates
         if ( hasThisTuple )
         {
             List<TypeName> typeNameList = spec.getItems().stream()
-                .map(item -> ClassName.get(item.getType()).box())
+                .map(item -> environment.getGeneratedManager().toTypeName(item.getType()).box())
                 .collect(Collectors.toList());
             typeName = getTupleType(tupleClass, typeNameList);
 
@@ -335,7 +337,7 @@ class Templates
         TypeName localCaseClassName = getLocalCaseClassName(className, typeVariableNames);
 
         List<ParameterSpec> parameters = spec.getItems().stream()
-            .map(item -> ParameterSpec.builder(ClassName.get(item.getType()), item.getName()).build())
+            .map(item -> ParameterSpec.builder(environment.getGeneratedManager().toTypeName(item.getType()), item.getName()).build())
             .collect(Collectors.toList());
 
         String arguments = spec.getItems().stream().map(CaseClassItem::getName).collect(Collectors.joining(", "));

@@ -23,6 +23,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,11 +33,13 @@ import java.util.stream.Collectors;
 public class AnnotationReader
 {
     private final String annotationName;
-    private final Map<? extends ExecutableElement, ? extends AnnotationValue> values;
+    private final Map<String, Object> values;
+    private final ProcessingEnvironment processingEnv;
     private final String annotationFullName;
 
     AnnotationReader(ProcessingEnvironment processingEnv, Element element, String annotationFullName, String annotationName)
     {
+        this.processingEnv = processingEnv;
         this.annotationFullName = annotationFullName;
         Optional<? extends AnnotationMirror> annotation = (element == null) ? Optional.empty() :
             element.getAnnotationMirrors().stream()
@@ -46,7 +50,28 @@ public class AnnotationReader
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. Could not find annotation: " + annotationName, element);
         }
         this.annotationName = annotationName;
-        values = annotation.isPresent() ? processingEnv.getElementUtils().getElementValuesWithDefaults(annotation.get()) : null;
+        values = new HashMap<>();
+        if ( annotation.isPresent() )
+        {
+            Map<? extends ExecutableElement, ? extends AnnotationValue> specifiedValues = annotation.get().getElementValues();
+            Map<? extends ExecutableElement, ? extends AnnotationValue> valuesWithDefaults = processingEnv.getElementUtils().getElementValuesWithDefaults(annotation.get());
+            valuesWithDefaults.entrySet().forEach(entry -> {
+                ExecutableElement key = entry.getKey();
+                String overrideKey = annotationName + "." + key.getSimpleName().toString();
+                if ( specifiedValues.containsKey(entry.getKey()) )
+                {
+                    values.put(key.getSimpleName().toString(), specifiedValues.get(key).getValue());
+                }
+                else if ( processingEnv.getOptions().containsKey(overrideKey) )
+                {
+                    values.put(key.getSimpleName().toString(), processingEnv.getOptions().get(overrideKey));
+                }
+                else
+                {
+                    values.put(key.getSimpleName().toString(), entry.getValue().getValue());
+                }
+            });
+        }
     }
 
     public String getName()
@@ -61,55 +86,57 @@ public class AnnotationReader
 
     public boolean getBoolean(String named)
     {
-        Optional<? extends AnnotationValue> found = find(named);
-        if ( found.isPresent() )
+        Object value = values.get(named);
+        //noinspection SimplifiableIfStatement
+        if ( value != null )
         {
-            return ((Boolean)found.get().getValue());
+            return (value instanceof Boolean) ? ((Boolean)value).booleanValue() : Boolean.valueOf(String.valueOf(value));
         }
         return false;
     }
 
     public int getInt(String named)
     {
-        Optional<? extends AnnotationValue> found = find(named);
-        if ( found.isPresent() )
+        Object value = values.get(named);
+        if ( value != null )
         {
-            return ((Integer)found.get().getValue());
+            try
+            {
+                return (value instanceof Integer) ? ((Integer)value) : Integer.parseInt(String.valueOf(value));
+            }
+            catch ( NumberFormatException ignore )
+            {
+                // ignore
+            }
         }
         return 0;
     }
 
     public String getString(String named)
     {
-        Optional<? extends AnnotationValue> found = find(named);
-        if ( found.isPresent() )
-        {
-            return String.valueOf(found.get().getValue());
-        }
-        return "";
+        Object value = values.getOrDefault(named, "");
+        return String.valueOf(value);
     }
 
     @SuppressWarnings("unchecked")
     public List<TypeMirror> getClasses(String named)
     {
-        Optional<? extends AnnotationValue> found = find(named);
-        if ( found.isPresent() )
+        Object value = values.get(named);
+        if ( value != null )
         {
-            List<? extends AnnotationValue> values = (List<? extends AnnotationValue>)found.get().getValue();
-            return values.stream().map(v -> (TypeMirror)v.getValue()).collect(Collectors.toList());
+            if ( value instanceof List )
+            {
+                List<? extends AnnotationValue> values = (List<? extends AnnotationValue>)value;
+                return values.stream().map(v -> (TypeMirror)v.getValue()).collect(Collectors.toList());
+            }
+
+            return Arrays.asList(String.valueOf(value).split(",")).stream()
+                .filter(s -> s.trim().length() > 0)
+                .map(s -> processingEnv.getElementUtils().getTypeElement(s.trim()))
+                .filter(e -> e != null)
+                .map(Element::asType)
+                .collect(Collectors.toList());
         }
         return new ArrayList<>();
-    }
-
-    private Optional<? extends AnnotationValue> find(String named)
-    {
-        if ( values == null )
-        {
-            return Optional.empty();
-        }
-        return values.entrySet().stream()
-            .filter(entry -> entry.getKey().getSimpleName().toString().equals(named))
-            .map(Map.Entry::getValue)
-            .findFirst();
     }
 }

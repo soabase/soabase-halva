@@ -40,6 +40,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -81,6 +82,28 @@ import static io.soabase.halva.tuple.Tuple.Pair;
     "io.soabase.halva.container.TypeContainer"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedOptions({
+    "TypeAlias.suffix",
+    "TypeAlias.unsuffix",
+    "CaseClass.suffix",
+    "CaseClass.unsuffix",
+    "CaseClass.json",
+    "CaseObject.suffix",
+    "CaseObject.unsuffix",
+    "MonadicFor.suffix",
+    "MonadicFor.unsuffix",
+    "MonadicFor.monadicParameterPosition",
+    "MonadicFor.applyParentTypeParameter",
+    "ImplicitClass.suffix",
+    "ImplicitClass.unsuffix",
+    "ImplicitClass.limitContexts",
+    "ImplicitClass.excludeContexts",
+    "ImplicitContext.limits",
+    "ImplicitContext.excludes",
+    "TypeContainer.suffix",
+    "TypeContainer.unsuffix",
+    "TypeContainer.renameContained"
+})
 public class MasterProcessor extends AbstractProcessor
 {
     private static final AliasPassFactory aliasPassFactory = new AliasPassFactory();

@@ -44,6 +44,10 @@ Halva is available from [Maven Central](http://search.maven.org/#search%7Cga%7C1
 | io.soabase.halva | halva-processor | Contains the javac processor for @CaseClass, @CaseObject, @TypeAlias, @ImplicitClass, and @TypeContainer |
 | io.soabase.halva | halva | All the runtime code for Halva: matchers, comprehensions, etc. |
 
+### FAQs
+
+See miscellaneous info and [Frequently Asked Questions](FAQ.md)  
+
 ### Special Thanks
 
 Special thanks to [@Alex-At-Home](https://github.com/Alex-At-Home) for his help and great ideas.

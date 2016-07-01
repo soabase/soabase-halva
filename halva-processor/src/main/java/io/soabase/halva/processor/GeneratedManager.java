@@ -15,7 +15,6 @@
  */
 package io.soabase.halva.processor;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -27,6 +26,4 @@ public interface GeneratedManager
     TypeName toTypeName(TypeMirror type);
 
     GeneratedClass resolve(TypeElement element);
-
-    GeneratedClass resolve(ClassName original);
 }

@@ -33,6 +33,11 @@ public class GeneratedClass
         return (generated != null) ? generated : original;
     }
 
+    public boolean hasGenerated()
+    {
+        return generated != null;
+    }
+
     public ClassName getOriginal()
     {
         return original;

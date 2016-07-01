@@ -259,20 +259,23 @@ public class MasterProcessor extends AbstractProcessor
                             Element element = ((DeclaredType)type).asElement();
                             if ( element instanceof TypeElement )
                             {
-                                return resolve(ClassName.get((TypeElement)element)).get();
+                                GeneratedClass resolved = internalResolve(ClassName.get((TypeElement)element));
+                                if ( resolved.hasGenerated() )
+                                {
+                                    return resolved.getGenerated();
+                                }
                             }
                         }
-                        return TypeName.get(type);
+                        return ClassName.get(type);
                     }
 
                     @Override
                     public GeneratedClass resolve(TypeElement element)
                     {
-                        return resolve(ClassName.get(element));
+                        return internalResolve(ClassName.get(element));
                     }
 
-                    @Override
-                    public GeneratedClass resolve(ClassName original)
+                    private GeneratedClass internalResolve(ClassName original)
                     {
                         ClassName generated = generatedMap.get(original);
                         return new GeneratedClass(original, generated);

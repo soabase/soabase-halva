@@ -17,17 +17,18 @@ public class OptionalFor {
         this.delegate = delegate;
     }
 
+    @SuppressWarnings("unchecked")
     public static OptionalFor start() {
         return new OptionalFor(new MonadicForImpl<>(new OptionalForFactory()));
     }
 
-    public <A> OptionalFor forComp(AnyVal<A> any, Supplier<? extends Optional<A>> supplier) {
+    public <MF_A> OptionalFor forComp(AnyVal<MF_A> any, Supplier<? extends Optional<MF_A>> supplier) {
         delegate.forComp(any, supplier);
         return this;
     }
 
     @SuppressWarnings("unchecked")
-    public <A> Optional<A> yield(Supplier<A> supplier) {
+    public <MF_A> Optional<MF_A> yield(Supplier<MF_A> supplier) {
         return delegate.yield(supplier);
     }
 

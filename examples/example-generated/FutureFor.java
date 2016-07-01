@@ -16,17 +16,18 @@ public class FutureFor {
         this.delegate = delegate;
     }
 
+    @SuppressWarnings("unchecked")
     public static FutureFor start() {
         return new FutureFor(new MonadicForImpl<>(new FutureForFactory()));
     }
 
-    public <A> FutureFor forComp(AnyVal<A> any, Supplier<? extends CompletableFuture<A>> supplier) {
+    public <MF_A> FutureFor forComp(AnyVal<MF_A> any, Supplier<? extends CompletableFuture<MF_A>> supplier) {
         delegate.forComp(any, supplier);
         return this;
     }
 
     @SuppressWarnings("unchecked")
-    public <A> CompletableFuture<A> yield(Supplier<A> supplier) {
+    public <MF_A> CompletableFuture<MF_A> yield(Supplier<MF_A> supplier) {
         return delegate.yield(supplier);
     }
 

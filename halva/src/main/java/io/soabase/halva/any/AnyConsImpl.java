@@ -56,13 +56,13 @@ class AnyConsImpl extends AnyList
         //noinspection LoopStatementThatDoesntLoop
         while ( value instanceof ConsList )
         {
-            ConsList list = (ConsList)value;
+            ConsList<Object> list = (ConsList)value;
             if ( list.size() == 0 )
             {
                 throw new IllegalArgumentException("list is empty");
             }
             Object listHead = list.head();
-            ConsList<Object> listTail = list.tail();
+            ConsList<Object> listTail =  list.tail();
             if ( (head != null) && !head.equals(listHead) )
             {
                 break;
@@ -91,7 +91,7 @@ class AnyConsImpl extends AnyList
     {
         if ( value instanceof ConsList )
         {
-            ConsList list = (ConsList)value;
+            ConsList<Object> list = (ConsList)value;
             Object listHead = list.head();
             ConsList<Object> listTail = list.tail();
             if ( anyHead != null )

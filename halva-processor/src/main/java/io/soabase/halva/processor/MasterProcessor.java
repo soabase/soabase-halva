@@ -64,8 +64,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static io.soabase.halva.sugar.Sugar.Map;
@@ -116,25 +116,24 @@ public class MasterProcessor extends AbstractProcessor
             if ( passFactory == null )
             {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Internal error. No factory for " + item.getAnnotationReader().getFullName());
-                return (a, b) -> Optional.empty();
+                return new NullPassFactory();
             }
             return passFactory;
         }));
 
         Environment internalEnvironment = makeEnvironment(containerManager, generatedMap);
 
-        processWorkitems(workItems, internalEnvironment, entry -> entry.getKey() == containerPassFactory);
-        processWorkitems(workItems, internalEnvironment, entry -> entry.getKey() != containerPassFactory);
+        TreeMap<PassFactory, List<WorkItem>> sortedWorkItems = new TreeMap<>(workItems);
+        processWorkitems(sortedWorkItems, internalEnvironment);
 
         buildContainers(containerManager, internalEnvironment);
 
         return true;
     }
 
-    private void processWorkitems(Map<PassFactory, List<WorkItem>> workItems, Environment internalEnvironment, Predicate<Map.Entry<PassFactory, List<WorkItem>>> entryPredicate)
+    private void processWorkitems(Map<PassFactory, List<WorkItem>> workItems, Environment internalEnvironment)
     {
         List<Optional<Pass>> secondaryPasses = workItems.entrySet().stream()
-            .filter(entryPredicate)
             .map(entry -> {
                 PassFactory passFactory = entry.getKey();
                 if ( passFactory == null )
@@ -390,10 +389,30 @@ public class MasterProcessor extends AbstractProcessor
             @Override
             public TypeMirror getResolvedReturnType(ExecutableElement method, DeclaredType enclosing)
             {
+                return ((ExecutableType)getResolvedType(method, enclosing)).getReturnType();
+            }
+
+            @Override
+            public TypeMirror getResolvedType(Element element, DeclaredType enclosing)
+            {
                 // copied from MethodSpec.override()
-                ExecutableType executableType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf(enclosing, method);
-                return executableType.getReturnType();
+                return processingEnv.getTypeUtils().asMemberOf(enclosing, element);
             }
         };
+    }
+
+    private static class NullPassFactory implements PassFactory
+    {
+        @Override
+        public Priority getPriority()
+        {
+            return Priority.LAST;
+        }
+
+        @Override
+        public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
+        {
+            return Optional.empty();
+        }
     }
 }

@@ -15,19 +15,23 @@
  */
 package io.soabase.halva.processor.comprehension;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import io.soabase.halva.processor.AnnotationReader;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 
 class MonadicSpec
 {
     private final TypeElement factoryElement;
-    private final TypeElement monadElement;
+    private final MonadType monadType;
     private final AnnotationReader annotationReader;
 
-    MonadicSpec(TypeElement factoryElement, TypeElement monadElement, AnnotationReader annotationReader)
+    MonadicSpec(TypeElement factoryElement, MonadType monadType, AnnotationReader annotationReader)
     {
         this.factoryElement = factoryElement;
-        this.monadElement = monadElement;
+        this.monadType = monadType;
         this.annotationReader = annotationReader;
     }
 
@@ -43,6 +47,11 @@ class MonadicSpec
 
     TypeElement getMonadElement()
     {
-        return monadElement;
+        return monadType.getElement();
+    }
+
+    DeclaredType getMonadType()
+    {
+        return monadType.getType();
     }
 }

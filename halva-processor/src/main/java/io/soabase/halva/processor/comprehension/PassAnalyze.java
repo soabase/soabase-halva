@@ -21,6 +21,7 @@ import io.soabase.halva.processor.WorkItem;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,9 @@ class PassAnalyze implements Pass
             TypeElement element = (TypeElement)item.getElement();   // by definition - annotation is only for Type
             if ( element.getKind() == ElementKind.CLASS )
             {
-                Optional<TypeElement> foundMonadElement = element.getInterfaces().stream().map(type -> {
+                Optional<MonadType> foundMonadElement = element.getInterfaces().stream().map(type -> {
                     TypeMirror erasure = environment.getTypeUtils().erasure(type);
+                    //noinspection LoopStatementThatDoesntLoop
                     do
                     {
                         if ( !environment.getTypeUtils().isSameType(wrapperType, erasure) )
@@ -56,23 +58,26 @@ class PassAnalyze implements Pass
                         }
 
                         DeclaredType declaredType = (DeclaredType)type;
-                        if ( declaredType.getTypeArguments().size() != 1 )
+                        if ( (declaredType.getTypeArguments().size() != 1) && (declaredType.getTypeArguments().get(0).getKind() != TypeKind.DECLARED) )
                         {
-                            environment.error(item.getElement(), "MonadicForWrapper must be parameterized: " + item.getElement());
+                            environment.error(item.getElement(), "MonadicForWrapper must be parameterized with a class type: " + item.getElement());
                             break;
                         }
 
-                        TypeElement monadElement = environment.getElementUtils().getTypeElement((declaredType.getTypeArguments().get(0)).toString());
-                        if ( monadElement.getTypeParameters().size() == 0 )
+                        DeclaredType monadType = (DeclaredType)declaredType.getTypeArguments().get(0);
+                        int typeParameterQty = element.getTypeParameters().size();
+                        TypeMirror typeParameter = environment.getTypeUtils().erasure(monadType);
+                        TypeElement monadElement = environment.getElementUtils().getTypeElement(typeParameter.toString());
+                        if ( (monadElement == null) || (monadElement.getTypeParameters().size() != (typeParameterQty + 1)) )
                         {
-                            environment.error(item.getElement(), "MonadicForWrapper argument is not monadic. It must take type parameters: " + monadElement);
+                            environment.error(item.getElement(), "MonadicForWrapper argument is not monadic: " + monadElement);
                             break;
                         }
 
-                        return Optional.of(monadElement);
+                        return Optional.of(new MonadType(monadElement, monadType));
                     } while ( false );
 
-                    return Optional.<TypeElement>empty();
+                    return Optional.<MonadType>empty();
                 })
                 .filter(Optional::isPresent)
                 .map(Optional::get)

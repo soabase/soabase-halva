@@ -25,6 +25,12 @@ import java.util.Optional;
 public class ContainerPassFactory implements PassFactory
 {
     @Override
+    public Priority getPriority()
+    {
+        return Priority.FIRST;
+    }
+
+    @Override
     public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
     {
         return Optional.of(new PassMain(environment, workItems));

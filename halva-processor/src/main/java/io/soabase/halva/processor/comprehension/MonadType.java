@@ -13,13 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.sugar;
+package io.soabase.halva.processor.comprehension;
 
-import java.util.List;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 
-/**
- * A ConstList is an immutable {@link java.util.List} with additional functional methods
- */
-public interface ConsList<T> extends List<T>, Consable<T, ConsList<T>>
+class MonadType
 {
+    private final TypeElement element;
+    private final DeclaredType type;
+
+    MonadType(TypeElement element, DeclaredType type)
+    {
+        this.element = element;
+        this.type = type;
+    }
+
+    TypeElement getElement()
+    {
+        return element;
+    }
+
+    DeclaredType getType()
+    {
+        return type;
+    }
 }

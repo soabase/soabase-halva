@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.sugar;
+package io.soabase.halva.comprehension;
 
-import java.util.List;
+import java.util.function.Function;
 
-/**
- * A ConstList is an immutable {@link java.util.List} with additional functional methods
- */
-public interface ConsList<T> extends List<T>, Consable<T, ConsList<T>>
+public class Reader<A, B>
 {
+    public final <C> Reader<A, C> map(Function<B, C> f)
+    {
+        return null;
+    }
+
+    public final <C> Reader<A, C> flatMap(Function<B, Reader<A, C>> f)
+    {
+        return null;
+    }
 }

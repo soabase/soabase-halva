@@ -25,6 +25,12 @@ import java.util.Optional;
 public class ImplicitPassFactory implements PassFactory
 {
     @Override
+    public Priority getPriority()
+    {
+        return Priority.LAST;
+    }
+
+    @Override
     public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
     {
         return Optional.of(new PassProcessContexts(environment, workItems));

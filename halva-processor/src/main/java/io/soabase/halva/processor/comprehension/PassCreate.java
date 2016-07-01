@@ -74,12 +74,19 @@ class PassCreate implements Pass
         Collection<Modifier> modifiers = environment.getModifiers(typeElement);
         TypeSpec.Builder builder = TypeSpec.classBuilder(generatedClass.getGenerated())
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
+        Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, typeElement.getTypeParameters());
+
+        TypeName resolvedName = generatedClass.getGenerated();
+        if ( typeVariableNames.isPresent() )
+        {
+            resolvedName = ParameterizedTypeName.get(generatedClass.getGenerated(), typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()]));
+        }
 
         addConstructorAndDelegate(builder, spec);
-        addStaticBuilder(builder, spec, generatedClass.getGenerated());
-        addForComp(builder, generatedClass.getGenerated(), specData);
+        addStaticBuilder(builder, spec, resolvedName, typeVariableNames);
+        addForComp(builder, resolvedName, specData);
         addYield(builder, specData);
-        addLetComp(builder, generatedClass.getGenerated());
+        addLetComp(builder, resolvedName);
         if ( hasFilter )
         {
             addFilter(builder, generatedClass.getGenerated());
@@ -131,7 +138,7 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addLetComp(TypeSpec.Builder builder, ClassName generatedQualifiedClassName)
+    private void addLetComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName)
     {
         ParameterizedTypeName supplierName = ParameterizedTypeName.get(ClassName.get(Supplier.class), TypeVariableName.get("R"));
         ParameterizedTypeName anyName = ParameterizedTypeName.get(ClassName.get(AnyVal.class), TypeVariableName.get("R"));
@@ -165,14 +172,19 @@ class PassCreate implements Pass
             .returns(specData.parameterizedMonadicName)
             .addTypeVariables(specData.typeVariableNames)
             .addParameter(ParameterSpec.builder(supplierName, "supplier").build())
-            .addAnnotation(AnnotationSpec.builder(SuppressWarnings.class).addMember("value", "\"unchecked\"").build())
+            .addAnnotation(makeUnchecked())
             .addCode(codeBuilder.build())
             ;
 
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addForComp(TypeSpec.Builder builder, ClassName generatedQualifiedClassName, SpecData specData)
+    private AnnotationSpec makeUnchecked()
+    {
+        return AnnotationSpec.builder(SuppressWarnings.class).addMember("value", "\"unchecked\"").build();
+    }
+
+    private void addForComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName, SpecData specData)
     {
         ParameterizedTypeName supplierName = ParameterizedTypeName.get(ClassName.get(Supplier.class), WildcardTypeName.subtypeOf(specData.parameterizedMonadicName));
 
@@ -192,16 +204,40 @@ class PassCreate implements Pass
         builder.addMethod(methodBuilder.build());
     }
 
-    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, ClassName generatedQualifiedClassName)
+    private void addStaticBuilder(TypeSpec.Builder builder, MonadicSpec spec, TypeName generatedQualifiedClassName, Optional<List<TypeVariableName>> typeVariableNames)
     {
-        CodeBlock.Builder codeBuilder = CodeBlock.builder()
-            .addStatement("return new $T(new $T<>(new $T()))", generatedQualifiedClassName, ClassName.get(MonadicForImpl.class), spec.getAnnotatedElement());
+        CodeBlock.Builder codeBuilder;
+        if ( typeVariableNames.isPresent() )
+        {
+            codeBuilder = CodeBlock.builder()
+                .addStatement("return new $T(new $T<$T>(new $T()))",
+                    generatedQualifiedClassName,
+                    ClassName.get(MonadicForImpl.class),
+                    environment.getTypeUtils().erasure(spec.getMonadElement().asType()),
+                    environment.getTypeUtils().erasure(spec.getAnnotatedElement().asType())
+                 );
+        }
+        else
+        {
+            codeBuilder = CodeBlock.builder()
+                .addStatement("return new $T(new $T<>(new $T()))",
+                    generatedQualifiedClassName,
+                    ClassName.get(MonadicForImpl.class),
+                    spec.getAnnotatedElement()
+                 );
+        }
 
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("start")
             .returns(generatedQualifiedClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .addAnnotation(makeUnchecked())
             .addCode(codeBuilder.build())
             ;
+
+        if ( typeVariableNames.isPresent() )
+        {
+            methodBuilder.addTypeVariables(typeVariableNames.get());
+        }
 
         builder.addMethod(methodBuilder.build());
     }

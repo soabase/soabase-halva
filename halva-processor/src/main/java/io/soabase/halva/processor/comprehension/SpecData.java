@@ -48,7 +48,7 @@ class SpecData
 
         List<? extends TypeMirror> monadTypeArguments = spec.getMonadType().getTypeArguments();
         TypeMirror monadicParameterType = (monadTypeArguments.size() > monadicParameterPosition) ? monadTypeArguments.get(monadicParameterPosition) : null;
-        if ( (monadicParameterType != null) && (monadicParameterType instanceof DeclaredType) )
+        if ( spec.getAnnotationReader().getBoolean("applyParentTypeParameter") && (monadicParameterType != null) && (monadicParameterType instanceof DeclaredType) )
         {
             DeclaredType declaredType = (DeclaredType)monadicParameterType;
             TypeName[] typeNames = new TypeName[typeVariableNames.size()];

@@ -47,4 +47,12 @@ public @interface MonadicFor
      * is to use the last type parameter.
      */
     int monadicParameterPosition() default -1;
+
+    /**
+     * By default, template class type parameters are not applied to the monadic type.
+     * Set this attribute to true to change this so that it is.
+     *
+     * @return true/false
+     */
+    boolean applyParentTypeParameter() default false;
 }

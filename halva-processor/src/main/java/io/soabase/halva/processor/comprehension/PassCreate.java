@@ -172,11 +172,16 @@ class PassCreate implements Pass
             .returns(specData.parameterizedMonadicName)
             .addTypeVariables(specData.typeVariableNames)
             .addParameter(ParameterSpec.builder(supplierName, "supplier").build())
-            .addAnnotation(AnnotationSpec.builder(SuppressWarnings.class).addMember("value", "\"unchecked\"").build())
+            .addAnnotation(makeUnchecked())
             .addCode(codeBuilder.build())
             ;
 
         builder.addMethod(methodBuilder.build());
+    }
+
+    private AnnotationSpec makeUnchecked()
+    {
+        return AnnotationSpec.builder(SuppressWarnings.class).addMember("value", "\"unchecked\"").build();
     }
 
     private void addForComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName, SpecData specData)
@@ -225,6 +230,7 @@ class PassCreate implements Pass
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("start")
             .returns(generatedQualifiedClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .addAnnotation(makeUnchecked())
             .addCode(codeBuilder.build())
             ;
 

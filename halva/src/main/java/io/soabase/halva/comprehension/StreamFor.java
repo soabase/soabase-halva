@@ -16,17 +16,18 @@ public class StreamFor {
         this.delegate = delegate;
     }
 
+    @SuppressWarnings("unchecked")
     public static StreamFor start() {
         return new StreamFor(new MonadicForImpl<>(new StreamForFactory()));
     }
 
-    public <A> StreamFor forComp(AnyVal<A> any, Supplier<? extends Stream<A>> supplier) {
+    public <MF_A> StreamFor forComp(AnyVal<MF_A> any, Supplier<? extends Stream<MF_A>> supplier) {
         delegate.forComp(any, supplier);
         return this;
     }
 
     @SuppressWarnings("unchecked")
-    public <A> Stream<A> yield(Supplier<A> supplier) {
+    public <MF_A> Stream<MF_A> yield(Supplier<MF_A> supplier) {
         return delegate.yield(supplier);
     }
 

@@ -18,7 +18,7 @@ package io.soabase.halva.comprehension;
 import java.util.Optional;
 import java.util.function.Function;
 
-@MonadicFor
+@MonadicFor(applyParentTypeParameter = true)
 public class ReaderOptionalForFactory<A>  implements MonadicForWrapper<Reader<A, Optional>> {
 
     @SuppressWarnings("unchecked")

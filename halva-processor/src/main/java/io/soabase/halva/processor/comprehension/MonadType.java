@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor.implicit;
+package io.soabase.halva.processor.comprehension;
 
-import io.soabase.halva.processor.Environment;
-import io.soabase.halva.processor.Pass;
-import io.soabase.halva.processor.PassFactory;
-import io.soabase.halva.processor.WorkItem;
-import java.util.List;
-import java.util.Optional;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 
-public class ImplicitPassFactory implements PassFactory
+class MonadType
 {
-    @Override
-    public Priority getPriority()
+    private final TypeElement element;
+    private final DeclaredType type;
+
+    MonadType(TypeElement element, DeclaredType type)
     {
-        return Priority.LAST;
+        this.element = element;
+        this.type = type;
     }
 
-    @Override
-    public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
+    TypeElement getElement()
     {
-        return Optional.of(new PassProcessContexts(environment, workItems));
+        return element;
+    }
+
+    DeclaredType getType()
+    {
+        return type;
     }
 }

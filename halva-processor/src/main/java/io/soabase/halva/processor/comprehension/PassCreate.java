@@ -20,6 +20,7 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.comprehension.MonadicFor;
 import io.soabase.halva.comprehension.MonadicForImpl;
 import io.soabase.halva.processor.Environment;
+import io.soabase.halva.processor.GeneratedClass;
 import io.soabase.halva.processor.Pass;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -63,23 +64,22 @@ class PassCreate implements Pass
     {
         TypeElement typeElement = spec.getAnnotatedElement();
         String packageName = environment.getPackage(typeElement);
-        ClassName templateQualifiedClassName = ClassName.get(packageName, typeElement.getSimpleName().toString());
-        ClassName generatedQualifiedClassName = environment.getQualifiedClassName(typeElement, spec.getAnnotationReader());
+        GeneratedClass generatedClass = environment.getGeneratedManager().resolve(typeElement);
 
-        environment.log("Generating " + MonadicFor.class.getSimpleName() + " for " + templateQualifiedClassName + " as " + generatedQualifiedClassName);
+        environment.log("Generating " + MonadicFor.class.getSimpleName() + " for " + generatedClass.getOriginal() + " as " + generatedClass.getGenerated());
 
         SpecData specData = new SpecData(spec);
         boolean hasFilter = hasFilter(spec);
 
         Collection<Modifier> modifiers = environment.getModifiers(typeElement);
-        TypeSpec.Builder builder = TypeSpec.classBuilder(generatedQualifiedClassName)
+        TypeSpec.Builder builder = TypeSpec.classBuilder(generatedClass.getGenerated())
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
         Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, typeElement.getTypeParameters());
 
-        TypeName resolvedName = generatedQualifiedClassName;
+        TypeName resolvedName = generatedClass.getGenerated();
         if ( typeVariableNames.isPresent() )
         {
-            resolvedName = ParameterizedTypeName.get(generatedQualifiedClassName, typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()]));
+            resolvedName = ParameterizedTypeName.get(generatedClass.getGenerated(), typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()]));
         }
 
         addConstructorAndDelegate(builder, spec);
@@ -89,10 +89,10 @@ class PassCreate implements Pass
         addLetComp(builder, resolvedName);
         if ( hasFilter )
         {
-            addFilter(builder, generatedQualifiedClassName);
+            addFilter(builder, generatedClass.getGenerated());
         }
 
-        environment.createSourceFile(packageName, templateQualifiedClassName, generatedQualifiedClassName, MonadicFor.class.getName(), builder, typeElement);
+        environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), MonadicFor.class.getName(), builder, typeElement);
     }
 
     private boolean hasFilter(MonadicSpec spec)
@@ -172,11 +172,16 @@ class PassCreate implements Pass
             .returns(specData.parameterizedMonadicName)
             .addTypeVariables(specData.typeVariableNames)
             .addParameter(ParameterSpec.builder(supplierName, "supplier").build())
-            .addAnnotation(AnnotationSpec.builder(SuppressWarnings.class).addMember("value", "\"unchecked\"").build())
+            .addAnnotation(makeUnchecked())
             .addCode(codeBuilder.build())
             ;
 
         builder.addMethod(methodBuilder.build());
+    }
+
+    private AnnotationSpec makeUnchecked()
+    {
+        return AnnotationSpec.builder(SuppressWarnings.class).addMember("value", "\"unchecked\"").build();
     }
 
     private void addForComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName, SpecData specData)
@@ -225,6 +230,7 @@ class PassCreate implements Pass
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("start")
             .returns(generatedQualifiedClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .addAnnotation(makeUnchecked())
             .addCode(codeBuilder.build())
             ;
 

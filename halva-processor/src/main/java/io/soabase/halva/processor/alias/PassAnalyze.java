@@ -62,6 +62,7 @@ class PassAnalyze implements Pass
             }
             if ( spec != null )
             {
+                environment.getGeneratedManager().registerGenerated(spec.getAnnotatedElement(), spec.getAnnotationReader());
                 specs.add(spec);
             }
         });

@@ -43,4 +43,6 @@ public @interface CaseObject
      * @return string suffix to remove to produce the class name
      */
     String unsuffix() default "_";
+
+    boolean asEnum() default false;
 }

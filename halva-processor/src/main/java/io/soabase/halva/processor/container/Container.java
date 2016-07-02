@@ -55,11 +55,8 @@ public class Container
         addedItems.add(builder.build());
     }
 
-    public TypeSpec.Builder build()
+    public TypeSpec.Builder build(ClassName qualifiedClassName)
     {
-        String packageName = environment.getPackage(element);
-        ClassName qualifiedClassName = ClassName.get(packageName, environment.getGeneratedClassName(element, annotationReader));
-
         Collection<Modifier> modifiers = environment.getModifiers(element);
         TypeSpec.Builder builder = TypeSpec.classBuilder(qualifiedClassName)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));

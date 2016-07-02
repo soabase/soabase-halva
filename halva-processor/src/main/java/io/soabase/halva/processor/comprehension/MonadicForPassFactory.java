@@ -25,6 +25,12 @@ import java.util.Optional;
 public class MonadicForPassFactory implements PassFactory
 {
     @Override
+    public Priority getPriority()
+    {
+        return Priority.FOURTH;
+    }
+
+    @Override
     public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
     {
         return Optional.of(new PassAnalyze(environment, workItems));

@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static com.company.ExampleObjectCase.ExampleObjectCase;
+import static io.soabase.halva.caseclass.CaseObjectEnum.CaseObjectEnum;
 
 public class TestObject
 {
@@ -35,6 +36,21 @@ public class TestObject
         Assert.assertEquals("John", ExampleObjectCase.firstName());
         Assert.assertEquals(42, ExampleObjectCase.age());
         testAsExample(ExampleObjectCase);
-        Assert.assertTrue(ExampleObjectCase instanceof Enum);
+    }
+
+    @CaseObject(asEnum = true)
+    interface CaseObjectEnum_
+    {
+        default boolean itIs()
+        {
+            return true;
+        }
+    }
+
+    @Test
+    public void testEnumCaseObject()
+    {
+        Assert.assertTrue(CaseObjectEnum.itIs());
+        Assert.assertTrue(CaseObjectEnum instanceof Enum);
     }
 }

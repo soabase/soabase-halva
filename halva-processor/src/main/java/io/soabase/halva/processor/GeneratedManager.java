@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor.alias;
+package io.soabase.halva.processor;
 
-import io.soabase.halva.processor.Environment;
-import io.soabase.halva.processor.Pass;
-import io.soabase.halva.processor.PassFactory;
-import io.soabase.halva.processor.WorkItem;
-import java.util.List;
-import java.util.Optional;
+import com.squareup.javapoet.TypeName;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
-public class AliasPassFactory implements PassFactory
+public interface GeneratedManager
 {
-    @Override
-    public Priority getPriority()
-    {
-        return Priority.THIRD;
-    }
+    void registerGenerated(TypeElement element, AnnotationReader annotationReader);
 
-    @Override
-    public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
-    {
-        return Optional.of(new PassAnalyze(environment, workItems));
-    }
+    TypeName toTypeName(TypeMirror type);
+
+    GeneratedClass resolve(TypeElement element);
 }

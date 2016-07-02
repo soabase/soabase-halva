@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor.alias;
+package io.soabase.halva.caseclass.sub1;
 
-import io.soabase.halva.processor.Environment;
-import io.soabase.halva.processor.Pass;
-import io.soabase.halva.processor.PassFactory;
-import io.soabase.halva.processor.WorkItem;
-import java.util.List;
-import java.util.Optional;
+import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.caseclass.sub2.ParentCase_;
 
-public class AliasPassFactory implements PassFactory
+@CaseClass
+public interface ChildCase_
 {
-    @Override
-    public Priority getPriority()
-    {
-        return Priority.THIRD;
-    }
-
-    @Override
-    public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
-    {
-        return Optional.of(new PassAnalyze(environment, workItems));
-    }
+    String name();
+    ParentCase_ parent();
 }

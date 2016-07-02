@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.halva.processor.implicit;
+package io.soabase.halva.caseclass;
 
-import io.soabase.halva.processor.Environment;
-import io.soabase.halva.processor.Pass;
-import io.soabase.halva.processor.PassFactory;
-import io.soabase.halva.processor.WorkItem;
-import java.util.List;
-import java.util.Optional;
+import io.soabase.halva.caseclass.sub1.ChildCase;
+import io.soabase.halva.caseclass.sub2.ParentCase;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class ImplicitPassFactory implements PassFactory
+import static io.soabase.halva.caseclass.sub1.ChildCase.ChildCase;
+import static io.soabase.halva.caseclass.sub2.ParentCase.ParentCase;
+
+public class TestCrossReference
 {
-    @Override
-    public Priority getPriority()
+    @Test
+    public void testParentChild()
     {
-        return Priority.LAST;
-    }
-
-    @Override
-    public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
-    {
-        return Optional.of(new PassProcessContexts(environment, workItems));
+        ParentCase parent = ParentCase(10, 20);
+        ChildCase child = ChildCase("test", parent);
+        Assert.assertEquals(parent, child.parent());
     }
 }

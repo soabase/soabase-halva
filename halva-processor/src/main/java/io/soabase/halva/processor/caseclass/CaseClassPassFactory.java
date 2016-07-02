@@ -25,6 +25,12 @@ import java.util.Optional;
 public class CaseClassPassFactory implements PassFactory
 {
     @Override
+    public Priority getPriority()
+    {
+        return Priority.SECOND;
+    }
+
+    @Override
     public Optional<Pass> firstPass(Environment environment, List<WorkItem> workItems)
     {
         return Optional.of(new PassAnalyze(environment, workItems));

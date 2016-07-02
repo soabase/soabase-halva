@@ -147,11 +147,11 @@ class Templates
         addBuilderSetter(item, builder, type, builderClassName, Modifier.PUBLIC);
     }
 
-    void addConstructor(CaseClassSpec spec, TypeSpec.Builder builder, boolean makePrivate)
+    void addConstructor(CaseClassSpec spec, TypeSpec.Builder builder)
     {
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
             .addCode(buildFieldValidation(spec))
-            .addModifiers(makePrivate ? Modifier.PRIVATE : Modifier.PROTECTED);
+            .addModifiers(Modifier.PROTECTED);
         spec.getItems().stream()
             .forEach(item -> {
                 TypeName type = environment.getGeneratedManager().toTypeName(item.getType());

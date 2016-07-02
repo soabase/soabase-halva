@@ -104,7 +104,7 @@ class PassCreateClass implements Pass
         }
         if ( !asEnum )
         {
-            templates.addConstructor(spec, builder, isCaseObject);
+            templates.addConstructor(spec, builder);
             templates.addEquals(spec, builder, generatedClass.getGenerated());
             templates.addHashCode(spec, builder);
         }

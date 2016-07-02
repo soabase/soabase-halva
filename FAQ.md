@@ -20,4 +20,4 @@ The Halva Annotation Processor will replace references to class templates with t
 @CaseClass public interface Client{Name name()}
 ```
 
-In the aboce, the "name" field in Client will be of type `NameCase` in the generated ClientCase class
+In the above the "name" field in Client will be of type `NameCase` in the generated ClientCase class

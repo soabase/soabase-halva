@@ -90,6 +90,7 @@ import static io.soabase.halva.tuple.Tuple.Pair;
     "CaseClass.json",
     "CaseObject.suffix",
     "CaseObject.unsuffix",
+    "CaseObject.asEnum",
     "MonadicFor.suffix",
     "MonadicFor.unsuffix",
     "MonadicFor.monadicParameterPosition",

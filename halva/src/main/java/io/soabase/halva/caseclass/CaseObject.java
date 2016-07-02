@@ -44,5 +44,11 @@ public @interface CaseObject
      */
     String unsuffix() default "_";
 
+    /**
+     * By default, case objects are classes. If this attribute is true,
+     * they are created as Enums instead.
+     *
+     * @return true/false
+     */
     boolean asEnum() default false;
 }

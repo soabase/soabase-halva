@@ -142,5 +142,12 @@ public interface CasesBase<ARG, M>
      */
     M caseOfUnit(Runnable proc);
 
+    /**
+     * Emulates Scala's "@" binding argument. If the case matches, <code>binder</code>
+     * will get set to the argument passed to the matcher/partial
+     *
+     * @param binder value to hold the match
+     * @return this
+     */
     <T> M bindTo(Any<T> binder);
 }

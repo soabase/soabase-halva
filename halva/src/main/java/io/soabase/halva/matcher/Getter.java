@@ -31,7 +31,7 @@ class Getter<ARG> implements GettersBase
     {
         final Function<ARG, Optional<? extends Supplier<?>>> curry;
 
-        public Entry(ExtractObject extracter, Supplier<?> extracterProc)
+        Entry(ExtractObject extracter, Supplier<?> extracterProc)
         {
             if ( extracter == null )
             {

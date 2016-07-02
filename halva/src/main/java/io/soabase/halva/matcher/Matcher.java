@@ -30,6 +30,8 @@ import java.util.function.Supplier;
  */
 public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<ARG>>
 {
+    private Any nextBinder = null;
+
     /**
      * Start a pattern matcher on the given value
      *
@@ -147,8 +149,9 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
 
     <T> Matcher<ARG> register(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)
     {
-        ExtractObject extracter = new ExtractObject(fields, guard);
+        ExtractObject extracter = new ExtractObject(fields, guard, nextBinder);
         addEntry(new Entry<>(extracter, proc));
+        nextBinder = null;
         return this;
     }
 
@@ -223,6 +226,13 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     public Matcher<ARG> caseOfUnit(Runnable proc)
     {
         setDefault(wrap(proc));
+        return this;
+    }
+
+    @Override
+    public <T> Matcher<ARG> bindTo(Any<T> binder)
+    {
+        nextBinder = binder;
         return this;
     }
 

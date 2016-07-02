@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.matcher;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Supplier;
 
@@ -22,15 +23,23 @@ class ExtractObject
 {
     private final Tuple values;
     private final Supplier<Boolean> guard;
+    private final Any binder;
 
-    ExtractObject(Tuple values, Supplier<Boolean> guard)
+    ExtractObject(Tuple values, Supplier<Boolean> guard, Any binder)
     {
         this.values = values;
         this.guard = guard;
+        this.binder = binder;
     }
 
+    @SuppressWarnings("unchecked")
     boolean extract(Object from)
     {
-        return values.extract(from) && ((guard == null) || guard.get());
+        boolean matches = values.extract(from) && ((guard == null) || guard.get());
+        if ( matches && (binder != null) )
+        {
+            binder.set(from);
+        }
+        return matches;
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.matcher;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.tuple.Tuple;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -110,6 +111,13 @@ class PartialImpl<ARG> implements GettersBase, Partial<ARG>
     public <T> Partial<ARG> caseOfUnit(Tuple lhs, Runnable proc)
     {
         matcher.caseOfUnit(lhs, proc);
+        return this;
+    }
+
+    @Override
+    public <T> Partial<ARG> bindTo(Any<T> binder)
+    {
+        matcher.bindTo(binder);
         return this;
     }
 

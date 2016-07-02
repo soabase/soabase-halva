@@ -24,6 +24,7 @@ import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
+import io.soabase.halva.matcher.Partial;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
 import org.junit.Assert;
@@ -183,5 +184,20 @@ public class TestMatcher
             .caseOf(() -> "It's not empty")
             .get();
         Assert.assertEquals("It's empty", result);
+    }
+
+    @Test
+    public void testBinding()
+    {
+        Any<String> s = new AnyType<String>(){};
+        Any<Integer> i = new AnyType<Integer>(){};
+        Any<AnimalCase> animal = new AnyType<AnimalCase>(){};
+        Any<ChairCase> chair = new AnyType<ChairCase>(){};
+        Partial<Object> partial = Matcher.partial(Object.class)
+            .bindTo(animal).caseOf(AnimalCaseTu(s, i), () -> animal.val().name())
+            .bindTo(chair).caseOf(ChairCaseTu(s, i, i), () -> chair.val().color());
+
+        Assert.assertEquals("bobby", partial.with(AnimalCase("bobby", 10)).get());
+        Assert.assertEquals("blue", partial.with(ChairCase("blue", 10, 20)).get());
     }
 }

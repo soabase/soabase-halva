@@ -16,7 +16,6 @@
 package io.soabase.halva.any;
 
 import io.soabase.com.google.inject.internal.MoreTypes;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -27,29 +26,77 @@ import static io.soabase.com.google.inject.internal.MoreTypes.canonicalize;
  */
 public abstract class AnyType<T> extends AnyImpl<T, T>
 {
-    private final Class<? super T> rawType;
+    private final InternalType internalType;
+
+    static class InternalType
+    {
+        final Type type;
+
+        InternalType(Type type)
+        {
+            this.type = type;
+        }
+
+        @SuppressWarnings({"ConstantConditions", "unchecked"})
+        boolean isAssignableFrom(InternalType from)
+        {
+            //noinspection LoopStatementThatDoesntLoop
+            do
+            {
+                if ( (type == null) && (from.type != null) )
+                {
+                    break;
+                }
+
+                if ( (type != null) && (from.type == null) )
+                {
+                    break;
+                }
+
+                if ( (type instanceof Class) != (from.type instanceof Class) )
+                {
+                    return type.equals(from.type);
+                }
+
+                return ((Class)type).isAssignableFrom((Class)from.type);
+            } while ( false );
+            return false;
+        }
+    }
 
     protected AnyType()
     {
-        this.rawType = getRawType(getClass());
+        this.internalType = getInternalType(getClass(), true);
     }
 
     @Override
-    public final Class<? super T> getRawType()
+    public InternalType getInternalType()
     {
-        return rawType;
+        return internalType;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Class<? super T> getRawType(Class<? extends AnyType> superType)
+    static InternalType getInternalType(Class<?> superType, boolean throwIfMisspecified)
     {
         Type superclass = superType.getGenericSuperclass();
         if ( superclass instanceof Class )
         {
-            throw new RuntimeException("Missing type parameter.");
+            if ( throwIfMisspecified )
+            {
+                throw new RuntimeException("Missing type parameter");
+            }
+            return new InternalType(superType);
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
         Type type = canonicalize(parameterized.getActualTypeArguments()[0]);
-        return (Class<? super T>)MoreTypes.getRawType(type);
+        if ( !MoreTypes.isFullySpecified(type) )
+        {
+            if ( throwIfMisspecified )
+            {
+                throw new RuntimeException("Parameterized type is not fully specified");
+            }
+            return new InternalType(superType);
+        }
+        return new InternalType(type);
     }
 }

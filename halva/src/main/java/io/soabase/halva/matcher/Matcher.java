@@ -22,6 +22,7 @@ import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Tuple;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -135,6 +136,18 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     public static <T> AnyOptional<T> anySome(Any<T> value)
     {
         return Any.anySome(value);
+    }
+
+    /**
+     * Returns a new Any that holds an Optional. The given value
+     * is assigned the optional itself on match.
+     *
+     * @param value will get the optional
+     * @return a new any
+     */
+    static <T> AnyOptional<T> anyOptional(Any<Optional<T>> value)
+    {
+        return Any.anyOptional(value);
     }
 
     /**

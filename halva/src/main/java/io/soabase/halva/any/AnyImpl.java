@@ -19,18 +19,16 @@ import io.soabase.halva.alias.TypeAliasType;
 
 class AnyImpl<T extends REAL, REAL> implements Any<T>
 {
-    private final Class<? super T> rawType;
     private final TypeAliasType<REAL, T> typeAliasType;
     private T value;
 
     AnyImpl()
     {
-        this(null, null);
+        this(null);
     }
 
-    AnyImpl(Class<? super T> rawType, TypeAliasType<REAL, T> typeAliasType)
+    AnyImpl(TypeAliasType<REAL, T> typeAliasType)
     {
-        this.rawType = (rawType != null) ? rawType : ((typeAliasType != null) ? typeAliasType.getAliasType().getRawType() : null);
         this.typeAliasType = typeAliasType;
     }
 
@@ -49,26 +47,32 @@ class AnyImpl<T extends REAL, REAL> implements Any<T>
     {
         if ( typeAliasType != null )
         {
-            value = typeAliasType.wrap((T)value);
+            value = typeAliasType.wrap(value);
         }
         this.value = value;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final boolean canSet(T value)
     {
-        Class<? super T> localRawType = getRawType();
-        if ( localRawType != null )
+        if ( value == null )
         {
-            if ( typeAliasType != null )
-            {
-                return typeAliasType.getRealType().getRawType().isAssignableFrom(localRawType);
-            }
+            return true;
+        }
 
+        if ( typeAliasType != null )
+        {
+            return typeAliasType.getAliasType().canSet(typeAliasType.wrap(value));
+        }
+
+        AnyType.InternalType ourType = getInternalType();
+        if ( ourType != null )
+        {
             try
             {
-                localRawType.cast(value);
-                return true;
+                AnyType.InternalType valueType = AnyType.getInternalType(value.getClass(), false);
+                return ourType.isAssignableFrom(valueType);
             }
             catch ( ClassCastException dummy )
             {
@@ -78,8 +82,8 @@ class AnyImpl<T extends REAL, REAL> implements Any<T>
         return false;
     }
 
-    public Class<? super T> getRawType()
+    public AnyType.InternalType getInternalType()
     {
-        return rawType;
+        return null;
     }
 }

@@ -162,7 +162,7 @@ public class TestCaseClassesAndPatternMatching
      */
     private static final AnyType<Optional<Integer>> opt = new AnyType<Optional<Integer>>(){};
     final Partial<Optional<Integer>> withDefault = partial(new AnyType<Optional<Integer>>(){})
-        .caseOf(opt, () -> opt.val().isPresent(), () -> opt.val().get())
+        .caseOf(Any.anyOptional(opt), () -> opt.val().isPresent(), () -> opt.val().get())
         .caseOf(() -> 0);
 
     @Test

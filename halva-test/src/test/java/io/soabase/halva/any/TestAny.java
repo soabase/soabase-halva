@@ -22,7 +22,6 @@ import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static io.soabase.halva.any.StringList.StringList;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static org.junit.Assert.assertEquals;
@@ -36,24 +35,6 @@ public class TestAny
         assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"));
         assertEquals(Tuple.Tu("a", Tuple.Tu(1, 2, 3), "b"), Tuple.Tu("a", any, "b"));
         assertEquals(Tuple.Tu("a", any, "b"), Tuple.Tu("a", any, "b"));
-    }
-
-    @TypeAlias interface StringList_ extends ConsList<String>{}
-
-    @Test
-    public void testAnyWithAlias()
-    {
-        Any<ConsList<String>> real = new AnyType<ConsList<String>>(){};
-        Any<StringList> alias = Any.typeAlias(StringList.TypeAliasType);
-
-        ConsList<String> strings = List("A", "B", "C");
-        StringList wrapped = StringList(strings);
-        Assert.assertTrue(real.canSet(strings));
-        Assert.assertTrue(alias.canSet(wrapped));
-        real.set(strings);
-        alias.set(wrapped);
-        Assert.assertEquals(strings, real.val());
-        Assert.assertEquals(strings, alias.val());
     }
 
     @TypeAlias public interface Environment_ extends ConsList<Pair<String, Integer>>{}

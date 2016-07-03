@@ -16,6 +16,9 @@
 package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
+import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.matcher.Match;
 import io.soabase.halva.processor.Constants;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.ClassTuple;
@@ -382,6 +385,36 @@ class Templates
             return ParameterizedTypeName.get(rawClassname, typeVariableNames.get().toArray(new TypeName[typeVariableNames.get().size()]));
         }
         return rawClassname;
+    }
+
+    void addClassTupleMethods(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
+    {
+        if ( spec.getItems().size() == 0 )
+        {
+            return;
+        }
+
+        String classTupleName = className.simpleName() + Constants.TUPLE_METHOD;
+        CodeBlock returnCode = CodeBlock.builder()
+            .addStatement("return $L($L)", classTupleName, spec.getItems().stream().map(CaseClassItem::getName).collect(Collectors.joining(", ")))
+            .build();
+
+        ClassName matchClassName = ClassName.get(Match.class);
+        ClassName classTupleClassName = ClassName.get(ClassTuple.class);
+
+        MethodSpec.Builder tupleMethod = MethodSpec
+            .methodBuilder(className.simpleName())
+            .returns(classTupleClassName)
+            .addCode(returnCode)
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+        spec.getItems().forEach(item -> tupleMethod.addParameter(ParameterizedTypeName.get(matchClassName, TypeName.get(item.getType()).box()), item.getName()));
+
+        if ( typeVariableNames.isPresent() )
+        {
+            tupleMethod.addTypeVariables(typeVariableNames.get());
+        }
+
+        builder.addMethod(tupleMethod.build());
     }
 
     void addCopy(TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)

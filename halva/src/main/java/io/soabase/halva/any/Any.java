@@ -17,6 +17,7 @@ package io.soabase.halva.any;
 
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.sugar.ConsList;
+import java.util.Optional;
 
 /**
  * Value boxing any pattern matching mechanism
@@ -88,7 +89,7 @@ public interface Any<T>
      */
     static <T extends REAL, REAL> Any<T> typeAlias(TypeAliasType<REAL, T> typeAliasType)
     {
-        return new AnyImpl<>(null, typeAliasType);
+        return new AnyImpl<>(typeAliasType);
     }
 
     /**
@@ -110,7 +111,19 @@ public interface Any<T>
      */
     static <T> AnyOptional<T> anySome(Any<T> value)
     {
-        return new AnyOptional<T>(value){};
+        return new AnyOptional<T>(value, null){};
+    }
+
+    /**
+     * Returns a new Any that holds an Optional. The given value
+     * is assigned the optional itself on match.
+     *
+     * @param value will get the optional
+     * @return a new any
+     */
+    static <T> AnyOptional<T> anyOptional(Any<Optional<T>> value)
+    {
+        return new AnyOptional<T>(null, value){};
     }
 
     /**
@@ -120,7 +133,7 @@ public interface Any<T>
      */
     static AnyOptional<Void> anyNone()
     {
-        return new AnyOptional<Void>(null){};
+        return new AnyOptional<Void>(null, null){};
     }
 
     /**

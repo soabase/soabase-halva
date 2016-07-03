@@ -22,6 +22,7 @@ import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.matcher.Match;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
@@ -107,8 +108,8 @@ public class TestMatcher
     {
         ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
 
-        AnyType<ConsList<Pair<String, Integer>>> anyPairList = new AnyType<ConsList<Pair<String, Integer>>>(){};
-        AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair<String, Integer>>(){}, anyPairList);
+        Any<ConsList<Pair>> anyPairList = Match.any(new AnyType<ConsList<Pair>>(){});
+        AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair>(){}, anyPairList);
         String str = match(list)
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
             .get();

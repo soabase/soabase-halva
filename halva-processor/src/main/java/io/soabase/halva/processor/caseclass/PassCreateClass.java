@@ -111,6 +111,7 @@ class PassCreateClass implements Pass
         templates.addTuple(spec, builder);
         templates.addDebugString(spec, builder, generatedClass.getGenerated());
         templates.addToString(spec, builder, generatedClass.getGenerated());
+        templates.addClassTupleMethods(spec, builder, generatedClass.getGenerated(), typeVariableNames);
         templates.addClassTuple(spec, builder, generatedClass.getGenerated(), json);
 
         environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), spec.getAnnotationReader().getFullName(), builder, spec.getAnnotatedElement());

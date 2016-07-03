@@ -18,6 +18,7 @@ package io.soabase.halva.tuple;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.matcher.Match;
 import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
@@ -56,8 +57,8 @@ public class TestTuple
 
     private String extractFunc(ConsList<Pair<String, Integer>> list)
     {
-        AnyType<Pair<String, Integer>> p = new AnyType<Pair<String, Integer>>(){};
-        AnyType<ConsList<? extends Pair<String, Integer>>> t = new AnyType<ConsList<? extends Pair<String, Integer>>>(){};
+        Any<Pair<String, Integer>> p = Match.any(new AnyType<Pair<String, Integer>>(){});
+        Any<ConsList<? extends Pair<String, Integer>>> t = Match.any(new AnyType<ConsList<? extends Pair<String, Integer>>>(){});
 
         AnyList a = Any.headAnyTail(Pair("10", 10), t);
         AnyList b = Any.headTail(Pair("-10", -10), List(Pair("20", 20)));

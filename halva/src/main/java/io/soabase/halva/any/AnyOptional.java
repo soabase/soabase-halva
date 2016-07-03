@@ -23,33 +23,48 @@ import java.util.Optional;
 public abstract class AnyOptional<T> implements Any<T>
 {
     private final Any holder;
+    private final Any<? extends Optional> optionalHolder;
 
-    AnyOptional(Any holder)
+    AnyOptional(Any holder, Any<? extends Optional> optionalHolder)
     {
         this.holder = holder;
+        this.optionalHolder = optionalHolder;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public T val()
     {
-        if ( holder == null )
+        if ( holder != null )
         {
-            throw new UnsupportedOperationException("Cannot get the value of an anyNone");
+            return (T)holder.val();
         }
-        return (T)holder.val();
+
+        if ( optionalHolder != null )
+        {
+            return (T)optionalHolder.val();
+        }
+
+        throw new UnsupportedOperationException("Cannot get the value of an anyNone");
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void set(T value)
     {
-        if ( (this.holder != null) && (value instanceof Optional) )
+        if ( value instanceof Optional )
         {
             Optional optional = (Optional)value;
-            if ( optional.isPresent() )
+            if ( holder != null )
             {
-                this.holder.set(optional.get());
+                if ( optional.isPresent() )
+                {
+                    holder.set(optional.get());
+                }
+            }
+            else if ( optionalHolder != null )
+            {
+                ((Any<Optional>)optionalHolder).set(optional);
             }
         }
     }
@@ -60,6 +75,11 @@ public abstract class AnyOptional<T> implements Any<T>
     {
         if ( value instanceof Optional )
         {
+            if ( optionalHolder != null )
+            {
+                return true;
+            }
+
             try
             {
                 Optional optional = (Optional)value;

@@ -46,7 +46,7 @@ public class MoreTypes
   /**
    * Returns true if {@code type} is free from type variables.
    */
-  private static boolean isFullySpecified(Type type) {
+  public static boolean isFullySpecified(Type type) { // JZ made public
     if (type instanceof Class) {
       return true;
 

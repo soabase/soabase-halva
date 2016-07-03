@@ -16,7 +16,7 @@
 package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.processor.Constants;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.ClassTuple;
@@ -397,7 +397,7 @@ class Templates
             .addStatement("return $L($L)", classTupleName, spec.getItems().stream().map(CaseClassItem::getName).collect(Collectors.joining(", ")))
             .build();
 
-        ClassName matchClassName = ClassName.get(Match.class);
+        ClassName matchClassName = ClassName.get(AnyVal.class);
         ClassName classTupleClassName = ClassName.get(ClassTuple.class);
 
         MethodSpec.Builder tupleMethod = MethodSpec

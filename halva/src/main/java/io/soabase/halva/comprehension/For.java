@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.comprehension;
 
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -30,7 +30,7 @@ public interface For extends ForNext
      * @param iterator collection to iterate over
      * @return new for comprehension
      */
-    static <T, R> ForNext forComp(Match<T> any, Iterable<? extends R> iterator)
+    static <T, R> ForNext forComp(AnyVal<T> any, Iterable<? extends R> iterator)
     {
         return new ForImpl(any, iterator);
     }
@@ -43,7 +43,7 @@ public interface For extends ForNext
      * @param stream collection to iterate over
      * @return new for comprehension
      */
-    static <T> ForNext forComp(Match<T> any, IntStream stream)
+    static <T> ForNext forComp(AnyVal<T> any, IntStream stream)
     {
         return new ForImpl(any, stream::iterator);
     }
@@ -56,7 +56,7 @@ public interface For extends ForNext
      * @param stream collection to iterate over
      * @return new for comprehension
      */
-    static <T> ForNext forComp(Match<T> any, LongStream stream)
+    static <T> ForNext forComp(AnyVal<T> any, LongStream stream)
     {
         return new ForImpl(any, stream::iterator);
     }
@@ -69,7 +69,7 @@ public interface For extends ForNext
      * @param stream collection to iterate over
      * @return new for comprehension
      */
-    static <T> ForNext forComp(Match<T> any, DoubleStream stream)
+    static <T> ForNext forComp(AnyVal<T> any, DoubleStream stream)
     {
         return new ForImpl(any, stream::iterator);
     }

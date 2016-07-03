@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.comprehension;
 
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -30,41 +30,41 @@ class ForImpl implements For
 {
     private final StreamFor streamFor;
 
-    ForImpl(Match any, Iterable stream)
+    ForImpl(AnyVal any, Iterable stream)
     {
         streamFor = StreamFor.start().forComp(any, () -> StreamSupport.stream(stream.spliterator(), false));
     }
 
     @Override
-    public <T> For forComp(Match<T> any, Supplier<Iterable<T>> stream)
+    public <T> For forComp(AnyVal<T> any, Supplier<Iterable<T>> stream)
     {
         streamFor.forComp(any, () -> StreamSupport.stream(stream.get().spliterator(), false));
         return this;
     }
 
     @Override
-    public For forCompInt(Match<Integer> any, Supplier<IntStream> stream)
+    public For forCompInt(AnyVal<Integer> any, Supplier<IntStream> stream)
     {
         streamFor.forComp(any, () -> StreamSupport.stream(stream.get().spliterator(), false));
         return this;
     }
 
     @Override
-    public For forCompLong(Match<Long> any, Supplier<LongStream> stream)
+    public For forCompLong(AnyVal<Long> any, Supplier<LongStream> stream)
     {
         streamFor.forComp(any, () -> StreamSupport.stream(stream.get().spliterator(), false));
         return this;
     }
 
     @Override
-    public For forCompDouble(Match<Double> any, Supplier<DoubleStream> stream)
+    public For forCompDouble(AnyVal<Double> any, Supplier<DoubleStream> stream)
     {
         streamFor.forComp(any, () -> StreamSupport.stream(stream.get().spliterator(), false));
         return this;
     }
 
     @Override
-    public <T> For letComp(Match<T> any, Supplier<T> valueSupplier)
+    public <T> For letComp(AnyVal<T> any, Supplier<T> valueSupplier)
     {
         streamFor.letComp(any, valueSupplier);
         return this;

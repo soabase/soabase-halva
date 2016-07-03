@@ -22,10 +22,10 @@ import java.util.Optional;
  */
 public abstract class AnyOptional<T> implements Any<T>
 {
-    private final Match holder;
-    private final Match<? extends Optional> optionalHolder;
+    private final AnyVal holder;
+    private final AnyVal<? extends Optional> optionalHolder;
 
-    AnyOptional(Match holder, Match<? extends Optional> optionalHolder)
+    AnyOptional(AnyVal holder, AnyVal<? extends Optional> optionalHolder)
     {
         this.holder = holder;
         this.optionalHolder = optionalHolder;

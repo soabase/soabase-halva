@@ -16,7 +16,7 @@
 package io.soabase.halva.comprehension;
 
 import com.company.FutureFor;
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.concurrent.CompletableFuture;
@@ -25,10 +25,10 @@ public class TestFutureFor {
 
     @Test
     public void testFutureFor() throws Exception {
-        final Match<String> a = Match.any();
-        final Match<String> b = Match.any();
-        final Match<Integer> c = Match.any();
-        final Match<Integer> d = Match.any();
+        final AnyVal<String> a = AnyVal.any();
+        final AnyVal<String> b = AnyVal.any();
+        final AnyVal<Integer> c = AnyVal.any();
+        final AnyVal<Integer> d = AnyVal.any();
 
         final CompletableFuture<Integer> f =
                 FutureFor.start()

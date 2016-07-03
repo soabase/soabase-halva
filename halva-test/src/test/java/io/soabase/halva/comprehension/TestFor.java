@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.comprehension;
 
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
@@ -51,8 +51,8 @@ val result = for {
         String two = "java rocks";
         List<String> sentences = List(one, two);
         List<String> dict = List("scala", "sbt", "patterns");
-        Match<String> sentence = Match.any();
-        Match<Boolean> does = Match.any();
+        AnyVal<String> sentence = AnyVal.any();
+        AnyVal<Boolean> does = AnyVal.any();
 
         List<Tuple> ts = forComp(sentence, sentences)
             .letComp(does, () -> dict.contains(sentence.val()))
@@ -67,9 +67,9 @@ val result = for {
         List<List> lists2 = List(List(4, 5, 6), List("D", "E", "F"));
         List<List<List>> big = List(lists1, lists2);
 
-        Match<List<List>> lol = Match.any();
-        Match<List> l = Match.any();
-        Match<Object> o = Match.any();
+        AnyVal<List<List>> lol = AnyVal.any();
+        AnyVal<List> l = AnyVal.any();
+        AnyVal<Object> o = AnyVal.any();
         List<String> s = forComp(lol, big)
               .forComp(l, lol::val)
               .forComp(o, l::val)
@@ -103,9 +103,9 @@ val result = for {
         } yield (book.title, year)
      */
         {
-            Match<Book> book = Match.any();
-            Match<Author> author = Match.any();
-            Match<Integer> year = Match.any();
+            AnyVal<Book> book = AnyVal.any();
+            AnyVal<Author> author = AnyVal.any();
+            AnyVal<Integer> year = AnyVal.any();
 
             List<Tuple> result = forComp(book, books)
                 .filter(() -> book.val().authors().size() == 1)
@@ -124,7 +124,7 @@ val result = for {
     */
     List<Integer> even(int from, int to)
     {
-        Match<Integer> i = Match.any();
+        AnyVal<Integer> i = AnyVal.any();
         return forComp(i, IntStream.range(from, to))
             .filter(() -> i.val() % 2 == 0)
             .yield(i::val);
@@ -144,8 +144,8 @@ val result = for {
      */
     List<Tuple> foo(int n, int v)
     {
-        Match<Integer> i = Match.any();
-        Match<Integer> j = Match.any();
+        AnyVal<Integer> i = AnyVal.any();
+        AnyVal<Integer> j = AnyVal.any();
         return forComp(i, IntStream.range(0, n))
             .forCompInt(j, () -> IntStream.range(i.val(), n))
             .filter(() -> i.val() + j.val() == v)
@@ -167,8 +167,8 @@ val result = for {
     @Test
     public void testUnit()
     {
-        Match<Integer> i = Match.any();
-        Match<Integer> j = Match.any();
+        AnyVal<Integer> i = AnyVal.any();
+        AnyVal<Integer> j = AnyVal.any();
         StringBuilder str = new StringBuilder();
         forComp(i, IntStream.range(0, 20))
             .forCompInt(j, () -> IntStream.range(i.val(), 20))
@@ -180,9 +180,9 @@ val result = for {
     @Test
     public void testIntStream()
     {
-        Match<Integer> i = Match.any();
-        Match<Integer> j = Match.any();
-        Match<Integer> from = Match.any();
+        AnyVal<Integer> i = AnyVal.any();
+        AnyVal<Integer> j = AnyVal.any();
+        AnyVal<Integer> from = AnyVal.any();
         List<Integer> result = forComp(i, IntStream.rangeClosed(1, 3))
             .letComp(from, () -> 4 - i.val())
             .forCompInt(j, () -> IntStream.rangeClosed(from.val(), 3))
@@ -193,8 +193,8 @@ val result = for {
     @Test
     public void testStreamOverYield()
     {
-        Match<List<Integer>> i = Match.any();
-        Match<Integer> j = Match.any();
+        AnyVal<List<Integer>> i = AnyVal.any();
+        AnyVal<Integer> j = AnyVal.any();
         List<String> s = forComp(i, List(List(1, 2), List(5, 6)))
             .forComp(j, i::val)
             .stream(() -> 10 * j.val())

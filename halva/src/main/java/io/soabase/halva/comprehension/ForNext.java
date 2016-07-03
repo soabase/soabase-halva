@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.comprehension;
 
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
@@ -32,7 +32,7 @@ public interface ForNext
      * @param stream function that returns a stream
      * @return this
      */
-    <T> ForNext forComp(Match<T> any, Supplier<Iterable<T>> stream);
+    <T> ForNext forComp(AnyVal<T> any, Supplier<Iterable<T>> stream);
 
     /**
      * Add another instance to the comprehension
@@ -41,7 +41,7 @@ public interface ForNext
      * @param stream function that returns a stream
      * @return this
      */
-    ForNext forCompInt(Match<Integer> any, Supplier<IntStream> stream);
+    ForNext forCompInt(AnyVal<Integer> any, Supplier<IntStream> stream);
 
     /**
      * Add another instance to the comprehension
@@ -50,7 +50,7 @@ public interface ForNext
      * @param stream function that returns a stream
      * @return this
      */
-    ForNext forCompLong(Match<Long> any, Supplier<LongStream> stream);
+    ForNext forCompLong(AnyVal<Long> any, Supplier<LongStream> stream);
 
     /**
      * Add another instance to the comprehension
@@ -59,7 +59,7 @@ public interface ForNext
      * @param stream function that returns a stream
      * @return this
      */
-    ForNext forCompDouble(Match<Double> any, Supplier<DoubleStream> stream);
+    ForNext forCompDouble(AnyVal<Double> any, Supplier<DoubleStream> stream);
 
     /**
      * Allows setting of an any value (or the current set of values) at the
@@ -70,7 +70,7 @@ public interface ForNext
      * @param valueSupplier function that return the value to assign
      * @return this
      */
-    <T> ForNext letComp(Match<T> any, Supplier<T> valueSupplier);
+    <T> ForNext letComp(AnyVal<T> any, Supplier<T> valueSupplier);
 
     /**
      * Add filtering to the stream. The test can examine the current state

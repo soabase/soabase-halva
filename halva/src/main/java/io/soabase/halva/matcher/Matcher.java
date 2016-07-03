@@ -18,7 +18,7 @@ package io.soabase.halva.matcher;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  */
 public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<ARG>>
 {
-    private Match nextBinder = null;
+    private AnyVal nextBinder = null;
 
     /**
      * Start a pattern matcher on the given value
@@ -155,7 +155,7 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     }
 
     @Override
-    public <T> Matcher<ARG> bindTo(Match<T> binder)
+    public <T> Matcher<ARG> bindTo(AnyVal<T> binder)
     {
         nextBinder = binder;
         return this;

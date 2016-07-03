@@ -21,7 +21,7 @@ import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
@@ -87,7 +87,7 @@ public class TestMatcher
     }
 
     static List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
-        Match<Pair<String, Integer>> foundPair = Match.any();
+        AnyVal<Pair<String, Integer>> foundPair = AnyVal.any();
 
         return forComp(foundPair, list)
             .filter(() -> foundPair.val()._1.equals(key))
@@ -105,7 +105,7 @@ public class TestMatcher
     {
         ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
 
-        Any<ConsList<Pair>> anyPairList = new Match<ConsList<Pair>>(){};
+        Any<ConsList<Pair>> anyPairList = new AnyVal<ConsList<Pair>>(){};
         AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair>(){}, anyPairList);
         String str = match(list)
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
@@ -157,8 +157,8 @@ public class TestMatcher
     @Test
     public void testMatchSome()
     {
-        Match<String> s = new Match<String>(){};
-        Match<Integer> i = new Match<Integer>(){};
+        AnyVal<String> s = new AnyVal<String>(){};
+        AnyVal<Integer> i = new AnyVal<Integer>(){};
         AnyOptional<Integer> some = Any.anySome(i);
         AnyOptional<String> someStr = Any.anySome(s);
         String result = match(Optional.of(10))
@@ -189,8 +189,8 @@ public class TestMatcher
     {
         Any<String> s = new AnyType<String>(){};
         Any<Integer> i = new AnyType<Integer>(){};
-        Match<AnimalCase> animal = Match.any();
-        Match<ChairCase> chair = Match.any();
+        AnyVal<AnimalCase> animal = AnyVal.any();
+        AnyVal<ChairCase> chair = AnyVal.any();
         Partial<Object> partial = Matcher.partial()
             .bindTo(animal).caseOf(AnimalCaseTu(s, i), () -> animal.val().name())
             .bindTo(chair).caseOf(ChairCaseTu(s, i, i), () -> chair.val().color());

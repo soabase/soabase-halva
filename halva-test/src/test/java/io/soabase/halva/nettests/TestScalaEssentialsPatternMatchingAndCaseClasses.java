@@ -18,7 +18,7 @@ package io.soabase.halva.nettests;
 
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.any.Match;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
@@ -30,7 +30,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static io.soabase.halva.any.Match.val;
+import static io.soabase.halva.any.AnyVal.val;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
@@ -169,8 +169,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     Optional<List<Power>> getPowers(Character person)
     {
-        Match<String> anyName = new Match<String>(){};
-        Match<List<Power>> anyPowers = new Match<List<Power>>(){};
+        AnyVal<String> anyName = new AnyVal<String>(){};
+        AnyVal<List<Power>> anyPowers = new AnyVal<List<Power>>(){};
         return match(person)
             .caseOf(SuperHero(anyName, anyPowers, val(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)

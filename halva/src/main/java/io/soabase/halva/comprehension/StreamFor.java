@@ -1,7 +1,7 @@
 // Auto generated from io.soabase.halva.comprehension.StreamForFactory by Soabase io.soabase.halva.comprehension.MonadicFor annotation processor
 package io.soabase.halva.comprehension;
 
-import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.any.Match;
 import java.lang.Boolean;
 import java.lang.SuppressWarnings;
 import java.util.function.Supplier;
@@ -21,7 +21,7 @@ public class StreamFor {
         return new StreamFor(new MonadicForImpl<>(new StreamForFactory()));
     }
 
-    public <MF_A> StreamFor forComp(AnyVal<MF_A> any, Supplier<? extends Stream<MF_A>> supplier) {
+    public <MF_A> StreamFor forComp(Match<MF_A> any, Supplier<? extends Stream<MF_A>> supplier) {
         delegate.forComp(any, supplier);
         return this;
     }
@@ -31,7 +31,7 @@ public class StreamFor {
         return delegate.yield(supplier);
     }
 
-    public <R> StreamFor letComp(AnyVal<R> any, Supplier<R> supplier) {
+    public <R> StreamFor letComp(Match<R> any, Supplier<R> supplier) {
         delegate.letComp(any, supplier);
         return this;
     }

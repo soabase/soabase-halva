@@ -19,7 +19,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeVariableName;
-import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.any.Match;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -64,7 +64,7 @@ class SpecData
             parameterizedMonadicName = ParameterizedTypeName.get(ClassName.get(spec.getMonadElement()), typeVariableNames.toArray(new TypeName[typeVariableNames.size()]));
         }
 
-        anyName = ParameterizedTypeName.get(ClassName.get(AnyVal.class), monadicTypeName);
+        anyName = ParameterizedTypeName.get(ClassName.get(Match.class), monadicTypeName);
     }
 
     private String getIndexedName(int i)

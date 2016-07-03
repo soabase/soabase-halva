@@ -21,7 +21,6 @@ import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.any.Match;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
@@ -41,9 +40,7 @@ import static io.soabase.halva.caseclass.ChairCase.ChairCaseTu;
 import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueTu;
 import static io.soabase.halva.comprehension.For.forComp;
-import static io.soabase.halva.matcher.Matcher.anyNone;
-import static io.soabase.halva.matcher.Matcher.anyNull;
-import static io.soabase.halva.matcher.Matcher.match;
+import static io.soabase.halva.matcher.Matcher.*;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.Tu;
@@ -90,7 +87,7 @@ public class TestMatcher
     }
 
     static List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
-        AnyVal<Pair<String, Integer>> foundPair = Any.make();
+        Match<Pair<String, Integer>> foundPair = Match.any();
 
         return forComp(foundPair, list)
             .filter(() -> foundPair.val()._1.equals(key))
@@ -192,8 +189,8 @@ public class TestMatcher
     {
         Any<String> s = new AnyType<String>(){};
         Any<Integer> i = new AnyType<Integer>(){};
-        AnyVal<AnimalCase> animal = Any.make();
-        AnyVal<ChairCase> chair = Any.make();
+        Match<AnimalCase> animal = Match.any();
+        Match<ChairCase> chair = Match.any();
         Partial<Object> partial = Matcher.partial()
             .bindTo(animal).caseOf(AnimalCaseTu(s, i), () -> animal.val().name())
             .bindTo(chair).caseOf(ChairCaseTu(s, i, i), () -> chair.val().color());

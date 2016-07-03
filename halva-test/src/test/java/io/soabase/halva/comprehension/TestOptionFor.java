@@ -16,8 +16,7 @@
 package io.soabase.halva.comprehension;
 
 import com.company.OptionalFor;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.any.Match;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Optional;
@@ -25,11 +24,11 @@ import java.util.Optional;
 public class TestOptionFor {
 
     @Test
-    public void testOptionFor() throws Exception {
-
-        final AnyVal<String> a = Any.make();
-        final AnyVal<Integer> c = Any.make();
-        final AnyVal<Integer> d = Any.make();
+    public void testOptionFor() throws Exception
+    {
+        final Match<String> a = Match.any();
+        final Match<Integer> c = Match.any();
+        final Match<Integer> d = Match.any();
 
         final Optional<String> opt =
                 OptionalFor.start()

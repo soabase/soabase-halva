@@ -16,7 +16,7 @@
 package io.soabase.halva.comprehension;
 
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.any.Match;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -35,7 +35,7 @@ public class MonadicForImpl<M>
         this.wrapper = wrapper;
     }
 
-    public <R> MonadicForImpl(AnyVal<R> any, M startingMonad, MonadicForWrapper<M> wrapper)
+    public <R> MonadicForImpl(Match<R> any, M startingMonad, MonadicForWrapper<M> wrapper)
     {
         if ( any == null )
         {
@@ -56,7 +56,7 @@ public class MonadicForImpl<M>
     /////////////////////////////////////////////////////////////
 
     @SuppressWarnings("unchecked")
-    public <R> MonadicForImpl<M> forComp(AnyVal<R> any, Supplier<? extends M> monadSupplier)
+    public <R> MonadicForImpl<M> forComp(Match<R> any, Supplier<? extends M> monadSupplier)
     {
         if ( any == null )
         {
@@ -71,7 +71,7 @@ public class MonadicForImpl<M>
     }
 
     @SuppressWarnings("unchecked")
-    public <T> MonadicForImpl<M> letComp(AnyVal<T> any, Supplier<T> letSupplier)
+    public <T> MonadicForImpl<M> letComp(Match<T> any, Supplier<T> letSupplier)
     {
         if ( any == null )
         {

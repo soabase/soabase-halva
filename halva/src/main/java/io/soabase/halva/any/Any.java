@@ -25,16 +25,6 @@ import java.util.Optional;
 public interface Any<T>
 {
     /**
-     * Return a new simple box for the given value. The value is initially set to <code>null</code>.
-     *
-     * @return new, null AnyVal
-     */
-    static <T> AnyVal<T> make()
-    {
-        return new AnyVal<>();
-    }
-
-    /**
      * Return a new AnyList that matches the given head of a list and the given tail of a list
      *
      * @param head head to match

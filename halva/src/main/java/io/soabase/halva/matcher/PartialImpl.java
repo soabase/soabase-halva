@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.matcher;
 
-import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.any.Match;
 import io.soabase.halva.tuple.Tuple;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -115,7 +115,7 @@ class PartialImpl<ARG> implements GettersBase, Partial<ARG>
     }
 
     @Override
-    public <T> Partial<ARG> bindTo(AnyVal<T> binder)
+    public <T> Partial<ARG> bindTo(Match<T> binder)
     {
         matcher.bindTo(binder);
         return this;

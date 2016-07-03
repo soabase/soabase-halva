@@ -15,22 +15,20 @@
  */
 package io.soabase.halva.comprehension;
 
-import com.company.*;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyVal;
-import org.junit.Test;
+import com.company.FutureFor;
+import io.soabase.halva.any.Match;
 import org.junit.Assert;
-
+import org.junit.Test;
 import java.util.concurrent.CompletableFuture;
 
 public class TestFutureFor {
 
     @Test
     public void testFutureFor() throws Exception {
-        final AnyVal<String> a = Any.make();
-        final AnyVal<String> b = Any.make();
-        final AnyVal<Integer> c = Any.make();
-        final AnyVal<Integer> d = Any.make();
+        final Match<String> a = Match.any();
+        final Match<String> b = Match.any();
+        final Match<Integer> c = Match.any();
+        final Match<Integer> d = Match.any();
 
         final CompletableFuture<Integer> f =
                 FutureFor.start()

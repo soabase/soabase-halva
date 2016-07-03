@@ -13,6 +13,11 @@ public abstract class Match<T> implements Any<T>
         return new Match<T>(matchValue, false){};
     }
 
+    public static <T> Match<T> any()
+    {
+        return val(null);
+    }
+
     protected Match()
     {
         this(null, true);

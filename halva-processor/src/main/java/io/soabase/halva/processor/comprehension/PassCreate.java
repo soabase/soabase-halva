@@ -16,7 +16,7 @@
 package io.soabase.halva.processor.comprehension;
 
 import com.squareup.javapoet.*;
-import io.soabase.halva.any.AnyVal;
+import io.soabase.halva.any.Match;
 import io.soabase.halva.comprehension.MonadicFor;
 import io.soabase.halva.comprehension.MonadicForImpl;
 import io.soabase.halva.processor.Environment;
@@ -141,7 +141,7 @@ class PassCreate implements Pass
     private void addLetComp(TypeSpec.Builder builder, TypeName generatedQualifiedClassName)
     {
         ParameterizedTypeName supplierName = ParameterizedTypeName.get(ClassName.get(Supplier.class), TypeVariableName.get("R"));
-        ParameterizedTypeName anyName = ParameterizedTypeName.get(ClassName.get(AnyVal.class), TypeVariableName.get("R"));
+        ParameterizedTypeName anyName = ParameterizedTypeName.get(ClassName.get(Match.class), TypeVariableName.get("R"));
 
         CodeBlock.Builder codeBuilder = CodeBlock.builder()
             .addStatement("delegate.letComp(any, supplier)")

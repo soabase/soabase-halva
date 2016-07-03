@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.Match;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
@@ -160,7 +161,7 @@ public class TestCaseClassesAndPatternMatching
           scala> withDefault(None)
           res26: Int = 0
      */
-    private static final AnyType<Optional<Integer>> opt = new AnyType<Optional<Integer>>(){};
+    private static final Match<Optional<Integer>> opt = new Match<Optional<Integer>>(){};
     final Partial<Optional<Integer>> withDefault = partial(new AnyType<Optional<Integer>>(){})
         .caseOf(Any.anyOptional(opt), () -> opt.val().isPresent(), () -> opt.val().get())
         .caseOf(() -> 0);

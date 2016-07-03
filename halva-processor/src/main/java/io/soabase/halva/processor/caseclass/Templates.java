@@ -16,9 +16,7 @@
 package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyVal;
-import io.soabase.halva.matcher.Match;
+import io.soabase.halva.any.Match;
 import io.soabase.halva.processor.Constants;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.ClassTuple;

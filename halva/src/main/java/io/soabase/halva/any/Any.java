@@ -109,7 +109,7 @@ public interface Any<T>
      * @param value will get the value of the optional
      * @return a new any
      */
-    static <T> AnyOptional<T> anySome(Any<T> value)
+    static <T> AnyOptional<T> anySome(Match<T> value)
     {
         return new AnyOptional<T>(value, null){};
     }
@@ -121,7 +121,7 @@ public interface Any<T>
      * @param value will get the optional
      * @return a new any
      */
-    static <T> AnyOptional<T> anyOptional(Any<Optional<T>> value)
+    static <T> AnyOptional<T> anyOptional(Match<Optional<T>> value)
     {
         return new AnyOptional<T>(null, value){};
     }

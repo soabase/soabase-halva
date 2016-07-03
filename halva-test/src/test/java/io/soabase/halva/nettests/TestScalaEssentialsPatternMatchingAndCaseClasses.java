@@ -19,7 +19,7 @@ package io.soabase.halva.nettests;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.matcher.Match;
+import io.soabase.halva.any.Match;
 import io.soabase.halva.matcher.Partial;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
@@ -29,8 +29,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static io.soabase.halva.matcher.Match.any;
-import static io.soabase.halva.matcher.Match.val;
+import static io.soabase.halva.any.Match.val;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.matcher.Matcher.partial;
 import static io.soabase.halva.nettests.Cash.Cash;
@@ -38,7 +37,6 @@ import static io.soabase.halva.nettests.Civilian.Civilian;
 import static io.soabase.halva.nettests.Guy.Guy;
 import static io.soabase.halva.nettests.Guy.GuyTu;
 import static io.soabase.halva.nettests.SuperHero.SuperHero;
-import static io.soabase.halva.nettests.SuperHero.SuperHeroTu;
 import static io.soabase.halva.nettests.TestScalaEssentialsPatternMatchingAndCaseClasses.Power.*;
 import static io.soabase.halva.nettests.Villain.Villain;
 import static io.soabase.halva.sugar.Sugar.List;
@@ -171,8 +169,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     Optional<List<Power>> getPowers(Character person)
     {
-        Match<String> anyName = Match.any(new AnyType<String>(){});
-        Match<List<Power>> anyPowers = Match.any(new AnyType<List<Power>>(){});
+        Match<String> anyName = new Match<String>(){};
+        Match<List<Power>> anyPowers = new Match<List<Power>>(){};
         return match(person)
             .caseOf(SuperHero(anyName, anyPowers, val(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)

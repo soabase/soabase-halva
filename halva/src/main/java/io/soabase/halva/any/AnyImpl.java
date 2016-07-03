@@ -66,7 +66,11 @@ class AnyImpl<T extends REAL, REAL> implements Any<T>
             return typeAliasType.getAliasType().canSet(typeAliasType.wrap(value));
         }
 
-        AnyType.InternalType ourType = getInternalType();
+        return canSetExact(value, getInternalType());
+    }
+
+    static <T> boolean canSetExact(T value, AnyType.InternalType ourType)
+    {
         if ( ourType != null )
         {
             try

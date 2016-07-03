@@ -22,7 +22,7 @@ import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
-import io.soabase.halva.matcher.Match;
+import io.soabase.halva.any.Match;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
@@ -108,7 +108,7 @@ public class TestMatcher
     {
         ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
 
-        Any<ConsList<Pair>> anyPairList = Match.any(new AnyType<ConsList<Pair>>(){});
+        Any<ConsList<Pair>> anyPairList = new Match<ConsList<Pair>>(){};
         AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair>(){}, anyPairList);
         String str = match(list)
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
@@ -160,10 +160,10 @@ public class TestMatcher
     @Test
     public void testMatchSome()
     {
-        Any<String> s = new AnyType<String>(){};
-        Any<Integer> i = new AnyType<Integer>(){};
-        AnyOptional<Integer> some = Matcher.anySome(i);
-        AnyOptional<String> someStr = Matcher.anySome(s);
+        Match<String> s = new Match<String>(){};
+        Match<Integer> i = new Match<Integer>(){};
+        AnyOptional<Integer> some = Any.anySome(i);
+        AnyOptional<String> someStr = Any.anySome(s);
         String result = match(Optional.of(10))
             .caseOf(someStr, () -> "It's a string: " + s.val())
             .caseOf(some, () -> "It's an int: " + i.val())
@@ -192,8 +192,8 @@ public class TestMatcher
     {
         Any<String> s = new AnyType<String>(){};
         Any<Integer> i = new AnyType<Integer>(){};
-        Any<AnimalCase> animal = new AnyType<AnimalCase>(){};
-        Any<ChairCase> chair = new AnyType<ChairCase>(){};
+        AnyVal<AnimalCase> animal = Any.make();
+        AnyVal<ChairCase> chair = Any.make();
         Partial<Object> partial = Matcher.partial(Object.class)
             .bindTo(animal).caseOf(AnimalCaseTu(s, i), () -> animal.val().name())
             .bindTo(chair).caseOf(ChairCaseTu(s, i, i), () -> chair.val().color());

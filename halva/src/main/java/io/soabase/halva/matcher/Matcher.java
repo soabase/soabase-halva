@@ -16,13 +16,11 @@
 package io.soabase.halva.matcher;
 
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.sugar.ConsList;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -31,7 +29,7 @@ import java.util.function.Supplier;
  */
 public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<ARG>>
 {
-    private Any nextBinder = null;
+    private AnyVal nextBinder = null;
 
     /**
      * Start a pattern matcher on the given value
@@ -69,54 +67,6 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     }
 
     /**
-     * Return a new AnyList that matches the given head of a list and the given tail of a list
-     *
-     * @param head head to match
-     * @param tail tail to match
-     * @return new AnyList
-     */
-    public static <T> AnyList headTail(T head, ConsList<T> tail)
-    {
-        return Any.headTail(head, tail);
-    }
-
-    /**
-     * Return a new AnyList that matches the given head of a list and any tail of a list
-     *
-     * @param head head to match
-     * @param tail holder for the value of the tail of the list that matches
-     * @return new AnyList
-     */
-    public static <T> AnyList headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
-    {
-        return Any.headAnyTail(head, tail);
-    }
-
-    /**
-     * Return a new AnyList that matches any head of a list and the given tail of a list
-     *
-     * @param head holder for the value of the head of the list that matches
-     * @param tail tail to match
-     * @return new AnyList
-     */
-    public static <T> AnyList anyHeadTail(Any<T> head, ConsList<T> tail)
-    {
-        return Any.anyHeadTail(head, tail);
-    }
-
-    /**
-     * Return a new AnyList that matches any head of a list and any tail of a list
-     *
-     * @param head holder for the value of the head of the list that matches
-     * @param tail holder for the value of the tail of the list that matches
-     * @return new AnyList
-     */
-    public static <T> AnyList anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
-    {
-        return Any.anyHeadAnyTail(head, tail);
-    }
-
-    /**
      * Returns an Any that matches any null value
      *
      * @return Any for nulls
@@ -124,30 +74,6 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     public static AnyNull anyNull()
     {
         return Any.anyNull();
-    }
-
-    /**
-     * Returns a new Any that matches a present Optional. The given value
-     * is assigned the value of the optional on match.
-     *
-     * @param value will get the value of the optional
-     * @return a new any
-     */
-    public static <T> AnyOptional<T> anySome(Any<T> value)
-    {
-        return Any.anySome(value);
-    }
-
-    /**
-     * Returns a new Any that holds an Optional. The given value
-     * is assigned the optional itself on match.
-     *
-     * @param value will get the optional
-     * @return a new any
-     */
-    static <T> AnyOptional<T> anyOptional(Any<Optional<T>> value)
-    {
-        return Any.anyOptional(value);
     }
 
     /**
@@ -243,7 +169,7 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     }
 
     @Override
-    public <T> Matcher<ARG> bindTo(Any<T> binder)
+    public <T> Matcher<ARG> bindTo(AnyVal<T> binder)
     {
         nextBinder = binder;
         return this;

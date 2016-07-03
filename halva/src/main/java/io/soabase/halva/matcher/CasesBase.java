@@ -16,6 +16,7 @@
 package io.soabase.halva.matcher;
 
 import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -149,5 +150,5 @@ public interface CasesBase<ARG, M>
      * @param binder value to hold the match
      * @return this
      */
-    <T> M bindTo(Any<T> binder);
+    <T> M bindTo(AnyVal<T> binder);
 }

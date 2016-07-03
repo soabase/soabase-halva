@@ -18,7 +18,6 @@ package io.soabase.halva.matcher;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyNull;
 import io.soabase.halva.any.AnyOptional;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
@@ -46,22 +45,9 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
      * Start a partial matcher on the given value. The partial can be executed at a later
      * time by specifying the value using {@link Partial#with(Object)}
      *
-     * @param marker The argument type
      * @return a new partial
      */
-    public static <ARG> Partial<ARG> partial(Class<ARG> marker)
-    {
-        return new PartialImpl<>();
-    }
-
-    /**
-     * Start a partial matcher on the given value. The partial can be executed at a later
-     * time by specifying the value using {@link Partial#with(Object)}
-     *
-     * @param marker The argument type
-     * @return a new partial
-     */
-    public static <ARG> Partial<ARG> partial(AnyType<ARG> marker)
+    public static <ARG> Partial<ARG> partial()
     {
         return new PartialImpl<>();
     }

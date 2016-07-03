@@ -194,7 +194,7 @@ public class TestMatcher
         Any<Integer> i = new AnyType<Integer>(){};
         AnyVal<AnimalCase> animal = Any.make();
         AnyVal<ChairCase> chair = Any.make();
-        Partial<Object> partial = Matcher.partial(Object.class)
+        Partial<Object> partial = Matcher.partial()
             .bindTo(animal).caseOf(AnimalCaseTu(s, i), () -> animal.val().name())
             .bindTo(chair).caseOf(ChairCaseTu(s, i, i), () -> chair.val().color());
 

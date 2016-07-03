@@ -19,6 +19,7 @@ import io.soabase.halva.any.Match;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
 import org.junit.Assert;
 import org.junit.Test;
@@ -162,7 +163,7 @@ public class TestCaseClassesAndPatternMatching
           res26: Int = 0
      */
     private static final Match<Optional<Integer>> opt = new Match<Optional<Integer>>(){};
-    final Partial<Optional<Integer>> withDefault = partial(new AnyType<Optional<Integer>>(){})
+    final Partial<Optional<Integer>> withDefault = Matcher.<Optional<Integer>>partial()
         .caseOf(Any.anyOptional(opt), () -> opt.val().isPresent(), () -> opt.val().get())
         .caseOf(() -> 0);
 

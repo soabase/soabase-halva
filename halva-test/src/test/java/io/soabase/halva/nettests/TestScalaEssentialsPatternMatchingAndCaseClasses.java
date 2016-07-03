@@ -18,8 +18,9 @@ package io.soabase.halva.nettests;
 
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
-import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.any.Match;
+import io.soabase.halva.caseclass.CaseClass;
+import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
@@ -31,7 +32,6 @@ import java.util.Optional;
 
 import static io.soabase.halva.any.Match.val;
 import static io.soabase.halva.matcher.Matcher.match;
-import static io.soabase.halva.matcher.Matcher.partial;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
 import static io.soabase.halva.nettests.Guy.Guy;
@@ -284,7 +284,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     public void testPartials()
     {
         Any<Integer> anyInt = new AnyType<Integer>(){};
-        Partial<Integer> partial = partial(Integer.class)
+        Partial<Integer> partial = Matcher.<Integer>partial()
             .caseOf(8, () -> "eight")
             .caseOf(anyInt, () -> "Number " + anyInt.val());
         Assert.assertEquals("eight", partial.with(8).get());

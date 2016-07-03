@@ -64,7 +64,7 @@ class Initializers
 
     private static void applyCollections(CodeBlock.Builder builder, FormattedClassName special, CaseClassItem item)
     {
-        builder.addStatement(special.format, item.getName(), collectionsClassName, special.className);
+        builder.addStatement(special.format, item.getName(), collectionsClassName);
     }
 
     private static final ClassName collectionsClassName = ClassName.get("java.util", "Collections");
@@ -72,10 +72,10 @@ class Initializers
     static
     {
         Map<String, FormattedClassName> worker = new HashMap<>();
-        worker.put("java.util.List", new FormattedClassName("$L = $T.unmodifiableList(new $T<>())", ClassName.get("java.util", "ArrayList"), Initializers::applyCollections));
-        worker.put("java.util.Map", new FormattedClassName("$L = $T.unmodifiableMap(new $T<>())", ClassName.get("java.util", "HashMap"), Initializers::applyCollections));
-        worker.put("java.util.Set", new FormattedClassName("$L = $T.unmodifiableSet(new $T<>())", ClassName.get("java.util", "HashSet"), Initializers::applyCollections));
-        worker.put("java.util.Collection", new FormattedClassName("$L = $T.unmodifiableSet(new $T<>())", ClassName.get("java.util", "HashSet"), Initializers::applyCollections));
+        worker.put("java.util.List", new FormattedClassName("$L = $T.emptyList()", null, Initializers::applyCollections));
+        worker.put("java.util.Map", new FormattedClassName("$L = $T.emptyMap()", null, Initializers::applyCollections));
+        worker.put("java.util.Set", new FormattedClassName("$L = $T.emptySet()", null, Initializers::applyCollections));
+        worker.put("java.util.Collection", new FormattedClassName("$L = $T.emptySet()", null, Initializers::applyCollections));
         worker.put("java.util.concurrent.ConcurrentMap", new FormattedClassName("$L = new $T<>()", ClassName.get("java.util.concurrent", "ConcurrentHashMap"), Initializers::applyConcurrentMap));
         worker.put("java.lang.String", new FormattedClassName("$L = \"\"", ClassName.get("java.lang", "String"), Initializers::applyStandard));
         worker.put("java.util.Optional", new FormattedClassName("$L = Optional.empty()", ClassName.get("java.util", "Optional"), Initializers::applyStandard));

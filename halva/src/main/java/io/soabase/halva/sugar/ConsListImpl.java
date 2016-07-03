@@ -33,7 +33,7 @@ class ConsListImpl<T> implements ConsList<T>
 
     ConsListImpl()
     {
-        this(Collections.unmodifiableList(new ArrayList<>()), null);
+        this(Collections.emptyList(), null);
     }
 
     ConsListImpl(List<T> list, boolean copy)

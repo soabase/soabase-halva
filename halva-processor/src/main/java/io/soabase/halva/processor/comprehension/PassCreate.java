@@ -42,9 +42,7 @@ class PassCreate implements Pass
     private final static Set<Modifier> requiredFilterModifiers;
     static
     {
-        Set<Modifier> workSet = new HashSet<>();
-        workSet.add(Modifier.PUBLIC);
-        requiredFilterModifiers = Collections.unmodifiableSet(workSet);
+        requiredFilterModifiers = Collections.singleton(Modifier.PUBLIC);
     }
 
     PassCreate(Environment environment, List<MonadicSpec> monadicSpecs)

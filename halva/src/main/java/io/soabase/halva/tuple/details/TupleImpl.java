@@ -35,7 +35,7 @@ abstract class TupleImpl implements Tuple
 
     protected TupleImpl(Object... items)
     {
-        this.items = ((items == null) || (items.length == 0)) ? new ArrayList<>() : Collections.unmodifiableList(Arrays.asList(items));
+        this.items = ((items == null) || (items.length == 0)) ? Collections.emptyList() : Collections.unmodifiableList(Arrays.asList(items));
     }
 
     @Override

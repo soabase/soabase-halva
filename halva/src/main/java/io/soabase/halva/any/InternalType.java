@@ -25,7 +25,7 @@ class InternalType
 {
     final Type type;
 
-    InternalType(Type type)
+    private InternalType(Type type)
     {
         this.type = type;
     }

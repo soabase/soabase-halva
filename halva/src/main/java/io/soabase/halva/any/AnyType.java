@@ -18,28 +18,18 @@ package io.soabase.halva.any;
 /**
  * A type token used to partially reify erased types
  */
-public abstract class AnyType<T> extends AnyVal<T>
+@SuppressWarnings("unused")
+public abstract class AnyType<T>
 {
+    private final InternalType internalType;
+
     protected AnyType()
     {
-        super(null, false, true);
+        internalType = InternalType.getInternalType(getClass(), true);
     }
 
-    @Override
-    public final T val()
+    InternalType getInternalType()
     {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public final void set(T value)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public final boolean canSet(T value)
-    {
-        return internalCanSet(value);
+        return internalType;
     }
 }

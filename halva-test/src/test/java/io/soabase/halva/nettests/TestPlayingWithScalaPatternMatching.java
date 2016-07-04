@@ -26,9 +26,13 @@ import java.util.function.Predicate;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Add.Add;
+import static io.soabase.halva.nettests.Add.AddMatch;
 import static io.soabase.halva.nettests.Const.Const;
+import static io.soabase.halva.nettests.Const.ConstMatch;
 import static io.soabase.halva.nettests.Mult.Mult;
+import static io.soabase.halva.nettests.Mult.MultMatch;
 import static io.soabase.halva.nettests.Neg.Neg;
+import static io.soabase.halva.nettests.Neg.NegMatch;
 import static io.soabase.halva.nettests.X.X;
 import static io.soabase.halva.tuple.Tuple.Tu;
 
@@ -279,10 +283,10 @@ public class TestPlayingWithScalaPatternMatching
 
         return match(expression)
             .caseOf(X(), () -> xValue)
-            .caseOf(Const(cst), cst::val)
-            .caseOf(Add(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
-            .caseOf(Mult(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
-            .caseOf(Neg(expr), () -> -1 * eval(expr.val(), xValue))
+            .caseOf(ConstMatch(cst), cst::val)
+            .caseOf(AddMatch(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
+            .caseOf(MultMatch(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
+            .caseOf(NegMatch(expr), () -> -1 * eval(expr.val(), xValue))
             .get();
     }
 
@@ -306,10 +310,10 @@ public class TestPlayingWithScalaPatternMatching
 
         return match(expression)
             .caseOf(X(), () -> Const(1))
-            .caseOf(Const(cst), () -> Const(0))
-            .caseOf(Add(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
-            .caseOf(Mult(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
-            .caseOf(Neg(expr), () -> Neg(deriv(expr.val())))
+            .caseOf(ConstMatch(cst), () -> Const(0))
+            .caseOf(AddMatch(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
+            .caseOf(MultMatch(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
+            .caseOf(NegMatch(expr), () -> Neg(deriv(expr.val())))
             .get();
     }
 

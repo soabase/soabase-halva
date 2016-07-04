@@ -24,7 +24,9 @@ import io.soabase.halva.tuple.details.Tuple0;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -404,7 +406,8 @@ class Templates
 
     private void addClassTupleMethods(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
     {
-        if ( spec.getItems().size() == 0 )
+        Optional<Class<? extends Tuple>> optionalTupleClass = Tuple.getTupleClass(spec.getItems().size());
+        if ( !optionalTupleClass.isPresent() )
         {
             return;
         }
@@ -419,13 +422,32 @@ class Templates
             .build();
 
         MethodSpec.Builder tupleMethod = MethodSpec
-            .methodBuilder(className.simpleName())
+            .methodBuilder(getClassTupleMethodName(className))
             .returns(classTupleClassName)
             .addCode(returnCode)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
         spec.getItems().forEach(item -> {
-            WildcardTypeName wildcardType = WildcardTypeName.subtypeOf(TypeName.get(item.getType()).box());
-            ParameterizedTypeName type = ParameterizedTypeName.get(matchClassName, wildcardType);
+            TypeName mainType = null;
+            if ( item.getType().getKind() == TypeKind.DECLARED )
+            {
+                DeclaredType declaredType = (DeclaredType)item.getType();
+                List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
+                if ( typeArguments.size() > 0 )
+                {
+                    TypeName[] typeNames = new TypeName[typeArguments.size()];
+                    for ( int i = 0; i < typeArguments.size(); ++i )
+                    {
+                        typeNames[i] = WildcardTypeName.subtypeOf(TypeName.get(typeArguments.get(i)).box());
+                    }
+                    mainType = ParameterizedTypeName.get(ClassName.get((TypeElement)declaredType.asElement()), typeNames);
+                }
+            }
+            if ( mainType == null )
+            {
+                mainType = TypeName.get(item.getType()).box();
+            }
+            TypeName wildcareType = WildcardTypeName.subtypeOf(mainType);
+            ParameterizedTypeName type = ParameterizedTypeName.get(matchClassName, wildcareType);
             tupleMethod.addParameter(type, item.getName());
         });
 
@@ -437,10 +459,15 @@ class Templates
         builder.addMethod(tupleMethod.build());
     }
 
+    private String getClassTupleMethodName(ClassName className)
+    {
+        return className.simpleName() + "Match";
+    }
+
     private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)
     {
         CodeBlock anyVal = CodeBlock.of("$T.any()", AnyVal.class);
-        CodeBlock.Builder initialize = CodeBlock.builder().add("$L(", className.simpleName());
+        CodeBlock.Builder initialize = CodeBlock.builder().add("$L(", getClassTupleMethodName(className));
         IntStream.range(0, spec.getItems().size())
             .forEach(i -> {
                 if ( i > 0 )
@@ -449,7 +476,7 @@ class Templates
                 }
                 initialize.add(anyVal);
             });
-        initialize.addStatement(").getClass()");
+        initialize.add(").getClass()");
         FieldSpec.Builder fieldSpecBuilder = FieldSpec.builder(Class.class, "classTuplableClass", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
             .initializer(initialize.build());
 

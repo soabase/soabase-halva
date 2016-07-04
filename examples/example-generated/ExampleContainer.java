@@ -2,10 +2,11 @@
 package com.company;
 
 import io.soabase.halva.alias.TypeAliasType;
+import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyType;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.ClassTuplable;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple2;
@@ -23,8 +24,8 @@ import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.container.TypeContainer")
 public class ExampleContainer {
-    public static class MyStack implements ExampleContainer_.MyStack, Serializable, Tuplable, ClassTuplable {
-        private static final Class classTuplableClass = MyStackTu("", "").getClass();
+    public static class MyStack implements Serializable, ExampleContainer_.MyStack, Tuplable, ClassTuplable {
+        private static final Class classTuplableClass = MyStackMatch(AnyVal.any(), AnyVal.any()).getClass();
 
         private final Stack stack;
 
@@ -60,6 +61,15 @@ public class ExampleContainer {
             return new MyStack(stack, value);
         }
 
+        public static AnyClassTuple<MyStack> MyStackMatch(AnyVal<? extends Stack> stack, AnyVal<? extends Integer> value) {
+            return new AnyClassTuple<MyStack>(Tuple.Tu(stack, value)){};
+        }
+
+        @Override
+        public Class getClassTuplableClass() {
+            return classTuplableClass;
+        }
+
         @Override
         public boolean equals(Object rhsObj) {
             if ( this == rhsObj ) {
@@ -79,15 +89,15 @@ public class ExampleContainer {
         }
 
         @Override
-        public Tuple2<Stack, Integer> tuple() {
-            return Tuple.Tu(stack(), value());
-        }
-
-        @Override
         public int hashCode() {
             int result = stack.hashCode();
             result = 31 * result + value;
             return result;
+        }
+
+        @Override
+        public Tuple2<Stack, Integer> tuple() {
+            return Tuple.Tu(stack(), value());
         }
 
         public String debugString() {
@@ -103,15 +113,6 @@ public class ExampleContainer {
             stack +
             ", " + value +
             ')';
-        }
-
-        public static ClassTuple MyStackTu(Object _1, Object _2) {
-            return () -> Tuple.Tu(_1, _2);
-        }
-
-        @Override
-        public Class getClassTuplableClass() {
-            return classTuplableClass;
         }
 
         public static final class Builder {

@@ -1,8 +1,9 @@
 // Auto generated from com.company.Example by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
+import io.soabase.halva.any.AnyClassTuple;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple5;
@@ -20,8 +21,8 @@ import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
-public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = ExampleCaseTu("", "", "", "", "").getClass();
+public class ExampleCase implements Serializable, Example, Tuplable, ClassTuplable {
+    private static final Class classTuplableClass = ExampleCaseMatch(AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any()).getClass();
 
     private final String firstName;
 
@@ -87,6 +88,15 @@ public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplab
         return new ExampleCase(firstName, lastName, age, active, importantDates);
     }
 
+    public static AnyClassTuple<ExampleCase> ExampleCaseMatch(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age, AnyVal<? extends Boolean> active, AnyVal<? extends List<? extends Date>> importantDates) {
+        return new AnyClassTuple<ExampleCase>(Tuple.Tu(firstName, lastName, age, active, importantDates)){};
+    }
+
+    @Override
+    public Class getClassTuplableClass() {
+        return classTuplableClass;
+    }
+
     @Override
     public boolean equals(Object rhsObj) {
         if ( this == rhsObj ) {
@@ -115,11 +125,6 @@ public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplab
     }
 
     @Override
-    public Tuple5<String, String, Integer, Boolean, List<Date>> tuple() {
-        return Tuple.Tu(firstName(), lastName(), age(), active(), importantDates());
-    }
-
-    @Override
     public int hashCode() {
         int result = firstName.hashCode();
         result = 31 * result + lastName.hashCode();
@@ -127,6 +132,11 @@ public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplab
         result = 31 * result + (active ? 1 : 0);
         result = 31 * result + importantDates.hashCode();
         return result;
+    }
+
+    @Override
+    public Tuple5<String, String, Integer, Boolean, List<Date>> tuple() {
+        return Tuple.Tu(firstName(), lastName(), age(), active(), importantDates());
     }
 
     public String debugString() {
@@ -148,15 +158,6 @@ public class ExampleCase implements Example, Serializable, Tuplable, ClassTuplab
         ", " + active +
         ", " + importantDates +
         ')';
-    }
-
-    public static ClassTuple ExampleCaseTu(Object _1, Object _2, Object _3, Object _4, Object _5) {
-        return () -> Tuple.Tu(_1, _2, _3, _4, _5);
-    }
-
-    @Override
-    public Class getClassTuplableClass() {
-        return classTuplableClass;
     }
 
     public static final class Builder {

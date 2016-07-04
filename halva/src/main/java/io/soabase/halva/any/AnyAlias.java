@@ -1,0 +1,53 @@
+/**
+ * Copyright 2016 Jordan Zimmerman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.soabase.halva.any;
+
+import io.soabase.halva.alias.TypeAliasType;
+
+class AnyAlias<T extends REAL, REAL> extends AnyVal<T>
+{
+    private final TypeAliasType<REAL, T> typeAliasType;
+    private T value;
+
+    AnyAlias(TypeAliasType<REAL, T> typeAliasType)
+    {
+        super(null, true, false);
+        this.typeAliasType = typeAliasType;
+    }
+
+    @Override
+    public final T val()
+    {
+        if ( value == null )
+        {
+            throw new IllegalArgumentException("No value set for: " + this);
+        }
+        return value;
+    }
+
+    @Override
+    public final void set(T value)
+    {
+        this.value = typeAliasType.wrap(value);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public final boolean canSet(T value)
+    {
+        return typeAliasType.getAliasType().canSet(typeAliasType.wrap(value));
+    }
+}

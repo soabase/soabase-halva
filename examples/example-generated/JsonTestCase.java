@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.soabase.halva.any.AnyClassTuple;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple3;
@@ -23,8 +24,8 @@ import javax.annotation.Generated;
         builder = JsonTestCase.Builder.class
 )
 @Generated("io.soabase.halva.caseclass.CaseClass")
-public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = JsonTestCaseTu("", "", "").getClass();
+public class JsonTestCase implements Serializable, JsonTest, Tuplable, ClassTuplable {
+    private static final Class classTuplableClass = JsonTestCaseMatch(AnyVal.any(), AnyVal.any(), AnyVal.any()).getClass();
 
     @JsonProperty
     private final String firstName;
@@ -74,6 +75,16 @@ public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTupl
         return new JsonTestCase(firstName, lastName, age);
     }
 
+    public static AnyClassTuple<JsonTestCase> JsonTestCaseMatch(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age) {
+        return new AnyClassTuple<JsonTestCase>(Tuple.Tu(firstName, lastName, age)){};
+    }
+
+    @Override
+    @JsonIgnore
+    public Class getClassTuplableClass() {
+        return classTuplableClass;
+    }
+
     @Override
     public boolean equals(Object rhsObj) {
         if ( this == rhsObj ) {
@@ -96,16 +107,16 @@ public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTupl
     }
 
     @Override
-    public Tuple3<String, String, Integer> tuple() {
-        return Tuple.Tu(firstName(), lastName(), age());
-    }
-
-    @Override
     public int hashCode() {
         int result = firstName.hashCode();
         result = 31 * result + lastName.hashCode();
         result = 31 * result + age;
         return result;
+    }
+
+    @Override
+    public Tuple3<String, String, Integer> tuple() {
+        return Tuple.Tu(firstName(), lastName(), age());
     }
 
     public String debugString() {
@@ -123,16 +134,6 @@ public class JsonTestCase implements JsonTest, Serializable, Tuplable, ClassTupl
         ", \"" + lastName + "\"" + 
         ", " + age +
         ')';
-    }
-
-    public static ClassTuple JsonTestCaseTu(Object _1, Object _2, Object _3) {
-        return () -> Tuple.Tu(_1, _2, _3);
-    }
-
-    @Override
-    @JsonIgnore
-    public Class getClassTuplableClass() {
-        return classTuplableClass;
     }
 
     @JsonPOJOBuilder(

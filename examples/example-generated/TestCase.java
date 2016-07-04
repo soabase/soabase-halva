@@ -1,8 +1,9 @@
 // Auto generated from com.company.Test by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
+import io.soabase.halva.any.AnyClassTuple;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple12;
@@ -28,8 +29,8 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
-public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = TestCaseTu("", "", "", "", "", "", "", "", "", "", "", "").getClass();
+public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
+    private static final Class classTuplableClass = TestCaseMatch(AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any()).getClass();
 
     private final String name;
 
@@ -173,6 +174,15 @@ public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
         return new TestCase(name, date, longList, stringDateMap, concurrentMap, truth, activation, percent, section, isIt, mutableValue, charset);
     }
 
+    public static AnyClassTuple<TestCase> TestCaseMatch(AnyVal<? extends String> name, AnyVal<? extends Integer> date, AnyVal<? extends List<? extends Long>> longList, AnyVal<? extends Map<? extends String, ? extends List<Date>>> stringDateMap, AnyVal<? extends ConcurrentMap<? extends String, ? extends String>> concurrentMap, AnyVal<? extends Boolean> truth, AnyVal<? extends Date> activation, AnyVal<? extends Double> percent, AnyVal<? extends Float> section, AnyVal<? extends Boolean> isIt, AnyVal<? extends String> mutableValue, AnyVal<? extends Charset> charset) {
+        return new AnyClassTuple<TestCase>(Tuple.Tu(name, date, longList, stringDateMap, concurrentMap, truth, activation, percent, section, isIt, mutableValue, charset)){};
+    }
+
+    @Override
+    public Class getClassTuplableClass() {
+        return classTuplableClass;
+    }
+
     @Override
     public boolean equals(Object rhsObj) {
         if ( this == rhsObj ) {
@@ -222,11 +232,6 @@ public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
     }
 
     @Override
-    public Tuple12<String, Integer, List<Long>, Map<String, List<Date>>, ConcurrentMap<String, String>, Boolean, Date, Double, Float, Boolean, String, Charset> tuple() {
-        return Tuple.Tu(name(), date(), longList(), stringDateMap(), concurrentMap(), truth(), activation(), percent(), section(), isIt(), mutableValue(), charset());
-    }
-
-    @Override
     public int hashCode() {
         int result = name.hashCode();
         result = 31 * result + date;
@@ -241,6 +246,11 @@ public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
         result = 31 * result + mutableValue.hashCode();
         result = 31 * result + charset.hashCode();
         return result;
+    }
+
+    @Override
+    public Tuple12<String, Integer, List<Long>, Map<String, List<Date>>, ConcurrentMap<String, String>, Boolean, Date, Double, Float, Boolean, String, Charset> tuple() {
+        return Tuple.Tu(name(), date(), longList(), stringDateMap(), concurrentMap(), truth(), activation(), percent(), section(), isIt(), mutableValue(), charset());
     }
 
     public String debugString() {
@@ -276,15 +286,6 @@ public class TestCase implements Test, Serializable, Tuplable, ClassTuplable {
         ", \"" + mutableValue + "\"" + 
         ", " + charset +
         ')';
-    }
-
-    public static ClassTuple TestCaseTu(Object _1, Object _2, Object _3, Object _4, Object _5, Object _6, Object _7, Object _8, Object _9, Object _10, Object _11, Object _12) {
-        return () -> Tuple.Tu(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12);
-    }
-
-    @Override
-    public Class getClassTuplableClass() {
-        return classTuplableClass;
     }
 
     public static final class Builder {

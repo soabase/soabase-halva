@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PersonTPCase.PersonTPCase;
+import static io.soabase.halva.nettests.PersonTPCase.PersonTPCaseMatch;
 
 // from http://www.tutorialspoint.com/scala/scala_pattern_matching.htm
 public class TestScalaPatternMatchingTutorialsPoint
@@ -151,7 +152,7 @@ public class TestScalaPatternMatchingTutorialsPoint
             .map(person -> match(person)
                         .caseOf(PersonTPCase("Alice", 25), () -> "Hi Alice!")
                         .caseOf(PersonTPCase("Bob", 32), () -> "Hi Bob!")
-                        .caseOf(PersonTPCase(anyName, anyAge), () -> "Age: " + anyAge.val() + " year, name: " + anyName.val() + "?")
+                        .caseOf(PersonTPCaseMatch(anyName, anyAge), () -> "Age: " + anyAge.val() + " year, name: " + anyName.val() + "?")
                         .<String>get())
             .collect(Collectors.toList());
 

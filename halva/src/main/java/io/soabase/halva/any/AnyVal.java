@@ -16,7 +16,7 @@ public abstract class AnyVal<T> implements Any<T>
 
     public static <T> AnyVal<T> any()
     {
-        return new AnyVal<T>(null, false, false){};
+        return new AnyVal<T>(null, true, false){};
     }
 
     protected AnyVal()

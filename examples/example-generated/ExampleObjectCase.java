@@ -1,25 +1,20 @@
 // Auto generated from com.company.ExampleObject by Soabase io.soabase.halva.caseclass.CaseObject annotation processor
 package com.company;
 
-import io.soabase.halva.tuple.ClassTuplable;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
 import java.io.Serializable;
-import java.lang.Class;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseObject")
-public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable, ClassTuplable {
+public class ExampleObjectCase implements Serializable, ExampleObject, Tuplable {
     public static final ExampleObjectCase ExampleObjectCase = new ExampleObjectCase();
 
-    private static final Class classTuplableClass = ExampleObjectCaseTu().getClass();
-
-    private ExampleObjectCase() {
+    protected ExampleObjectCase() {
     }
 
     @Override
@@ -34,13 +29,13 @@ public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable,
     }
 
     @Override
-    public Tuple0 tuple() {
-        return Tuple.Tu();
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public Tuple0 tuple() {
+        return Tuple.Tu();
     }
 
     public String debugString() {
@@ -52,14 +47,5 @@ public class ExampleObjectCase implements ExampleObject, Serializable, Tuplable,
     public String toString() {
         return "ExampleObjectCase(" +
         ')';
-    }
-
-    public static ClassTuple ExampleObjectCaseTu() {
-        return () -> Tuple.Tu();
-    }
-
-    @Override
-    public Class getClassTuplableClass() {
-        return classTuplableClass;
     }
 }

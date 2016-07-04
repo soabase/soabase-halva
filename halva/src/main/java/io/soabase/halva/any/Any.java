@@ -77,9 +77,9 @@ public interface Any<T>
      *
      * @return Any for the given alias type
      */
-    static <T extends REAL, REAL> Any<T> typeAlias(TypeAliasType<REAL, T> typeAliasType)
+    static <T extends REAL, REAL> AnyVal<T> typeAlias(TypeAliasType<REAL, T> typeAliasType)
     {
-        return new AnyImpl<>(typeAliasType);
+        return new AnyAlias<>(typeAliasType);
     }
 
     /**

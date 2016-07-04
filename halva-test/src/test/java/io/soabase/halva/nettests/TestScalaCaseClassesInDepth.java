@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PersonCase.PersonCase;
-import static io.soabase.halva.nettests.ValueCase.ValueCase;
+import static io.soabase.halva.nettests.ValueCase.ValueCaseMatch;
 
 // from http://www.alessandrolacava.com/blog/scala-case-classes-in-depth/
 public class TestScalaCaseClassesInDepth
@@ -80,7 +80,7 @@ public class TestScalaCaseClassesInDepth
     public <T> String logValue(Maybe<T> value, AnyVal<T> v)
     {
         return match(value)
-            .caseOf(ValueCase(v), () -> "We have a value here: " + v.val())
+            .caseOf(ValueCaseMatch(v), () -> "We have a value here: " + v.val())
             .caseOf(() -> "I'm sorry, no value")
             .get();
     }

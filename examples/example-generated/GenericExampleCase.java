@@ -1,8 +1,9 @@
 // Auto generated from com.company.GenericExample by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
+import io.soabase.halva.any.AnyClassTuple;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple2;
@@ -14,8 +15,8 @@ import java.lang.String;
 import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
-public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializable, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = GenericExampleCaseTu("", "").getClass();
+public class GenericExampleCase<A, B> implements Serializable, GenericExample<A, B>, Tuplable, ClassTuplable {
+    private static final Class classTuplableClass = GenericExampleCaseMatch(AnyVal.any(), AnyVal.any()).getClass();
 
     private final A first;
 
@@ -54,6 +55,15 @@ public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializa
         return new GenericExampleCase<>(first, second);
     }
 
+    public static <A, B> AnyClassTuple<GenericExampleCase<A, B>> GenericExampleCaseMatch(AnyVal<? extends A> first, AnyVal<? extends B> second) {
+        return new AnyClassTuple<GenericExampleCase<A, B>>(Tuple.Tu(first, second)){};
+    }
+
+    @Override
+    public Class getClassTuplableClass() {
+        return classTuplableClass;
+    }
+
     @Override
     public boolean equals(Object rhsObj) {
         if ( this == rhsObj ) {
@@ -73,15 +83,15 @@ public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializa
     }
 
     @Override
-    public Tuple2<A, B> tuple() {
-        return Tuple.Tu(first(), second());
-    }
-
-    @Override
     public int hashCode() {
         int result = first.hashCode();
         result = 31 * result + second.hashCode();
         return result;
+    }
+
+    @Override
+    public Tuple2<A, B> tuple() {
+        return Tuple.Tu(first(), second());
     }
 
     public String debugString() {
@@ -97,15 +107,6 @@ public class GenericExampleCase<A, B> implements GenericExample<A, B>, Serializa
         first +
         ", " + second +
         ')';
-    }
-
-    public static ClassTuple GenericExampleCaseTu(Object _1, Object _2) {
-        return () -> Tuple.Tu(_1, _2);
-    }
-
-    @Override
-    public Class getClassTuplableClass() {
-        return classTuplableClass;
     }
 
     public static final class Builder<A, B> {

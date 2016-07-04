@@ -35,7 +35,9 @@ import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
 import static io.soabase.halva.nettests.Guy.Guy;
+import static io.soabase.halva.nettests.Guy.GuyMatch;
 import static io.soabase.halva.nettests.SuperHero.SuperHero;
+import static io.soabase.halva.nettests.SuperHero.SuperHeroMatch;
 import static io.soabase.halva.nettests.TestScalaEssentialsPatternMatchingAndCaseClasses.Power.*;
 import static io.soabase.halva.nettests.Villain.Villain;
 import static io.soabase.halva.sugar.Sugar.List;
@@ -160,7 +162,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
          */
         AnyVal<Integer> anyAge = new AnyVal<Integer>(){};
         String result = match(Guy("Dr. Who", Integer.MAX_VALUE))
-            .caseOf(Guy(val("Dr. Who"), anyAge), () -> "Exactly!")
+            .caseOf(GuyMatch(val("Dr. Who"), anyAge), () -> "Exactly!")
             .caseOf(() -> "anyone!")
             .get();
         Assert.assertEquals("Exactly!", result);
@@ -171,7 +173,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         AnyVal<String> anyName = new AnyVal<String>(){};
         AnyVal<List<Power>> anyPowers = new AnyVal<List<Power>>(){};
         return match(person)
-            .caseOf(SuperHero(anyName, anyPowers, val(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
+            .caseOf(SuperHeroMatch(anyName, anyPowers, val(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
             .get();
     }

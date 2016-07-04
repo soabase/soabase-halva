@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.details.Tuple2;
 import org.junit.Assert;
@@ -29,9 +30,9 @@ import static io.soabase.halva.tuple.Tuple.Tu;
 // from http://daily-scala.blogspot.com/2009/08/for-comprehensions.html
 public class Test200908ForComprehensions
 {
-    AnyVal<Integer> i = AnyVal.any();
-    AnyVal<Integer> j = AnyVal.any();
-    AnyVal<Integer> k = AnyVal.any();
+    AnyVal<Integer> i = Any.any();
+    AnyVal<Integer> j = Any.any();
+    AnyVal<Integer> k = Any.any();
 
     List<Integer> range = List(1, 2, 3, 4, 5);
 

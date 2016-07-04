@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.soabase.halva.any.AnyVal.lit;
+import static io.soabase.halva.any.Any.lit;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.BinOp.BinOp;
 import static io.soabase.halva.nettests.BinOp.BinOpMatch;

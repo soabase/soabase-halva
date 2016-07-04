@@ -16,6 +16,7 @@
 package io.soabase.halva.comprehension;
 
 import com.company.FutureFor;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,10 +26,10 @@ public class TestFutureFor {
 
     @Test
     public void testFutureFor() throws Exception {
-        final AnyVal<String> a = AnyVal.any();
-        final AnyVal<String> b = AnyVal.any();
-        final AnyVal<Integer> c = AnyVal.any();
-        final AnyVal<Integer> d = AnyVal.any();
+        final AnyVal<String> a = Any.any();
+        final AnyVal<String> b = Any.any();
+        final AnyVal<Integer> c = Any.any();
+        final AnyVal<Integer> d = Any.any();
 
         final CompletableFuture<Integer> f =
                 FutureFor.start()

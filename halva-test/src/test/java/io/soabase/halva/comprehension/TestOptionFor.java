@@ -16,6 +16,7 @@
 package io.soabase.halva.comprehension;
 
 import com.company.OptionalFor;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,9 +27,9 @@ public class TestOptionFor {
     @Test
     public void testOptionFor() throws Exception
     {
-        final AnyVal<String> a = AnyVal.any();
-        final AnyVal<Integer> c = AnyVal.any();
-        final AnyVal<Integer> d = AnyVal.any();
+        final AnyVal<String> a = Any.any();
+        final AnyVal<Integer> c = Any.any();
+        final AnyVal<Integer> d = Any.any();
 
         final Optional<String> opt =
                 OptionalFor.start()

@@ -21,9 +21,9 @@ import io.soabase.halva.tuple.ClassTuple;
 import java.util.Optional;
 
 /**
- * Value boxing any pattern matching mechanism
+ * Factory for making {@link AnyVal} instances
  */
-public interface Any<T>
+public interface Any
 {
     /**
      * Return a new AnyList that matches the given head of a list and the given tail of a list
@@ -136,21 +136,13 @@ public interface Any<T>
         return new LooseAny<>(any);
     }
 
-    /**
-     * @return the loaded value or <code>null</code>
-     */
-    T val();
+    static <T> AnyVal<T> lit(T matchValue)
+    {
+        return new AnyVal<T>(matchValue, false, false){};
+    }
 
-    /**
-     * @param value new value for the Any
-     */
-    void set(T value);
-
-    /**
-     * Used internally to determine if this Any can load/hold the given value
-     *
-     * @param value value to check
-     * @return true/false
-     */
-    boolean canSet(T value);
+    static <T> AnyVal<T> any()
+    {
+        return new AnyVal<T>(null, false, false){};
+    }
 }

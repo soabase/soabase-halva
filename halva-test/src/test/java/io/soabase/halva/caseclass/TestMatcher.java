@@ -17,7 +17,6 @@ package io.soabase.halva.caseclass;
 
 import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.matcher.MatchError;
 import io.soabase.halva.matcher.Matcher;
@@ -32,7 +31,7 @@ import java.util.Optional;
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.any.Any.anyNone;
 import static io.soabase.halva.any.Any.anyNull;
-import static io.soabase.halva.any.AnyVal.lit;
+import static io.soabase.halva.any.Any.lit;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseMatch;
 import static io.soabase.halva.caseclass.ChairCase.ChairCase;
@@ -87,7 +86,7 @@ public class TestMatcher
     }
 
     static List<Pair<String, Integer>> findMatches(String key, ConsList<Pair<String, Integer>> list) {
-        AnyVal<Pair<String, Integer>> foundPair = AnyVal.any();
+        AnyVal<Pair<String, Integer>> foundPair = Any.any();
 
         return forComp(foundPair, list)
             .filter(() -> foundPair.val()._1.equals(key))
@@ -189,8 +188,8 @@ public class TestMatcher
     {
         AnyVal<String> s = new AnyVal<String>(){};
         AnyVal<Integer> i = new AnyVal<Integer>(){};
-        AnyVal<AnimalCase> animal = AnyVal.any();
-        AnyVal<ChairCase> chair = AnyVal.any();
+        AnyVal<AnimalCase> animal = Any.any();
+        AnyVal<ChairCase> chair = Any.any();
         Partial<Object> partial = Matcher.partial()
             .bindTo(animal).caseOf(AnimalCaseMatch(s, i), () -> animal.val().name())
             .bindTo(chair).caseOf(ChairCaseMatch(s, i, i), () -> chair.val().color());

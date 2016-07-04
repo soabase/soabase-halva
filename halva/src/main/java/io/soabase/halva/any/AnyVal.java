@@ -1,21 +1,11 @@
 package io.soabase.halva.any;
 
-public abstract class AnyVal<T> implements Any<T>
+public abstract class AnyVal<T>
 {
     private final T matchValue;
     private T value;
     private final InternalType internalType;
     private final boolean isSettable;
-
-    public static <T> AnyVal<T> lit(T matchValue)
-    {
-        return new AnyVal<T>(matchValue, false, false){};
-    }
-
-    public static <T> AnyVal<T> any()
-    {
-        return new AnyVal<T>(null, true, false){};
-    }
 
     protected AnyVal()
     {
@@ -29,13 +19,11 @@ public abstract class AnyVal<T> implements Any<T>
         this.isSettable = isSettable;
     }
 
-    @Override
     public T val()
     {
         return value;
     }
 
-    @Override
     public void set(T value)
     {
         if ( matchValue == null )
@@ -45,13 +33,12 @@ public abstract class AnyVal<T> implements Any<T>
         // else NOP
     }
 
-    @Override
     public boolean canSet(T value)
     {
         return isSettable ? canSetExact(value) : matches(value);
     }
 
-    public boolean canSet(T value, boolean exact)
+    boolean canSet(T value, boolean exact)
     {
         if ( isSettable )
         {

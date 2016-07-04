@@ -477,7 +477,7 @@ class Templates
 
     private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)
     {
-        CodeBlock anyVal = CodeBlock.of("$T.any()", AnyVal.class);
+        CodeBlock anyVal = CodeBlock.of("$T.any()", Any.class);
         CodeBlock.Builder initialize = CodeBlock.builder().add("$L(", getClassTupleMethodName(className));
         IntStream.range(0, spec.getItems().size())
             .forEach(i -> {

@@ -42,9 +42,9 @@ List<Book> books = List(
     Book(List(kenFollet), "The Pillars of the Earth")
                        );
 {
-    AnyVal<Book> book = Any.make();
-    AnyVal<Author> author = Any.make();
-    AnyVal<Integer> year = Any.make();
+    AnyVal<Book> book = Any.any();
+    AnyVal<Author> author = Any.any();
+    AnyVal<Integer> year = Any.any();
 
     List<Tuple> result = forComp(book, books)
         .filter(() -> book.val().authors().size() == 1)

@@ -88,6 +88,14 @@ import java.util.Optional;
  *         {@link Any#headAnyTail(Object, AnyVal)}, {@link Any#anyHeadTail(AnyVal, ConsList)}, and
  *         {@link Any#anyHeadAnyTail(AnyVal, AnyVal)}
  *     </li>
+ *
+ *     <li>
+ *         <strong>Case Class unapply-style extraction: </strong> all generated case classes have a method
+ *         named <em>CaseClassName</em>Any. This method has the same arguments as the Case Class however
+ *         each argument is wrapped in an {@link AnyVal}. The object returned by this method can be passed
+ *         to {@link Matcher} which will apply each argument as appropriate. Use a combination of AnyVal
+ *         literals or extractors as needed.
+ *     </li>
  *     </ul>
  * </p>
  */

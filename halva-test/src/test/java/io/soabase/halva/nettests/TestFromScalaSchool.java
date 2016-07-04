@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PhoneExt.PhoneExt;
-import static io.soabase.halva.nettests.PhoneExt.PhoneExtMatch;
+import static io.soabase.halva.nettests.PhoneExt.PhoneExtAny;
 import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestFromScalaSchool
@@ -59,7 +59,7 @@ public class TestFromScalaSchool
         AnyVal<Integer> extension = new AnyVal<Integer>(){};
         ConsList<PhoneExt> extensions = List(PhoneExt("steve", 100), PhoneExt("robey", 200));
         List<PhoneExt> lessThan200 = extensions.stream()
-            .filter(e -> match(e).caseOf(PhoneExtMatch(name, extension), () -> extension.val() < 200).get())
+            .filter(e -> match(e).caseOf(PhoneExtAny(name, extension), () -> extension.val() < 200).get())
             .collect(Collectors.toList());
         Assert.assertEquals(List(PhoneExt("steve", 100)), lessThan200);
     }

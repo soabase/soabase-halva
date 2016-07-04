@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 )
 @Generated("io.soabase.halva.caseclass.CaseClass")
 public class JsonTestCase implements Serializable, JsonTest, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = JsonTestCaseMatch(Any.any(), Any.any(), Any.any()).getClass();
+    private static final Class classTuplableClass = JsonTestCaseAny(Any.any(), Any.any(), Any.any()).getClass();
 
     @JsonProperty
     private final String firstName;
@@ -76,7 +76,7 @@ public class JsonTestCase implements Serializable, JsonTest, Tuplable, ClassTupl
         return new JsonTestCase(firstName, lastName, age);
     }
 
-    public static AnyClassTuple<JsonTestCase> JsonTestCaseMatch(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age) {
+    public static AnyClassTuple<JsonTestCase> JsonTestCaseAny(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age) {
         return new AnyClassTuple<JsonTestCase>(Tuple.Tu(Any.loose(firstName), Any.loose(lastName), Any.loose(age))){};
     }
 

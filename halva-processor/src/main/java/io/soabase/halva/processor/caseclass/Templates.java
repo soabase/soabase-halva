@@ -472,7 +472,7 @@ class Templates
 
     private String getClassTupleMethodName(ClassName className)
     {
-        return className.simpleName() + "Match";
+        return className.simpleName() + "Any";
     }
 
     private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)

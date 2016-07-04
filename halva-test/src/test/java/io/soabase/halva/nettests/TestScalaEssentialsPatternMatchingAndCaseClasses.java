@@ -20,8 +20,6 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
-import io.soabase.halva.matcher.PartialFirst;
-import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
@@ -35,9 +33,9 @@ import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
 import static io.soabase.halva.nettests.Guy.Guy;
-import static io.soabase.halva.nettests.Guy.GuyMatch;
+import static io.soabase.halva.nettests.Guy.GuyAny;
 import static io.soabase.halva.nettests.SuperHero.SuperHero;
-import static io.soabase.halva.nettests.SuperHero.SuperHeroMatch;
+import static io.soabase.halva.nettests.SuperHero.SuperHeroAny;
 import static io.soabase.halva.nettests.TestScalaEssentialsPatternMatchingAndCaseClasses.Power.*;
 import static io.soabase.halva.nettests.Villain.Villain;
 import static io.soabase.halva.sugar.Sugar.List;
@@ -162,7 +160,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
          */
         AnyVal<Integer> anyAge = new AnyVal<Integer>(){};
         String result = match(Guy("Dr. Who", Integer.MAX_VALUE))
-            .caseOf(GuyMatch(lit("Dr. Who"), anyAge), () -> "Exactly!")
+            .caseOf(GuyAny(lit("Dr. Who"), anyAge), () -> "Exactly!")
             .caseOf(() -> "anyone!")
             .get();
         Assert.assertEquals("Exactly!", result);
@@ -173,7 +171,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         AnyVal<String> anyName = new AnyVal<String>(){};
         AnyVal<List<Power>> anyPowers = new AnyVal<List<Power>>(){};
         return match(person)
-            .caseOf(SuperHeroMatch(anyName, anyPowers, lit(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
+            .caseOf(SuperHeroAny(anyName, anyPowers, lit(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
             .get();
     }

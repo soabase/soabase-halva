@@ -31,11 +31,11 @@ import java.util.Optional;
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.any.Any.*;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
-import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseMatch;
+import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseAny;
 import static io.soabase.halva.caseclass.ChairCase.ChairCase;
-import static io.soabase.halva.caseclass.ChairCase.ChairCaseMatch;
+import static io.soabase.halva.caseclass.ChairCase.ChairCaseAny;
 import static io.soabase.halva.caseclass.Value.Value;
-import static io.soabase.halva.caseclass.Value.ValueMatch;
+import static io.soabase.halva.caseclass.Value.ValueAny;
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
@@ -71,7 +71,7 @@ public class TestMatcher
         AnyVal<Integer> n = new AnyVal<Integer>(){};
 
         return match(Pair(a, b))
-            .caseOf( Pair(ValueMatch(m), ValueMatch(n)), () -> m.val() - n.val())
+            .caseOf( Pair(ValueAny(m), ValueAny(n)), () -> m.val() - n.val())
             .caseOf( () -> 0)
             .get();
     }
@@ -118,8 +118,8 @@ public class TestMatcher
         AnyVal<String> s = new AnyVal<String>(){};
         AnyVal<Integer> age = new AnyVal<Integer>(){};
         return match(obj)
-            .caseOf(AnimalCaseMatch(s, age), age::val)
-            .caseOf(ChairCaseMatch(s, lit(3), age), age::val)
+            .caseOf(AnimalCaseAny(s, age), age::val)
+            .caseOf(ChairCaseAny(s, lit(3), age), age::val)
             .caseOf(() -> 0)
             .get();
     }
@@ -189,8 +189,8 @@ public class TestMatcher
         AnyVal<Object> animal = Any.any();
         AnyVal<Object> chair = Any.any();
         Partial<Object, Object> partial = Matcher.partial()
-            .bindTo(animal).caseOf(AnimalCaseMatch(s, i), () -> s.val() + ":" + animal.val())
-            .bindTo(chair).caseOf(ChairCaseMatch(s, i, i), () -> s.val() + ":" + chair.val());
+            .bindTo(animal).caseOf(AnimalCaseAny(s, i), () -> s.val() + ":" + animal.val())
+            .bindTo(chair).caseOf(ChairCaseAny(s, i, i), () -> s.val() + ":" + chair.val());
 
         Assert.assertEquals("bobby:AnimalCase(\"bobby\", 10)", partial.with(AnimalCase("bobby", 10)).get());
         Assert.assertEquals("blue:ChairCase(\"blue\", 10, 20)", partial.with(ChairCase("blue", 10, 20)).get());

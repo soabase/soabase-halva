@@ -29,10 +29,10 @@ import java.util.Optional;
 import static io.soabase.halva.any.Any.lit;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.BinOp.BinOp;
-import static io.soabase.halva.nettests.BinOp.BinOpMatch;
+import static io.soabase.halva.nettests.BinOp.BinOpAny;
 import static io.soabase.halva.nettests.Number.Number;
 import static io.soabase.halva.nettests.UnOp.UnOp;
-import static io.soabase.halva.nettests.UnOp.UnOpMatch;
+import static io.soabase.halva.nettests.UnOp.UnOpAny;
 import static io.soabase.halva.nettests.Var.Var;
 
 // from http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html
@@ -96,9 +96,9 @@ public class TestCaseClassesAndPatternMatching
     {
         AnyVal<Expr> e = new AnyVal<Expr>(){};
         return match(expr)
-            .caseOf( UnOpMatch(lit("-"), UnOpMatch(lit("-"), e)), e::val)   // Double negation
-            .caseOf( BinOpMatch(lit("+"), e, lit(Number(0))), e::val)   // Adding zero
-            .caseOf( BinOpMatch(lit("*"), e, lit(Number(1))), e::val)   // Multiplying by one
+            .caseOf( UnOpAny(lit("-"), UnOpAny(lit("-"), e)), e::val)   // Double negation
+            .caseOf( BinOpAny(lit("+"), e, lit(Number(0))), e::val)   // Adding zero
+            .caseOf( BinOpAny(lit("*"), e, lit(Number(1))), e::val)   // Multiplying by one
             .caseOf( () -> expr )
             .get()
             ;

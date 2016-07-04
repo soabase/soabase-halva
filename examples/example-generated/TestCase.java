@@ -31,7 +31,7 @@ import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
 public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = TestCaseMatch(Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any()).getClass();
+    private static final Class classTuplableClass = TestCaseAny(Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any()).getClass();
 
     private final String name;
 
@@ -175,7 +175,7 @@ public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
         return new TestCase(name, date, longList, stringDateMap, concurrentMap, truth, activation, percent, section, isIt, mutableValue, charset);
     }
 
-    public static AnyClassTuple<TestCase> TestCaseMatch(AnyVal<? extends String> name, AnyVal<? extends Integer> date, AnyVal<? extends List<? extends Long>> longList, AnyVal<? extends Map<? extends String, ? extends List<Date>>> stringDateMap, AnyVal<? extends ConcurrentMap<? extends String, ? extends String>> concurrentMap, AnyVal<? extends Boolean> truth, AnyVal<? extends Date> activation, AnyVal<? extends Double> percent, AnyVal<? extends Float> section, AnyVal<? extends Boolean> isIt, AnyVal<? extends String> mutableValue, AnyVal<? extends Charset> charset) {
+    public static AnyClassTuple<TestCase> TestCaseAny(AnyVal<? extends String> name, AnyVal<? extends Integer> date, AnyVal<? extends List<? extends Long>> longList, AnyVal<? extends Map<? extends String, ? extends List<Date>>> stringDateMap, AnyVal<? extends ConcurrentMap<? extends String, ? extends String>> concurrentMap, AnyVal<? extends Boolean> truth, AnyVal<? extends Date> activation, AnyVal<? extends Double> percent, AnyVal<? extends Float> section, AnyVal<? extends Boolean> isIt, AnyVal<? extends String> mutableValue, AnyVal<? extends Charset> charset) {
         return new AnyClassTuple<TestCase>(Tuple.Tu(Any.loose(name), Any.loose(date), Any.loose(longList), Any.loose(stringDateMap), Any.loose(concurrentMap), Any.loose(truth), Any.loose(activation), Any.loose(percent), Any.loose(section), Any.loose(isIt), Any.loose(mutableValue), Any.loose(charset))){};
     }
 

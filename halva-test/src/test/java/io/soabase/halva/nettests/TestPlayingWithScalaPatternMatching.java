@@ -24,13 +24,13 @@ import java.util.function.Predicate;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Add.Add;
-import static io.soabase.halva.nettests.Add.AddMatch;
+import static io.soabase.halva.nettests.Add.AddAny;
 import static io.soabase.halva.nettests.Const.Const;
-import static io.soabase.halva.nettests.Const.ConstMatch;
+import static io.soabase.halva.nettests.Const.ConstAny;
 import static io.soabase.halva.nettests.Mult.Mult;
-import static io.soabase.halva.nettests.Mult.MultMatch;
+import static io.soabase.halva.nettests.Mult.MultAny;
 import static io.soabase.halva.nettests.Neg.Neg;
-import static io.soabase.halva.nettests.Neg.NegMatch;
+import static io.soabase.halva.nettests.Neg.NegAny;
 import static io.soabase.halva.nettests.X.X;
 import static io.soabase.halva.tuple.Tuple.Tu;
 
@@ -281,10 +281,10 @@ public class TestPlayingWithScalaPatternMatching
 
         return match(expression)
             .caseOf(X(), () -> xValue)
-            .caseOf(ConstMatch(cst), cst::val)
-            .caseOf(AddMatch(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
-            .caseOf(MultMatch(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
-            .caseOf(NegMatch(expr), () -> -1 * eval(expr.val(), xValue))
+            .caseOf(ConstAny(cst), cst::val)
+            .caseOf(AddAny(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
+            .caseOf(MultAny(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
+            .caseOf(NegAny(expr), () -> -1 * eval(expr.val(), xValue))
             .get();
     }
 
@@ -308,10 +308,10 @@ public class TestPlayingWithScalaPatternMatching
 
         return match(expression)
             .caseOf(X(), () -> (Expression)Const(1))
-            .caseOf(ConstMatch(cst), () -> Const(0))
-            .caseOf(AddMatch(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
-            .caseOf(MultMatch(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
-            .caseOf(NegMatch(expr), () -> Neg(deriv(expr.val())))
+            .caseOf(ConstAny(cst), () -> Const(0))
+            .caseOf(AddAny(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
+            .caseOf(MultAny(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
+            .caseOf(NegAny(expr), () -> Neg(deriv(expr.val())))
             .get();
     }
 

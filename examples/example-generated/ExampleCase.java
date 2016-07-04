@@ -1,6 +1,7 @@
 // Auto generated from com.company.Example by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
@@ -89,7 +90,7 @@ public class ExampleCase implements Serializable, Example, Tuplable, ClassTuplab
     }
 
     public static AnyClassTuple<ExampleCase> ExampleCaseMatch(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age, AnyVal<? extends Boolean> active, AnyVal<? extends List<? extends Date>> importantDates) {
-        return new AnyClassTuple<ExampleCase>(Tuple.Tu(firstName, lastName, age, active, importantDates)){};
+        return new AnyClassTuple<ExampleCase>(Tuple.Tu(Any.anyLoose(firstName), Any.anyLoose(lastName), Any.anyLoose(age), Any.anyLoose(active), Any.anyLoose(importantDates))){};
     }
 
     @Override

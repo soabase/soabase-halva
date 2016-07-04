@@ -55,8 +55,8 @@ public class TestTuple
 
     private String extractFunc(ConsList<Pair<String, Integer>> list)
     {
-        Any<Pair<String, Integer>> p = new AnyVal<Pair<String, Integer>>(){};
-        Any<ConsList<? extends Pair<String, Integer>>> t = new AnyVal<ConsList<? extends Pair<String, Integer>>>(){};
+        AnyVal<Pair<String, Integer>> p = new AnyVal<Pair<String, Integer>>(){};
+        AnyVal<ConsList<Pair<String, Integer>>> t = new AnyVal<ConsList<Pair<String, Integer>>>(){};
 
         AnyVal<?> a = Any.headAnyTail(Pair("10", 10), t);
         AnyVal<?> b = Any.headTail(Pair("-10", -10), List(Pair("20", 20)));

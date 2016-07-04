@@ -26,7 +26,19 @@ public abstract class AnyType<T> extends AnyVal<T>
     }
 
     @Override
-    public boolean canSet(T value)
+    public final T val()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public final void set(T value)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public final boolean canSet(T value)
     {
         return canSetExact(value);
     }

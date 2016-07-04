@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.matcher;
 
-import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Supplier;
 
@@ -23,9 +23,9 @@ class ExtractObject
 {
     private final Tuple values;
     private final Supplier<Boolean> guard;
-    private final Any binder;
+    private final AnyVal binder;
 
-    ExtractObject(Tuple values, Supplier<Boolean> guard, Any binder)
+    ExtractObject(Tuple values, Supplier<Boolean> guard, AnyVal binder)
     {
         this.values = values;
         this.guard = guard;

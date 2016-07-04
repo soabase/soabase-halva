@@ -20,11 +20,11 @@ import io.soabase.halva.sugar.ConsList;
 class AnyConsImpl extends AnyVal<Object>
 {
     private final Object head;
-    private final Any anyHead;
+    private final AnyVal anyHead;
     private final ConsList tail;
-    private final Any anyTail;
+    private final AnyVal anyTail;
 
-    AnyConsImpl(Object head, Any anyHead, ConsList tail, Any anyTail)
+    AnyConsImpl(Object head, AnyVal anyHead, ConsList tail, AnyVal anyTail)
     {
         super(null, true, false);
         this.head = head;
@@ -68,7 +68,7 @@ class AnyConsImpl extends AnyVal<Object>
             {
                 break;
             }
-            if ( (anyHead != null) && !anyHead.canSet(listHead) )
+            if ( (anyHead != null) && !anyHead.canSetLoose(listHead) )
             {
                 break;
             }
@@ -76,7 +76,7 @@ class AnyConsImpl extends AnyVal<Object>
             {
                 break;
             }
-            if ( (anyTail != null) && !anyTail.canSet(listTail) )
+            if ( (anyTail != null) && !anyTail.canSetLoose(listTail) )
             {
                 break;
             }

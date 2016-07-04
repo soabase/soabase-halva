@@ -106,7 +106,7 @@ public class TestMatcher
         ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
 
         AnyVal<ConsList<Pair>> anyPairList = new AnyVal<ConsList<Pair>>(){};
-        AnyVal<?> patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair>(){}, anyPairList);
+        AnyVal<?> patternMatcher = Any.anyHeadAnyTail(new AnyVal<Pair>(){}, anyPairList);
         String str = match(list)
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
             .get();

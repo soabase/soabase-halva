@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.tuple.details;
 
-import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
@@ -231,20 +231,20 @@ abstract class TupleImpl implements Tuple
                 continue;
             }
 
-            if ( rhs instanceof Any )
+            if ( rhs instanceof AnyVal )
             {
-                if ( ((Any)rhs).canSet(lhs) )
+                if ( ((AnyVal)rhs).canSet(lhs) )
                 {
-                    ((Any)rhs).set(lhs);
+                    ((AnyVal)rhs).set(lhs);
                     continue;
                 }
                 return false;
             }
-            if ( lhs instanceof Any )
+            if ( lhs instanceof AnyVal )
             {
-                if ( ((Any)lhs).canSet(rhs) )
+                if ( ((AnyVal)lhs).canSet(rhs) )
                 {
-                    ((Any)lhs).set(rhs);
+                    ((AnyVal)lhs).set(rhs);
                     continue;
                 }
                 return false;

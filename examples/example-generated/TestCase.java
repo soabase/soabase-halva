@@ -1,6 +1,7 @@
 // Auto generated from com.company.Test by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
@@ -175,7 +176,7 @@ public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
     }
 
     public static AnyClassTuple<TestCase> TestCaseMatch(AnyVal<? extends String> name, AnyVal<? extends Integer> date, AnyVal<? extends List<? extends Long>> longList, AnyVal<? extends Map<? extends String, ? extends List<Date>>> stringDateMap, AnyVal<? extends ConcurrentMap<? extends String, ? extends String>> concurrentMap, AnyVal<? extends Boolean> truth, AnyVal<? extends Date> activation, AnyVal<? extends Double> percent, AnyVal<? extends Float> section, AnyVal<? extends Boolean> isIt, AnyVal<? extends String> mutableValue, AnyVal<? extends Charset> charset) {
-        return new AnyClassTuple<TestCase>(Tuple.Tu(name, date, longList, stringDateMap, concurrentMap, truth, activation, percent, section, isIt, mutableValue, charset)){};
+        return new AnyClassTuple<TestCase>(Tuple.Tu(Any.anyLoose(name), Any.anyLoose(date), Any.anyLoose(longList), Any.anyLoose(stringDateMap), Any.anyLoose(concurrentMap), Any.anyLoose(truth), Any.anyLoose(activation), Any.anyLoose(percent), Any.anyLoose(section), Any.anyLoose(isIt), Any.anyLoose(mutableValue), Any.anyLoose(charset))){};
     }
 
     @Override

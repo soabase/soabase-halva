@@ -48,7 +48,34 @@ public abstract class AnyVal<T> implements Any<T>
     @Override
     public boolean canSet(T value)
     {
-        return isSettable || ((matchValue != null) && matchValue.equals(value));
+        return isSettable ? canSetExact(value) : matches(value);
+    }
+
+    public boolean canSet(T value, boolean exact)
+    {
+        if ( isSettable )
+        {
+            return exact ? canSetExact(value) : canSetLoose(value);
+        }
+        return matches(value);
+    }
+
+    boolean canSetLoose(T value)
+    {
+        if ( internalType != null )
+        {
+            try
+            {
+                internalType.rawType.cast(value);
+                return true;
+            }
+            catch ( ClassCastException dummy )
+            {
+                // dummy
+            }
+            return false;
+        }
+        return false;
     }
 
     boolean canSetExact(T value)
@@ -66,5 +93,10 @@ public abstract class AnyVal<T> implements Any<T>
             }
         }
         return false;
+    }
+
+    private boolean matches(T value)
+    {
+        return (matchValue != null) && matchValue.equals(value);
     }
 }

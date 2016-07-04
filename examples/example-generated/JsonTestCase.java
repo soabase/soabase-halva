@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
@@ -76,7 +77,7 @@ public class JsonTestCase implements Serializable, JsonTest, Tuplable, ClassTupl
     }
 
     public static AnyClassTuple<JsonTestCase> JsonTestCaseMatch(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age) {
-        return new AnyClassTuple<JsonTestCase>(Tuple.Tu(firstName, lastName, age)){};
+        return new AnyClassTuple<JsonTestCase>(Tuple.Tu(Any.anyLoose(firstName), Any.anyLoose(lastName), Any.anyLoose(age))){};
     }
 
     @Override

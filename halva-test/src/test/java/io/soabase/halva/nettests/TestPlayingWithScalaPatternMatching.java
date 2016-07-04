@@ -108,7 +108,7 @@ public class TestPlayingWithScalaPatternMatching
      */
     public String parseArgument(String arg)
     {
-        Any<String> argAny = new AnyType<String>(){};
+        AnyVal<String> argAny = new AnyVal<String>(){};
         return match(arg)
             .caseOfTest((s) -> s.equals("-h") || s.equals("--help"), () -> "displayHelp")
             .caseOfTest((s) -> s.equals("-v") || s.equals("--version"), () -> "displayVersion")
@@ -136,9 +136,9 @@ public class TestPlayingWithScalaPatternMatching
      */
     String f(Object x)
     {
-        Any<Integer> i = new AnyType<Integer>(){};
-        Any<Double> d = new AnyType<Double>(){};
-        Any<String> s = new AnyType<String>(){};
+        AnyVal<Integer> i = new AnyVal<Integer>(){};
+        AnyVal<Double> d = new AnyVal<Double>(){};
+        AnyVal<String> s = new AnyVal<String>(){};
         return match(x)
             .caseOf(i, () -> "integer: " + i.val())
             .caseOf(d, () -> "a double")
@@ -162,7 +162,7 @@ public class TestPlayingWithScalaPatternMatching
      */
     int fact(int n)
     {
-        Any<Integer> i = new AnyType<Integer>(){};
+        AnyVal<Integer> i = new AnyVal<Integer>(){};
         return match(n)
             .caseOf(0, () -> 1)
             .caseOf(i, () -> {
@@ -195,9 +195,9 @@ public class TestPlayingWithScalaPatternMatching
         Predicate<String> oOrOptim = s -> s.equals("-o") || s.equals("--optim");
         Predicate<String> hOrHelp = s -> s.equals("-h") || s.equals("--help");
 
-        Any<Integer> n = new AnyType<Integer>(){};
-        Any<String> s = new AnyType<String>(){};
-        Any<String> v = new AnyType<String>(){};
+        AnyVal<Integer> n = new AnyVal<Integer>(){};
+        AnyVal<String> s = new AnyVal<String>(){};
+        AnyVal<String> v = new AnyVal<String>(){};
         return match(Tu(arg, value))
             .caseOf(Tu("-l", s), () -> "setLanguageTo(" + s.val() + ")")
             .caseOf(Tu(oOrOptim, n), () -> ((0 < n.val()) && (n.val() <= 5)), () -> "setOptimizationLevelTo(" + n.val() + ")")

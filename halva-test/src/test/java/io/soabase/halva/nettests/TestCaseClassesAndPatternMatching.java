@@ -15,10 +15,9 @@
  */
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
 import org.junit.Assert;
@@ -129,9 +128,9 @@ public class TestCaseClassesAndPatternMatching
      */
     int generalSize(Object x)
     {
-        Any<String> anyStr = new AnyType<String>(){};
+        AnyVal<String> anyStr = new AnyVal<String>(){};
 
-        Any<Map> anyMap = new AnyType<Map>(){};
+        AnyVal<Map> anyMap = new AnyVal<Map>(){};
         return match(x)
             .caseOf(anyStr, () -> anyStr.val().length())
             .caseOf(anyMap, () -> anyMap.val().size())

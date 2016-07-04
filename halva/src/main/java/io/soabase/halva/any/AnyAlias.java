@@ -44,10 +44,21 @@ class AnyAlias<T extends REAL, REAL> extends AnyVal<T>
         this.value = typeAliasType.wrap(value);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public final boolean canSet(T value)
     {
-        return typeAliasType.getAliasType().canSet(typeAliasType.wrap(value));
+        return typeAliasType.getAliasType().canSetExact(typeAliasType.wrap(value));
+    }
+
+    @Override
+    public final boolean canSetLoose(T value)
+    {
+        return typeAliasType.getAliasType().canSetLoose(typeAliasType.wrap(value));
+    }
+
+    @Override
+    boolean canSetExact(T value)
+    {
+        return canSet(value);
     }
 }

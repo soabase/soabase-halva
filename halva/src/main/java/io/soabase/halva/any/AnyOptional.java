@@ -62,7 +62,7 @@ abstract class AnyOptional<T> extends AnyVal<T>
             }
             else if ( optionalHolder != null )
             {
-                ((Any<Optional>)optionalHolder).set(optional);
+                ((AnyVal<Optional>)optionalHolder).set(optional);
             }
         }
     }

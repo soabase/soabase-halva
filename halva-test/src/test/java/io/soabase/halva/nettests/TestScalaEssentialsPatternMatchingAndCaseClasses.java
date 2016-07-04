@@ -22,6 +22,7 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
+import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
 import io.soabase.halva.tuple.Tuple;
@@ -171,7 +172,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     Optional<List<Power>> getPowers(Character person)
     {
         AnyVal<String> anyName = new AnyVal<String>(){};
-        AnyVal<List<Power>> anyPowers = new AnyVal<List<Power>>(){};
+        AnyVal<ConsList<Power>> anyPowers = new AnyVal<ConsList<Power>>(){};
         return match(person)
             .caseOf(SuperHeroMatch(anyName, anyPowers, lit(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
@@ -210,8 +211,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     String whatIsThis4(Object obj)
     {
-        Any<Integer> n = new AnyType<Integer>(){};
-        Any<java.lang.Character> c = new AnyType<java.lang.Character>(){};
+        AnyVal<Integer> n = new AnyVal<Integer>(){};
+        AnyVal<java.lang.Character> c = new AnyVal<java.lang.Character>(){};
         return match(obj)
             .caseOf(n, () -> "aah, a number")
             .caseOf(c, () -> "it's " + c.val())
@@ -238,8 +239,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     String fromTuple(Tuple aPair)
     {
-        Any<Villain> anyVillain = new AnyType<Villain>(){};
-        Any<Object> any = new AnyType<Object>(){};
+        AnyVal<Villain> anyVillain = new AnyVal<Villain>(){};
+        AnyVal<Object> any = new AnyVal<Object>(){};
         return match(aPair)
             .caseOf(Tuple.Tu(42, Math.PI, any), () -> "magic numbers + anything")
             .caseOf(Tuple.Tu(IronMan, Mandarin), () -> "hate each other")
@@ -262,8 +263,8 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
 
     String getStatus(Character person)
     {
-        Any<String> anyName = new AnyType<String>(){};
-        Any<Wealth> anyWealth = new AnyType<Wealth>(){};
+        AnyVal<String> anyName = new AnyVal<String>(){};
+        AnyVal<Wealth> anyWealth = new AnyVal<Wealth>(){};
         return match(person)
             .caseOf(Tuple.Tu(anyName, anyWealth), () -> anyWealth.val().n() >= 10000, () -> "Rich guy")
             .caseOf(() -> "anybody else")
@@ -284,7 +285,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     @Test
     public void testPartials()
     {
-        Any<Integer> anyInt = new AnyType<Integer>(){};
+        AnyVal<Integer> anyInt = new AnyVal<Integer>(){};
         Partial<Integer> partial = Matcher.<Integer>partial()
             .caseOf(8, () -> "eight")
             .caseOf(anyInt, () -> "Number " + anyInt.val());

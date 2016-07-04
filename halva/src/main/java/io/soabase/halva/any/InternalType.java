@@ -9,10 +9,12 @@ import static io.soabase.com.google.inject.internal.MoreTypes.canonicalize;
 class InternalType
 {
     final Type type;
+    final Class<?> rawType;
 
     InternalType(Type type)
     {
         this.type = type;
+        rawType = MoreTypes.getRawType(type);
     }
 
     @SuppressWarnings("unchecked")

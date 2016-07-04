@@ -16,6 +16,7 @@
 package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.processor.Environment;
@@ -412,19 +413,29 @@ class Templates
             return;
         }
 
+        ClassName anyClassName = ClassName.get(Any.class);
         ClassName matchClassName = ClassName.get(AnyVal.class);
         ClassName anyClassTupleName = ClassName.get(AnyClassTuple.class);
         TypeName localCaseClassName = getLocalCaseClassName(className, typeVariableNames);
         TypeName classTupleClassName = ParameterizedTypeName.get(anyClassTupleName, localCaseClassName);
 
-        CodeBlock returnCode = CodeBlock.builder()
-            .addStatement("return new $T($T.Tu($L)){}", classTupleClassName, Tuple.class, spec.getItems().stream().map(CaseClassItem::getName).collect(Collectors.joining(", ")))
-            .build();
+        CodeBlock.Builder returnCode = CodeBlock.builder().add("return new $T($T.Tu(", classTupleClassName, Tuple.class);
+        IntStream.range(0, spec.getItems().size()).forEach(i -> {
+            CaseClassItem item = spec.getItems().get(i);
+            if ( i > 0 )
+            {
+                returnCode.add(", ");
+            }
+            returnCode.add("$T.anyLoose($L)", anyClassName, item.getName());
+        });
+        spec.getItems().forEach(item -> {
+        });
+        returnCode.addStatement(")){}");
 
         MethodSpec.Builder tupleMethod = MethodSpec
             .methodBuilder(getClassTupleMethodName(className))
             .returns(classTupleClassName)
-            .addCode(returnCode)
+            .addCode(returnCode.build())
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
         spec.getItems().forEach(item -> {
             TypeName mainType = null;

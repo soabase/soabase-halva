@@ -1,6 +1,7 @@
 // Auto generated from com.company.GenericExample by Soabase io.soabase.halva.caseclass.CaseClass annotation processor
 package com.company;
 
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.ClassTuplable;
@@ -56,7 +57,7 @@ public class GenericExampleCase<A, B> implements Serializable, GenericExample<A,
     }
 
     public static <A, B> AnyClassTuple<GenericExampleCase<A, B>> GenericExampleCaseMatch(AnyVal<? extends A> first, AnyVal<? extends B> second) {
-        return new AnyClassTuple<GenericExampleCase<A, B>>(Tuple.Tu(first, second)){};
+        return new AnyClassTuple<GenericExampleCase<A, B>>(Tuple.Tu(Any.anyLoose(first), Any.anyLoose(second))){};
     }
 
     @Override

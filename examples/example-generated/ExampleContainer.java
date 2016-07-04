@@ -2,6 +2,7 @@
 package com.company;
 
 import io.soabase.halva.alias.TypeAliasType;
+import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
@@ -62,7 +63,7 @@ public class ExampleContainer {
         }
 
         public static AnyClassTuple<MyStack> MyStackMatch(AnyVal<? extends Stack> stack, AnyVal<? extends Integer> value) {
-            return new AnyClassTuple<MyStack>(Tuple.Tu(stack, value)){};
+            return new AnyClassTuple<MyStack>(Tuple.Tu(Any.anyLoose(stack), Any.anyLoose(value))){};
         }
 
         @Override

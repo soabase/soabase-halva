@@ -17,6 +17,7 @@ package io.soabase.halva.any;
 
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.sugar.ConsList;
+import io.soabase.halva.tuple.ClassTuple;
 import java.util.Optional;
 
 /**
@@ -43,7 +44,7 @@ public interface Any<T>
      * @param tail holder for the value of the tail of the list that matches
      * @return new AnyList
      */
-    static <T> AnyVal<Object> headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
+    static <T> AnyVal<Object> headAnyTail(T head, AnyVal<? extends ConsList<? extends T>> tail)
     {
         return new AnyConsImpl(head, null, null, tail);
     }
@@ -55,7 +56,7 @@ public interface Any<T>
      * @param tail tail to match
      * @return new AnyList
      */
-    static <T> AnyVal<Object> anyHeadTail(Any<T> head, ConsList<T> tail)
+    static <T> AnyVal<Object> anyHeadTail(AnyVal<T> head, ConsList<T> tail)
     {
         return new AnyConsImpl(null, head, tail, null);
     }
@@ -67,7 +68,7 @@ public interface Any<T>
      * @param tail holder for the value of the tail of the list that matches
      * @return new AnyList
      */
-    static <T> AnyVal<Object> anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
+    static <T> AnyVal<Object> anyHeadAnyTail(AnyVal<T> head, AnyVal<? extends ConsList<? extends T>> tail)
     {
         return new AnyConsImpl(null, head, null, tail);
     }
@@ -124,6 +125,15 @@ public interface Any<T>
     static AnyVal<Void> anyNone()
     {
         return new AnyOptional<Void>(null, null){};
+    }
+
+    static <T> AnyVal<T> anyLoose(AnyVal<T> any)
+    {
+        if ( any instanceof ClassTuple )
+        {
+            return any;
+        }
+        return new LooseAny<>(any);
     }
 
     /**

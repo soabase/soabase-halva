@@ -92,7 +92,7 @@ public class TestScalaPatternMatchingTutorialsPoint
 
     public Object matchTest2(Object obj)
     {
-        Any<Integer> i = new AnyType<Integer>(){};
+        AnyVal<Integer> i = new AnyVal<Integer>(){};
         return match(obj)
             .caseOf(1, () -> "one")
             .caseOf("two", () -> 2)

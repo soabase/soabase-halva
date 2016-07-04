@@ -128,11 +128,11 @@ public class MonadicForImpl<M>
 
     private static class Entry<M>
     {
-        final Any any;
+        final AnyVal any;
         final Supplier<M> monadSupplier;
         final List<Filters> filters = new ArrayList<>();
 
-        Entry(Any any, Supplier<M> stream)
+        Entry(AnyVal any, Supplier<M> stream)
         {
             this.any = any;
             this.monadSupplier = stream;

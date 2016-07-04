@@ -15,14 +15,18 @@
  */
 package io.soabase.halva.any;
 
+import io.soabase.com.google.inject.internal.MoreTypes;
+
 class LooseAny<T> extends AnyVal<T>
 {
     private final AnyVal<T> val;
+    private final Class<?> rawType;
 
     LooseAny(AnyVal<T> val)
     {
         super(null, true, false);
         this.val = val;
+        rawType = MoreTypes.getRawType(val.getInternalType().type);
     }
 
     @Override
@@ -38,20 +42,17 @@ class LooseAny<T> extends AnyVal<T>
     }
 
     @Override
-    public boolean canSet(T value)
+    boolean internalCanSet(T value)
     {
-        return val.canSet(value, false);
-    }
-
-    @Override
-    boolean canSetLoose(T value)
-    {
-        return val.canSet(value, false);
-    }
-
-    @Override
-    boolean canSetExact(T value)
-    {
-        throw new UnsupportedOperationException();
+        try
+        {
+            rawType.cast(value);
+            return true;
+        }
+        catch ( ClassCastException dummy )
+        {
+            // dummy
+        }
+        return false;
     }
 }

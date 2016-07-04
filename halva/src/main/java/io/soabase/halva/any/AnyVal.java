@@ -50,37 +50,10 @@ public abstract class AnyVal<T>
 
     public boolean canSet(T value)
     {
-        return isSettable ? canSetExact(value) : matches(value);
+        return isSettable ? internalCanSet(value) : matches(value);
     }
 
-    boolean canSet(T value, boolean exact)
-    {
-        if ( isSettable )
-        {
-            return exact ? canSetExact(value) : canSetLoose(value);
-        }
-        return matches(value);
-    }
-
-    boolean canSetLoose(T value)
-    {
-        if ( internalType != null )
-        {
-            try
-            {
-                internalType.rawType.cast(value);
-                return true;
-            }
-            catch ( ClassCastException dummy )
-            {
-                // dummy
-            }
-            return false;
-        }
-        return false;
-    }
-
-    boolean canSetExact(T value)
+    boolean internalCanSet(T value)
     {
         if ( internalType != null )
         {
@@ -95,6 +68,16 @@ public abstract class AnyVal<T>
             }
         }
         return false;
+    }
+
+    InternalType getInternalType()
+    {
+        return internalType;
+    }
+
+    boolean hasMatchValue()
+    {
+        return matchValue != null;
     }
 
     private boolean matches(T value)

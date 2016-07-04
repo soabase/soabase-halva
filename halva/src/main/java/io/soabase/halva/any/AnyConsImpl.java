@@ -28,9 +28,9 @@ class AnyConsImpl extends AnyVal<Object>
     {
         super(null, true, false);
         this.head = head;
-        this.anyHead = anyHead;
+        this.anyHead = (anyHead != null) ? Any.loose(anyHead) : null;
         this.tail = tail;
-        this.anyTail = anyTail;
+        this.anyTail = (anyTail != null) ? Any.loose(anyTail) : null;
     }
 
     @Override
@@ -68,7 +68,7 @@ class AnyConsImpl extends AnyVal<Object>
             {
                 break;
             }
-            if ( (anyHead != null) && !anyHead.canSetLoose(listHead) )
+            if ( (anyHead != null) && !anyHead.canSet(listHead) )
             {
                 break;
             }
@@ -76,7 +76,7 @@ class AnyConsImpl extends AnyVal<Object>
             {
                 break;
             }
-            if ( (anyTail != null) && !anyTail.canSetLoose(listTail) )
+            if ( (anyTail != null) && !anyTail.canSet(listTail) )
             {
                 break;
             }

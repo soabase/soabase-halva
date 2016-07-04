@@ -127,9 +127,17 @@ public interface Any
         return new AnyOptional<Void>(null, null);
     }
 
-    static <T> AnyVal<T> anyLoose(AnyVal<T> any)
+    static <T> AnyVal<T> loose(AnyVal<T> any)
     {
         if ( any instanceof ClassTuple )
+        {
+            return any;
+        }
+        if ( any instanceof AnyAlias )
+        {
+            return any;
+        }
+        if ( any.hasMatchValue() )
         {
             return any;
         }

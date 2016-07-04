@@ -88,7 +88,7 @@ class AnyOptional<T> extends AnyVal<T>
                     {
                         return false;
                     }
-                    return holder.canSetExact(optional.get());
+                    return holder.internalCanSet(optional.get());
                 }
                 return (this.holder == null);
             }

@@ -40,6 +40,6 @@ public abstract class AnyType<T> extends AnyVal<T>
     @Override
     public final boolean canSet(T value)
     {
-        return canSetExact(value);
+        return internalCanSet(value);
     }
 }

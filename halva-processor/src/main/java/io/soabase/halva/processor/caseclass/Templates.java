@@ -426,7 +426,7 @@ class Templates
             {
                 returnCode.add(", ");
             }
-            returnCode.add("$T.anyLoose($L)", anyClassName, item.getName());
+            returnCode.add("$T.loose($L)", anyClassName, item.getName());
         });
         spec.getItems().forEach(item -> {
         });

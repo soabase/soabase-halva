@@ -47,17 +47,11 @@ class AnyAlias<T extends REAL, REAL> extends AnyVal<T>
     @Override
     public final boolean canSet(T value)
     {
-        return typeAliasType.getAliasType().canSetExact(typeAliasType.wrap(value));
+        return typeAliasType.getAliasType().internalCanSet(typeAliasType.wrap(value));
     }
 
     @Override
-    public final boolean canSetLoose(T value)
-    {
-        return typeAliasType.getAliasType().canSetLoose(typeAliasType.wrap(value));
-    }
-
-    @Override
-    boolean canSetExact(T value)
+    boolean internalCanSet(T value)
     {
         return canSet(value);
     }

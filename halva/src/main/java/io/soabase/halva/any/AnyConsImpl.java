@@ -24,6 +24,7 @@ class AnyConsImpl extends AnyVal<Object>
     private final ConsList tail;
     private final AnyVal anyTail;
 
+    @SuppressWarnings("unchecked")
     AnyConsImpl(Object head, AnyVal anyHead, ConsList tail, AnyVal anyTail)
     {
         super(null, true, false);

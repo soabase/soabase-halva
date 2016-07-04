@@ -20,9 +20,6 @@ import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-/**
- * Main factory for pattern matching
- */
 public class MatcherNext<RES, ARG> extends Getter<RES, ARG> implements CasesBase<RES, ARG, MatcherNext<RES, ARG>>
 {
     private AnyVal nextBinder = null;

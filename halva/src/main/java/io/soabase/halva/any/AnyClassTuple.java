@@ -18,6 +18,9 @@ package io.soabase.halva.any;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuple;
 
+/**
+ * Used internally by Case Classes
+ */
 public abstract class AnyClassTuple<T> extends AnyVal<T> implements ClassTuple
 {
     private final Tuple tuple;

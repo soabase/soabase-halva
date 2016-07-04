@@ -16,6 +16,7 @@
 package io.soabase.halva.any;
 
 import io.soabase.halva.alias.TypeAliasType;
+import io.soabase.halva.comprehension.For;
 import io.soabase.halva.sugar.ConsList;
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +27,11 @@ import java.util.Optional;
 public interface Any
 {
     /**
-     * Return a new AnyList that matches the given head of a list and the given tail of a list
+     * Return a new AnyVal that matches the given head of a list and the given tail of a list
      *
      * @param head head to match
      * @param tail tail to match
-     * @return new AnyList
+     * @return new AnyVal
      */
     static <T> AnyVal<Object> headTail(T head, ConsList<T> tail)
     {
@@ -38,11 +39,11 @@ public interface Any
     }
 
     /**
-     * Return a new AnyList that matches the given head of a list and any tail of a list
+     * Return a new AnyVal that matches the given head of a list and any tail of a list
      *
      * @param head head to match
      * @param tail holder for the value of the tail of the list that matches
-     * @return new AnyList
+     * @return new AnyVal
      */
     static <T> AnyVal<Object> headAnyTail(T head, AnyVal<? extends List<? extends T>> tail)
     {
@@ -50,11 +51,11 @@ public interface Any
     }
 
     /**
-     * Return a new AnyList that matches any head of a list and the given tail of a list
+     * Return a new AnyVal that matches any head of a list and the given tail of a list
      *
      * @param head holder for the value of the head of the list that matches
      * @param tail tail to match
-     * @return new AnyList
+     * @return new AnyVal
      */
     static <T> AnyVal<Object> anyHeadTail(AnyVal<T> head, ConsList<T> tail)
     {
@@ -62,11 +63,11 @@ public interface Any
     }
 
     /**
-     * Return a new AnyList that matches any head of a list and any tail of a list
+     * Return a new AnyVal that matches any head of a list and any tail of a list
      *
      * @param head holder for the value of the head of the list that matches
      * @param tail holder for the value of the tail of the list that matches
-     * @return new AnyList
+     * @return new AnyVal
      */
     static <T> AnyVal<Object> anyHeadAnyTail(AnyVal<T> head, AnyVal<? extends List<? extends T>> tail)
     {
@@ -74,9 +75,9 @@ public interface Any
     }
 
     /**
-     * Return a new Any that matches any alias and will hold its value.
+     * Return a new AnyVal that matches any alias and will hold its value.
      *
-     * @return Any for the given alias type
+     * @return AnyVal for the given alias type
      */
     static <T extends REAL, REAL> AnyVal<T> typeAlias(TypeAliasType<REAL, T> typeAliasType)
     {
@@ -84,9 +85,9 @@ public interface Any
     }
 
     /**
-     * Returns an Any that matches any null value
+     * Returns an AnyVal that matches any null value
      *
-     * @return Any for nulls
+     * @return AnyVal for nulls
      */
     static AnyVal<?> anyNull()
     {
@@ -94,15 +95,15 @@ public interface Any
     }
 
     /**
-     * Returns a new Any that matches a present Optional. The given value
+     * Returns a new AnyVal that matches a present Optional. The given value
      * is assigned the value of the optional on match.
      *
      * @param value will get the value of the optional
-     * @return a new any
+     * @return a new AnyVal
      */
     static <T> AnyVal<T> anySome(AnyVal<T> value)
     {
-        return new AnyOptional<T>(value, null);
+        return new AnyOptional<>(value, null);
     }
 
     /**
@@ -110,35 +111,57 @@ public interface Any
      * is assigned the optional itself on match.
      *
      * @param value will get the optional
-     * @return a new any
+     * @return a new AnyVal
      */
     static <T> AnyVal<T> anyOptional(AnyVal<Optional<T>> value)
     {
-        return new AnyOptional<T>(null, value);
+        return new AnyOptional<>(null, value);
     }
 
     /**
-     * Returns a new Any that matches an empty Optional.
+     * Returns a new AnyVal that matches an empty Optional.
      *
-     * @return a new any
+     * @return a new AnyVal
      */
     static AnyVal<Void> anyNone()
     {
-        return new AnyOptional<Void>(null, null);
+        return new AnyOptional<>(null, null);
     }
 
-    static <T> AnyVal<T> loose(AnyVal<T> any)
-    {
-        return any.loosely();
-    }
-
+    /**
+     * Returns a new AnyVal that matches the given literal value
+     *
+     * @param matchValue constant/literal to match
+     * @return a new AnyVal
+     */
     static <T> AnyVal<T> lit(T matchValue)
     {
         return new AnyVal<T>(matchValue, false, false){};
     }
 
+    /**
+     * Returns a simple value container that cannot be set via pattern matching. This is useful
+     * only for {@link For} comprehensions.
+     *
+     * @return a new AnyVal
+     */
     static <T> AnyVal<T> any()
     {
         return new AnyVal<T>(null, false, false){};
+    }
+
+    /**
+     * <p>Return a new AnyVal that <em>loosely</em> matches values. <strong>USE WITH CAUTION!</strong>.
+     * This AnyVal will match on only the erased type. Improper usage will result in a
+     * {@link ClassCastException}</p>
+     *
+     * <p>The given AnyVal receives the matching value.</p>
+     *
+     * @param any the actual AnyVal that receives matching calues
+     * @return a new AnyVal
+     */
+    static <T> AnyVal<T> loose(AnyVal<T> any)
+    {
+        return any.loosely();
     }
 }

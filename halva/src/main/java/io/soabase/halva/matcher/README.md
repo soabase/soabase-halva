@@ -61,7 +61,7 @@ For example, given this Case Class...
 public static AnyClassTuple<ExampleCase> ExampleCaseAny(AnyVal<? extends String> name, AnyVal<? extends Integer> age)
 ```
 
-This can be used with Halva's [Matching and Extracting](../matcher/README.md) to match/extract values in the case class. For example,
+This can be used to match/extract values in the case class. For example,
 to match a PersonCase instance with the name "John Galt" and extract the age:
 
 ```java

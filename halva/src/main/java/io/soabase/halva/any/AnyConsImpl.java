@@ -17,7 +17,7 @@ package io.soabase.halva.any;
 
 import io.soabase.halva.sugar.ConsList;
 
-class AnyConsImpl extends AnyList
+class AnyConsImpl extends AnyVal<Object>
 {
     private final Object head;
     private final Any anyHead;
@@ -26,6 +26,7 @@ class AnyConsImpl extends AnyList
 
     AnyConsImpl(Object head, Any anyHead, ConsList tail, Any anyTail)
     {
+        super(null, true, false);
         this.head = head;
         this.anyHead = anyHead;
         this.tail = tail;
@@ -33,7 +34,7 @@ class AnyConsImpl extends AnyList
     }
 
     @Override
-    public Void val()
+    public Object val()
     {
         return null;
     }

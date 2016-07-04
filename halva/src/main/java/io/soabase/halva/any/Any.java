@@ -31,7 +31,7 @@ public interface Any<T>
      * @param tail tail to match
      * @return new AnyList
      */
-    static <T> AnyList headTail(T head, ConsList<T> tail)
+    static <T> AnyVal<Object> headTail(T head, ConsList<T> tail)
     {
         return new AnyConsImpl(head, null, tail, null);
     }
@@ -43,7 +43,7 @@ public interface Any<T>
      * @param tail holder for the value of the tail of the list that matches
      * @return new AnyList
      */
-    static <T> AnyList headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
+    static <T> AnyVal<Object> headAnyTail(T head, Any<? extends ConsList<? extends T>> tail)
     {
         return new AnyConsImpl(head, null, null, tail);
     }
@@ -55,7 +55,7 @@ public interface Any<T>
      * @param tail tail to match
      * @return new AnyList
      */
-    static <T> AnyList anyHeadTail(Any<T> head, ConsList<T> tail)
+    static <T> AnyVal<Object> anyHeadTail(Any<T> head, ConsList<T> tail)
     {
         return new AnyConsImpl(null, head, tail, null);
     }
@@ -67,7 +67,7 @@ public interface Any<T>
      * @param tail holder for the value of the tail of the list that matches
      * @return new AnyList
      */
-    static <T> AnyList anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
+    static <T> AnyVal<Object> anyHeadAnyTail(Any<T> head, Any<? extends ConsList<? extends T>> tail)
     {
         return new AnyConsImpl(null, head, null, tail);
     }
@@ -87,7 +87,7 @@ public interface Any<T>
      *
      * @return Any for nulls
      */
-    static AnyNull anyNull()
+    static AnyVal<?> anyNull()
     {
         return AnyNull.instance;
     }
@@ -99,7 +99,7 @@ public interface Any<T>
      * @param value will get the value of the optional
      * @return a new any
      */
-    static <T> AnyOptional<T> anySome(AnyVal<T> value)
+    static <T> AnyVal<T> anySome(AnyVal<T> value)
     {
         return new AnyOptional<T>(value, null){};
     }
@@ -111,7 +111,7 @@ public interface Any<T>
      * @param value will get the optional
      * @return a new any
      */
-    static <T> AnyOptional<T> anyOptional(AnyVal<Optional<T>> value)
+    static <T> AnyVal<T> anyOptional(AnyVal<Optional<T>> value)
     {
         return new AnyOptional<T>(null, value){};
     }
@@ -121,7 +121,7 @@ public interface Any<T>
      *
      * @return a new any
      */
-    static AnyOptional<Void> anyNone()
+    static AnyVal<Void> anyNone()
     {
         return new AnyOptional<Void>(null, null){};
     }

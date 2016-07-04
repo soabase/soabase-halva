@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.soabase.halva.any.AnyVal.val;
+import static io.soabase.halva.any.AnyVal.lit;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.BinOp.BinOp;
 import static io.soabase.halva.nettests.BinOp.BinOpMatch;
@@ -97,9 +97,9 @@ public class TestCaseClassesAndPatternMatching
     {
         AnyVal<Expr> e = new AnyVal<Expr>(){};
         return match(expr)
-            .caseOf( UnOpMatch(val("-"), UnOpMatch(val("-"), e)), e::val )   // Double negation
-            .caseOf( BinOpMatch(val("+"), e, val(Number(0))), e::val )   // Adding zero
-            .caseOf( BinOpMatch(val("*"), e, val(Number(1))), e::val )   // Multiplying by one
+            .caseOf( UnOpMatch(lit("-"), UnOpMatch(lit("-"), e)), e::val)   // Double negation
+            .caseOf( BinOpMatch(lit("+"), e, lit(Number(0))), e::val)   // Adding zero
+            .caseOf( BinOpMatch(lit("*"), e, lit(Number(1))), e::val)   // Multiplying by one
             .caseOf( () -> expr )
             .get()
             ;

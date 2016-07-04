@@ -18,12 +18,13 @@ package io.soabase.halva.any;
 /**
  * Represents portions of a list
  */
-public abstract class AnyNull implements Any<Object>
+abstract class AnyNull extends AnyVal<Object>
 {
     static final AnyNull instance = new AnyNull(){};
 
     AnyNull()
     {
+        super(false, false, false);
     }
 
     @Override

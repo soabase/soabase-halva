@@ -17,16 +17,14 @@ package io.soabase.halva.any;
 
 import java.util.Optional;
 
-/**
- * Represents portions of a list
- */
-public abstract class AnyOptional<T> implements Any<T>
+abstract class AnyOptional<T> extends AnyVal<T>
 {
     private final AnyVal holder;
     private final AnyVal<? extends Optional> optionalHolder;
 
     AnyOptional(AnyVal holder, AnyVal<? extends Optional> optionalHolder)
     {
+        super(null, true, false);
         this.holder = holder;
         this.optionalHolder = optionalHolder;
     }

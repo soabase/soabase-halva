@@ -1,18 +1,15 @@
 package io.soabase.halva.examples;
 
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseObject;
-import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.Pair;
 import java.util.function.Function;
 
-import static io.soabase.halva.any.Any.headAnyTail;
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.examples.Add.Add;
 import static io.soabase.halva.examples.Add.AddMatch;

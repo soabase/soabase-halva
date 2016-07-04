@@ -16,7 +16,6 @@
 package io.soabase.halva.tuple;
 
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyList;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
@@ -59,10 +58,10 @@ public class TestTuple
         Any<Pair<String, Integer>> p = new AnyVal<Pair<String, Integer>>(){};
         Any<ConsList<? extends Pair<String, Integer>>> t = new AnyVal<ConsList<? extends Pair<String, Integer>>>(){};
 
-        AnyList a = Any.headAnyTail(Pair("10", 10), t);
-        AnyList b = Any.headTail(Pair("-10", -10), List(Pair("20", 20)));
-        AnyList c = Any.anyHeadTail(p, List(Pair("20", 20), Pair("30", 30)));
-        AnyList d = Any.anyHeadAnyTail(p, t);
+        AnyVal<?> a = Any.headAnyTail(Pair("10", 10), t);
+        AnyVal<?> b = Any.headTail(Pair("-10", -10), List(Pair("20", 20)));
+        AnyVal<?> c = Any.anyHeadTail(p, List(Pair("20", 20), Pair("30", 30)));
+        AnyVal<?> d = Any.anyHeadAnyTail(p, t);
 
         return match(list)
             .caseOf(List(), () -> "empty")

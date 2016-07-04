@@ -17,9 +17,6 @@ package io.soabase.halva.caseclass;
 
 import com.company.GenericExampleCase;
 import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyList;
-import io.soabase.halva.any.AnyNull;
-import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.matcher.MatchError;
@@ -33,6 +30,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
+import static io.soabase.halva.any.Any.anyNone;
+import static io.soabase.halva.any.Any.anyNull;
+import static io.soabase.halva.any.AnyVal.lit;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseMatch;
 import static io.soabase.halva.caseclass.ChairCase.ChairCase;
@@ -40,11 +40,10 @@ import static io.soabase.halva.caseclass.ChairCase.ChairCaseMatch;
 import static io.soabase.halva.caseclass.Value.Value;
 import static io.soabase.halva.caseclass.Value.ValueMatch;
 import static io.soabase.halva.comprehension.For.forComp;
-import static io.soabase.halva.matcher.Matcher.*;
+import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.Tu;
-import static io.soabase.halva.any.AnyVal.val;
 
 public class TestMatcher
 {
@@ -106,8 +105,8 @@ public class TestMatcher
     {
         ConsList<Pair<String, Integer>> list = List(Pair("even", 2), Pair("even", 4));
 
-        Any<ConsList<Pair>> anyPairList = new AnyVal<ConsList<Pair>>(){};
-        AnyList patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair>(){}, anyPairList);
+        AnyVal<ConsList<Pair>> anyPairList = new AnyVal<ConsList<Pair>>(){};
+        AnyVal<?> patternMatcher = Any.anyHeadAnyTail(new AnyType<Pair>(){}, anyPairList);
         String str = match(list)
             .caseOf(patternMatcher, () -> "The tail is: " + anyPairList.val())
             .get();
@@ -123,7 +122,7 @@ public class TestMatcher
         AnyVal<Integer> age = new AnyVal<Integer>(){};
         return match(obj)
             .caseOf(AnimalCaseMatch(s, age), age::val)
-            .caseOf(ChairCaseMatch(s, val(3), age), age::val)
+            .caseOf(ChairCaseMatch(s, lit(3), age), age::val)
             .caseOf(() -> 0)
             .get();
     }
@@ -147,7 +146,7 @@ public class TestMatcher
     @Test
     public void testMatchNull()
     {
-        AnyNull n = anyNull();
+        AnyVal<?> n = anyNull();
         String result = match(null)
             .caseOf(n, () -> "Yes it's null")
             .caseOf(() -> "No it's not null")
@@ -160,8 +159,8 @@ public class TestMatcher
     {
         AnyVal<String> s = new AnyVal<String>(){};
         AnyVal<Integer> i = new AnyVal<Integer>(){};
-        AnyOptional<Integer> some = Any.anySome(i);
-        AnyOptional<String> someStr = Any.anySome(s);
+        AnyVal<Integer> some = Any.anySome(i);
+        AnyVal<String> someStr = Any.anySome(s);
         String result = match(Optional.of(10))
             .caseOf(someStr, () -> "It's a string: " + s.val())
             .caseOf(some, () -> "It's an int: " + i.val())

@@ -30,7 +30,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static io.soabase.halva.any.AnyVal.val;
+import static io.soabase.halva.any.AnyVal.lit;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
@@ -162,7 +162,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
          */
         AnyVal<Integer> anyAge = new AnyVal<Integer>(){};
         String result = match(Guy("Dr. Who", Integer.MAX_VALUE))
-            .caseOf(GuyMatch(val("Dr. Who"), anyAge), () -> "Exactly!")
+            .caseOf(GuyMatch(lit("Dr. Who"), anyAge), () -> "Exactly!")
             .caseOf(() -> "anyone!")
             .get();
         Assert.assertEquals("Exactly!", result);
@@ -173,7 +173,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
         AnyVal<String> anyName = new AnyVal<String>(){};
         AnyVal<List<Power>> anyPowers = new AnyVal<List<Power>>(){};
         return match(person)
-            .caseOf(SuperHeroMatch(anyName, anyPowers, val(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
+            .caseOf(SuperHeroMatch(anyName, anyPowers, lit(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
             .get();
     }

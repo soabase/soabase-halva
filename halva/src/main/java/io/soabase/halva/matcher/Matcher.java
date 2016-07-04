@@ -15,9 +15,6 @@
  */
 package io.soabase.halva.matcher;
 
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyNull;
-import io.soabase.halva.any.AnyOptional;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
@@ -50,26 +47,6 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
     public static <ARG> Partial<ARG> partial()
     {
         return new PartialImpl<>();
-    }
-
-    /**
-     * Returns an Any that matches any null value
-     *
-     * @return Any for nulls
-     */
-    public static AnyNull anyNull()
-    {
-        return Any.anyNull();
-    }
-
-    /**
-     * Returns a new Any that matches an empty Optional.
-     *
-     * @return a new any
-     */
-    public static AnyOptional<Void> anyNone()
-    {
-        return Any.anyNone();
     }
 
     <T> Matcher<ARG> register(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)

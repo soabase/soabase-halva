@@ -1,15 +1,13 @@
 package io.soabase.halva.any;
 
-import static io.soabase.halva.any.AnyType.getInternalType;
-
 public abstract class AnyVal<T> implements Any<T>
 {
     private final T matchValue;
     private T value;
-    private final AnyType.InternalType internalType;
+    private final InternalType internalType;
     private final boolean isSettable;
 
-    public static <T> AnyVal<T> val(T matchValue)
+    public static <T> AnyVal<T> lit(T matchValue)
     {
         return new AnyVal<T>(matchValue, false, false){};
     }
@@ -27,7 +25,7 @@ public abstract class AnyVal<T> implements Any<T>
     AnyVal(T matchValue, boolean isSettable, boolean throwIfMisspecified)
     {
         this.matchValue = matchValue;
-        this.internalType = getInternalType(getClass(), throwIfMisspecified);
+        this.internalType = InternalType.getInternalType(getClass(), throwIfMisspecified);
         this.isSettable = isSettable;
     }
 
@@ -55,6 +53,18 @@ public abstract class AnyVal<T> implements Any<T>
 
     boolean canSetExact(T value)
     {
-        return AnyImpl.canSetExact(value, internalType);
+        if ( internalType != null )
+        {
+            try
+            {
+                InternalType valueType = InternalType.getInternalType(value.getClass(), false);
+                return internalType.isAssignableFrom(valueType);
+            }
+            catch ( ClassCastException dummy )
+            {
+                // dummy
+            }
+        }
+        return false;
     }
 }

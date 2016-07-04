@@ -102,7 +102,7 @@ public interface Any
      */
     static <T> AnyVal<T> anySome(AnyVal<T> value)
     {
-        return new AnyOptional<T>(value, null){};
+        return new AnyOptional<T>(value, null);
     }
 
     /**
@@ -114,7 +114,7 @@ public interface Any
      */
     static <T> AnyVal<T> anyOptional(AnyVal<Optional<T>> value)
     {
-        return new AnyOptional<T>(null, value){};
+        return new AnyOptional<T>(null, value);
     }
 
     /**
@@ -124,7 +124,7 @@ public interface Any
      */
     static AnyVal<Void> anyNone()
     {
-        return new AnyOptional<Void>(null, null){};
+        return new AnyOptional<Void>(null, null);
     }
 
     static <T> AnyVal<T> anyLoose(AnyVal<T> any)

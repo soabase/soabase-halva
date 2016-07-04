@@ -18,9 +18,9 @@ package io.soabase.halva.any;
 /**
  * Represents portions of a list
  */
-abstract class AnyNull extends AnyVal<Object>
+class AnyNull extends AnyVal<Object>
 {
-    static final AnyNull instance = new AnyNull(){};
+    static final AnyNull instance = new AnyNull();
 
     AnyNull()
     {

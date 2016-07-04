@@ -17,7 +17,7 @@ package io.soabase.halva.any;
 
 import java.util.Optional;
 
-abstract class AnyOptional<T> extends AnyVal<T>
+class AnyOptional<T> extends AnyVal<T>
 {
     private final AnyVal holder;
     private final AnyVal<? extends Optional> optionalHolder;

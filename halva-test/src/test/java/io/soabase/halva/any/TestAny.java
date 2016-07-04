@@ -21,7 +21,6 @@ import io.soabase.halva.tuple.Pair;
 import io.soabase.halva.tuple.Tuple;
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.List;
 
 import static io.soabase.halva.sugar.Sugar.List;
@@ -46,7 +45,7 @@ public class TestAny
     {
         AnyVal<String> s = new AnyVal<String>(){};
         AnyVal<Integer> v = new AnyVal<Integer>(){};
-        AnyVal<Environment> e = Any.typeAlias(Environment.TypeAliasType);
+        AnyVal<List<Object>> e = new AnyVal<List<Object>>(){};
         AnyVal<Object> cons = Any.headAnyTail(Pair(s, v), e);
 
         Assert.assertTrue(cons.canSet(List(Pair("10", 10), Pair("20", 20), Pair("30", 30))));

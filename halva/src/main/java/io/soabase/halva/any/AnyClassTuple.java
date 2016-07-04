@@ -39,4 +39,10 @@ public abstract class AnyClassTuple<T> extends AnyVal<T> implements ClassTuple
     {
         return tuple;
     }
+
+    @Override
+    AnyVal<T> loosely()
+    {
+        return this;
+    }
 }

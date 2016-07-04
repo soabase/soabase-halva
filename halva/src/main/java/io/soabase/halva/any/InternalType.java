@@ -58,26 +58,17 @@ class InternalType
     @SuppressWarnings({"ConstantConditions", "unchecked"})
     boolean isAssignableFrom(InternalType from)
     {
-        //noinspection LoopStatementThatDoesntLoop
-        do
+        if ( MoreTypes.equals(type, from.type) )
         {
-            if ( (type == null) && (from.type != null) )
-            {
-                break;
-            }
+            return true;
+        }
 
-            if ( (type != null) && (from.type == null) )
-            {
-                break;
-            }
-
-            if ( (type instanceof Class) != (from.type instanceof Class) )
-            {
-                return type.equals(from.type);
-            }
-
+        //noinspection SimplifiableIfStatement
+        if ( (type instanceof Class) && (from.type instanceof Class) )
+        {
             return ((Class)type).isAssignableFrom((Class)from.type);
-        } while ( false );
+        }
+
         return false;
     }
 }

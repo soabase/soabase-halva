@@ -99,4 +99,10 @@ class AnyOptional<T> extends AnyVal<T>
         }
         return false;
     }
+
+    @Override
+    AnyVal<T> loosely()
+    {
+        return this;
+    }
 }

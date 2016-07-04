@@ -75,9 +75,9 @@ public abstract class AnyVal<T>
         return internalType;
     }
 
-    boolean hasMatchValue()
+    AnyVal<T> loosely()
     {
-        return matchValue != null;
+        return isSettable ? new LooseAny<>(this) : this;
     }
 
     private boolean matches(T value)

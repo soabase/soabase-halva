@@ -17,7 +17,7 @@ package io.soabase.halva.any;
 
 import io.soabase.halva.alias.TypeAliasType;
 import io.soabase.halva.sugar.ConsList;
-import io.soabase.halva.tuple.ClassTuple;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -44,7 +44,7 @@ public interface Any
      * @param tail holder for the value of the tail of the list that matches
      * @return new AnyList
      */
-    static <T> AnyVal<Object> headAnyTail(T head, AnyVal<? extends ConsList<? extends T>> tail)
+    static <T> AnyVal<Object> headAnyTail(T head, AnyVal<? extends List<? extends T>> tail)
     {
         return new AnyConsImpl(head, null, null, tail);
     }
@@ -68,7 +68,7 @@ public interface Any
      * @param tail holder for the value of the tail of the list that matches
      * @return new AnyList
      */
-    static <T> AnyVal<Object> anyHeadAnyTail(AnyVal<T> head, AnyVal<? extends ConsList<? extends T>> tail)
+    static <T> AnyVal<Object> anyHeadAnyTail(AnyVal<T> head, AnyVal<? extends List<? extends T>> tail)
     {
         return new AnyConsImpl(null, head, null, tail);
     }
@@ -129,19 +129,7 @@ public interface Any
 
     static <T> AnyVal<T> loose(AnyVal<T> any)
     {
-        if ( any instanceof ClassTuple )
-        {
-            return any;
-        }
-        if ( any instanceof AnyAlias )
-        {
-            return any;
-        }
-        if ( any.hasMatchValue() )
-        {
-            return any;
-        }
-        return new LooseAny<>(any);
+        return any.loosely();
     }
 
     static <T> AnyVal<T> lit(T matchValue)

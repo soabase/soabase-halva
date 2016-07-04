@@ -76,8 +76,11 @@ class PassCreateClass implements Pass
         }
         builder.addSuperinterface(baseType)
             .addSuperinterface(Tuplable.class)
-            .addSuperinterface(ClassTuplable.class)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
+        if ( !isCaseObject )
+        {
+            builder.addSuperinterface(ClassTuplable.class);
+        }
 
         Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, spec.getAnnotatedElement().getTypeParameters());
         boolean json = spec.getAnnotationReader().getBoolean("json");
@@ -101,6 +104,7 @@ class PassCreateClass implements Pass
             templates.addBuilder(spec, builder, generatedClass.getGenerated(), json, typeVariableNames);
             templates.addCopy(builder, generatedClass.getGenerated(), typeVariableNames);
             templates.addApplyBuilder(spec, builder, generatedClass.getGenerated(), typeVariableNames);
+            templates.addClassTuple(spec, builder, generatedClass.getGenerated(), json, typeVariableNames);
         }
         if ( !asEnum )
         {
@@ -111,8 +115,6 @@ class PassCreateClass implements Pass
         templates.addTuple(spec, builder);
         templates.addDebugString(spec, builder, generatedClass.getGenerated());
         templates.addToString(spec, builder, generatedClass.getGenerated());
-        templates.addClassTupleMethods(spec, builder, generatedClass.getGenerated(), typeVariableNames);
-        templates.addClassTuple(spec, builder, generatedClass.getGenerated(), json);
 
         environment.createSourceFile(packageName, generatedClass.getOriginal(), generatedClass.getGenerated(), spec.getAnnotationReader().getFullName(), builder, spec.getAnnotatedElement());
     }

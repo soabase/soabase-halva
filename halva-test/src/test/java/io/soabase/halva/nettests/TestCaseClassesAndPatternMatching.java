@@ -27,12 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.soabase.halva.any.AnyVal.val;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.BinOp.BinOp;
-import static io.soabase.halva.nettests.BinOp.BinOpTu;
 import static io.soabase.halva.nettests.Number.Number;
 import static io.soabase.halva.nettests.UnOp.UnOp;
-import static io.soabase.halva.nettests.UnOp.UnOpTu;
 import static io.soabase.halva.nettests.Var.Var;
 
 // from http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html
@@ -94,11 +93,11 @@ public class TestCaseClassesAndPatternMatching
      */
     Expr simplifyTop(Expr expr)
     {
-        Any<Expr> e = new AnyType<Expr>(){};
+        AnyVal<Expr> e = new AnyVal<Expr>(){};
         return match(expr)
-            .caseOf( UnOpTu("-", UnOpTu("-", e)), e::val)   // Double negation
-            .caseOf( BinOpTu("+", e, Number(0)), e::val)   // Adding zero
-            .caseOf( BinOpTu("*", e, Number(1)), e::val)   // Multiplying by one
+            .caseOf( UnOp(val("-"), UnOp(val("-"), e)), e::val )   // Double negation
+            .caseOf( BinOp(val("+"), e, val(Number(0))), e::val )   // Adding zero
+            .caseOf( BinOp(val("*"), e, val(Number(1))), e::val )   // Multiplying by one
             .caseOf( () -> expr )
             .get()
             ;

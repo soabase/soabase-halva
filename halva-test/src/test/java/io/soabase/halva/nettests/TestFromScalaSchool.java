@@ -15,9 +15,8 @@
  */
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyType;
 import io.soabase.halva.sugar.ConsList;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PhoneExt.PhoneExt;
-import static io.soabase.halva.nettests.PhoneExt.PhoneExtTu;
 import static io.soabase.halva.sugar.Sugar.List;
 
 public class TestFromScalaSchool
@@ -56,11 +54,11 @@ public class TestFromScalaSchool
     @Test
     public void testTheMysteryCase()
     {
-        Any<String> name = new AnyType<String>(){};
-        Any<Integer> extension = new AnyType<Integer>(){};
+        AnyVal<String> name = new AnyVal<String>(){};
+        AnyVal<Integer> extension = new AnyVal<Integer>(){};
         ConsList<PhoneExt> extensions = List(PhoneExt("steve", 100), PhoneExt("robey", 200));
         List<PhoneExt> lessThan200 = extensions.stream()
-            .filter(e -> match(e).caseOf(PhoneExtTu(name, extension), () -> extension.val() < 200).get())
+            .filter(e -> match(e).caseOf(PhoneExt(name, extension), () -> extension.val() < 200).get())
             .collect(Collectors.toList());
         Assert.assertEquals(List(PhoneExt("steve", 100)), lessThan200);
     }

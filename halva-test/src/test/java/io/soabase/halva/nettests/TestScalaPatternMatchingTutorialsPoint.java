@@ -16,6 +16,7 @@
 
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PersonTPCase.PersonTPCase;
-import static io.soabase.halva.nettests.PersonTPCase.PersonTPCaseTu;
 
 // from http://www.tutorialspoint.com/scala/scala_pattern_matching.htm
 public class TestScalaPatternMatchingTutorialsPoint
@@ -145,13 +145,13 @@ public class TestScalaPatternMatchingTutorialsPoint
         PersonTP bob = PersonTPCase("Bob", 32);
         PersonTP charlie = PersonTPCase("Charlie", 32);
 
-        Any<String> anyName = new AnyType<String>(){};
-        Any<Integer> anyAge = new AnyType<Integer>(){};
+        AnyVal<String> anyName = new AnyVal<String>(){};
+        AnyVal<Integer> anyAge = new AnyVal<Integer>(){};
         List<String> messages = Arrays.asList(alice, bob, charlie).stream()
             .map(person -> match(person)
                         .caseOf(PersonTPCase("Alice", 25), () -> "Hi Alice!")
                         .caseOf(PersonTPCase("Bob", 32), () -> "Hi Bob!")
-                        .caseOf(PersonTPCaseTu(anyName, anyAge), () -> "Age: " + anyAge.val() + " year, name: " + anyName.val() + "?")
+                        .caseOf(PersonTPCase(anyName, anyAge), () -> "Age: " + anyAge.val() + " year, name: " + anyName.val() + "?")
                         .<String>get())
             .collect(Collectors.toList());
 

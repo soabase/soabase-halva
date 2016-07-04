@@ -7,26 +7,28 @@ public abstract class AnyVal<T> implements Any<T>
     private final T matchValue;
     private T value;
     private final AnyType.InternalType internalType;
+    private final boolean isSettable;
 
     public static <T> AnyVal<T> val(T matchValue)
     {
-        return new AnyVal<T>(matchValue, false){};
+        return new AnyVal<T>(matchValue, false, false){};
     }
 
     public static <T> AnyVal<T> any()
     {
-        return val(null);
+        return new AnyVal<T>(null, false, false){};
     }
 
     protected AnyVal()
     {
-        this(null, true);
+        this(null, true, true);
     }
 
-    private AnyVal(T matchValue, boolean throwIfMisspecified)
+    AnyVal(T matchValue, boolean isSettable, boolean throwIfMisspecified)
     {
         this.matchValue = matchValue;
         this.internalType = getInternalType(getClass(), throwIfMisspecified);
+        this.isSettable = isSettable;
     }
 
     @Override
@@ -48,7 +50,7 @@ public abstract class AnyVal<T> implements Any<T>
     @Override
     public boolean canSet(T value)
     {
-        return (matchValue == null) || matchValue.equals(value);
+        return isSettable || ((matchValue != null) && matchValue.equals(value));
     }
 
     boolean canSetExact(T value)

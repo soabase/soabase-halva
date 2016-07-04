@@ -16,10 +16,9 @@
 package io.soabase.halva.processor.caseclass;
 
 import com.squareup.javapoet.*;
+import io.soabase.halva.any.AnyClassTuple;
 import io.soabase.halva.any.AnyVal;
-import io.soabase.halva.processor.Constants;
 import io.soabase.halva.processor.Environment;
-import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
 import javax.lang.model.element.Element;
@@ -182,7 +181,7 @@ class Templates
                 .collect(Collectors.joining(", "));
 
             codeBlock = CodeBlock.builder()
-                .addStatement("return $T.$L($L)", Tuple.class, Constants.TUPLE_METHOD, args)
+                .addStatement("return $T.Tu($L)", Tuple.class, args)
                 .build();
         }
         else
@@ -385,36 +384,6 @@ class Templates
         return rawClassname;
     }
 
-    void addClassTupleMethods(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
-    {
-        if ( spec.getItems().size() == 0 )
-        {
-            return;
-        }
-
-        String classTupleName = className.simpleName() + Constants.TUPLE_METHOD;
-        CodeBlock returnCode = CodeBlock.builder()
-            .addStatement("return $L($L)", classTupleName, spec.getItems().stream().map(CaseClassItem::getName).collect(Collectors.joining(", ")))
-            .build();
-
-        ClassName matchClassName = ClassName.get(AnyVal.class);
-        ClassName classTupleClassName = ClassName.get(ClassTuple.class);
-
-        MethodSpec.Builder tupleMethod = MethodSpec
-            .methodBuilder(className.simpleName())
-            .returns(classTupleClassName)
-            .addCode(returnCode)
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
-        spec.getItems().forEach(item -> tupleMethod.addParameter(ParameterizedTypeName.get(matchClassName, TypeName.get(item.getType()).box()), item.getName()));
-
-        if ( typeVariableNames.isPresent() )
-        {
-            tupleMethod.addTypeVariables(typeVariableNames.get());
-        }
-
-        builder.addMethod(tupleMethod.build());
-    }
-
     void addCopy(TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
     {
         TypeName builderClassName = getBuilderClassName(className, typeVariableNames);
@@ -427,23 +396,62 @@ class Templates
         builder.addMethod(copySpec);
     }
 
-    void addClassTuple(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)
+    void addClassTuple(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json, Optional<List<TypeVariableName>> typeVariableNames)
     {
-        String classTupleName = className.simpleName() + Constants.TUPLE_METHOD;
-        ClassName tupleClassName = ClassName.get(Tuple.class);
-        ClassName classTupleClassName = ClassName.get(ClassTuple.class);
-
-        addClassTupleMethod(spec, builder, classTupleName, tupleClassName, classTupleClassName);
-        addClassTuplable(spec, builder, classTupleName, json);
+        addClassTupleMethods(spec, builder, className, typeVariableNames);
+        addClassTuplable(spec, builder, className, json);
     }
 
-    private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, String classTupleName, boolean json)
+    private void addClassTupleMethods(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
     {
-        String arguments = IntStream.range(0, spec.getItems().size())
-            .mapToObj(i -> "\"\"")
-            .collect(Collectors.joining(", "));
+        if ( spec.getItems().size() == 0 )
+        {
+            return;
+        }
+
+        ClassName matchClassName = ClassName.get(AnyVal.class);
+        ClassName anyClassTupleName = ClassName.get(AnyClassTuple.class);
+        TypeName localCaseClassName = getLocalCaseClassName(className, typeVariableNames);
+        TypeName classTupleClassName = ParameterizedTypeName.get(anyClassTupleName, localCaseClassName);
+
+        CodeBlock returnCode = CodeBlock.builder()
+            .addStatement("return new $T($T.Tu($L)){}", classTupleClassName, Tuple.class, spec.getItems().stream().map(CaseClassItem::getName).collect(Collectors.joining(", ")))
+            .build();
+
+        MethodSpec.Builder tupleMethod = MethodSpec
+            .methodBuilder(className.simpleName())
+            .returns(classTupleClassName)
+            .addCode(returnCode)
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+        spec.getItems().forEach(item -> {
+            WildcardTypeName wildcardType = WildcardTypeName.subtypeOf(TypeName.get(item.getType()).box());
+            ParameterizedTypeName type = ParameterizedTypeName.get(matchClassName, wildcardType);
+            tupleMethod.addParameter(type, item.getName());
+        });
+
+        if ( typeVariableNames.isPresent() )
+        {
+            tupleMethod.addTypeVariables(typeVariableNames.get());
+        }
+
+        builder.addMethod(tupleMethod.build());
+    }
+
+    private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)
+    {
+        CodeBlock anyVal = CodeBlock.of("$T.any()", AnyVal.class);
+        CodeBlock.Builder initialize = CodeBlock.builder().add("$L(", className.simpleName());
+        IntStream.range(0, spec.getItems().size())
+            .forEach(i -> {
+                if ( i > 0 )
+                {
+                    initialize.add(", ");
+                }
+                initialize.add(anyVal);
+            });
+        initialize.addStatement(").getClass()");
         FieldSpec.Builder fieldSpecBuilder = FieldSpec.builder(Class.class, "classTuplableClass", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-            .initializer("$L($L).getClass()", classTupleName, arguments);
+            .initializer(initialize.build());
 
         MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("getClassTuplableClass")
             .addAnnotation(Override.class)
@@ -457,28 +465,6 @@ class Templates
         }
         builder.addMethod(methodSpecBuilder.build());
         builder.addField(fieldSpecBuilder.build());
-    }
-
-    private void addClassTupleMethod(CaseClassSpec spec, TypeSpec.Builder builder, String classTupleName, ClassName tupleClassName, ClassName classTupleClassName)
-    {
-        String arguments = IntStream.rangeClosed(1, spec.getItems().size())
-            .mapToObj(i -> "_" + i)
-            .collect(Collectors.joining(", "));
-        CodeBlock codeBlock = CodeBlock.builder()
-            .addStatement("return () -> $T.$L($L)", tupleClassName, Constants.TUPLE_METHOD, arguments)
-            .build();
-
-        List<ParameterSpec> parameters = IntStream.rangeClosed(1, spec.getItems().size())
-            .mapToObj(i -> ParameterSpec.builder(Object.class, "_" + i).build())
-            .collect(Collectors.toList());
-
-        MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(classTupleName)
-            .returns(classTupleClassName)
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .addParameters(parameters)
-            .addCode(codeBlock)
-            ;
-        builder.addMethod(methodSpecBuilder.build());
     }
 
     private void toStringItem(MethodSpec.Builder toStringBuilder, CaseClassItem item, boolean isFirst)

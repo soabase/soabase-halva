@@ -34,23 +34,21 @@ import java.util.Optional;
 
 import static com.company.GenericExampleCase.GenericExampleCase;
 import static io.soabase.halva.caseclass.AnimalCase.AnimalCase;
-import static io.soabase.halva.caseclass.AnimalCase.AnimalCaseTu;
 import static io.soabase.halva.caseclass.ChairCase.ChairCase;
-import static io.soabase.halva.caseclass.ChairCase.ChairCaseTu;
 import static io.soabase.halva.caseclass.Value.Value;
-import static io.soabase.halva.caseclass.Value.ValueTu;
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.matcher.Matcher.*;
 import static io.soabase.halva.sugar.Sugar.List;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.Tu;
+import static io.soabase.halva.any.AnyVal.val;
 
 public class TestMatcher
 {
     @Test
     public void testBasic()
     {
-        Any<Integer> i = new AnyType<Integer>(){};
+        AnyVal<Integer> i = new AnyVal<Integer>(){};
 
         GenericExampleCase<String, Integer> generic = GenericExampleCase("hey", 100);
         int value = match(generic)
@@ -70,11 +68,11 @@ public class TestMatcher
 
     int subtract(Value a, Value b)
     {
-        Any<Integer> m = new AnyType<Integer>(){};
-        Any<Integer> n = new AnyType<Integer>(){};
+        AnyVal<Integer> m = new AnyVal<Integer>(){};
+        AnyVal<Integer> n = new AnyVal<Integer>(){};
 
         return match(Pair(a, b))
-            .caseOf( Pair(ValueTu(m), ValueTu(n)), () -> m.val() - n.val())
+            .caseOf( Pair(Value(m), Value(n)), () -> m.val() - n.val())
             .caseOf( () -> 0)
             .get();
     }
@@ -118,11 +116,11 @@ public class TestMatcher
 
     public int findAnyAge(Object obj)
     {
-        Any<String> s = new AnyType<String>(){};
-        Any<Integer> age = new AnyType<Integer>(){};
+        AnyVal<String> s = new AnyVal<String>(){};
+        AnyVal<Integer> age = new AnyVal<Integer>(){};
         return match(obj)
-            .caseOf(AnimalCaseTu(s, age), age::val)
-            .caseOf(ChairCaseTu(s, 3, age), age::val)
+            .caseOf(AnimalCase(s, age), age::val)
+            .caseOf(ChairCase(s, val(3), age), age::val)
             .caseOf(() -> 0)
             .get();
     }
@@ -187,13 +185,13 @@ public class TestMatcher
     @Test
     public void testBinding()
     {
-        Any<String> s = new AnyType<String>(){};
-        Any<Integer> i = new AnyType<Integer>(){};
+        AnyVal<String> s = new AnyVal<String>(){};
+        AnyVal<Integer> i = new AnyVal<Integer>(){};
         AnyVal<AnimalCase> animal = AnyVal.any();
         AnyVal<ChairCase> chair = AnyVal.any();
         Partial<Object> partial = Matcher.partial()
-            .bindTo(animal).caseOf(AnimalCaseTu(s, i), () -> animal.val().name())
-            .bindTo(chair).caseOf(ChairCaseTu(s, i, i), () -> chair.val().color());
+            .bindTo(animal).caseOf(AnimalCase(s, i), () -> animal.val().name())
+            .bindTo(chair).caseOf(ChairCase(s, i, i), () -> chair.val().color());
 
         Assert.assertEquals("bobby", partial.with(AnimalCase("bobby", 10)).get());
         Assert.assertEquals("blue", partial.with(ChairCase("blue", 10, 20)).get());

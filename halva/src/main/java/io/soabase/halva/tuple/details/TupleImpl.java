@@ -222,6 +222,15 @@ abstract class TupleImpl implements Tuple
             Object lhs = items.get(i);
             Object rhs = rhsItems.get(i);
 
+            if ( isClassTuple(lhs, rhs) )
+            {
+                if ( !checkClassTuple(lhs, rhs, processPredicates) )
+                {
+                    return false;
+                }
+                continue;
+            }
+
             if ( rhs instanceof Any )
             {
                 if ( ((Any)rhs).canSet(lhs) )
@@ -262,15 +271,6 @@ abstract class TupleImpl implements Tuple
             if ( processPredicates && (lhs instanceof Predicate) )
             {
                 if ( !((Predicate)lhs).test(rhs) )
-                {
-                    return false;
-                }
-                continue;
-            }
-
-            if ( isClassTuple(lhs, rhs) )
-            {
-                if ( !checkClassTuple(lhs, rhs, processPredicates) )
                 {
                     return false;
                 }

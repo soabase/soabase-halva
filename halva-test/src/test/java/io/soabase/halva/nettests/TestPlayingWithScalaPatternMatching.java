@@ -16,6 +16,7 @@
 
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.any.Any;
 import io.soabase.halva.any.AnyType;
@@ -25,13 +26,9 @@ import java.util.function.Predicate;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Add.Add;
-import static io.soabase.halva.nettests.Add.AddTu;
 import static io.soabase.halva.nettests.Const.Const;
-import static io.soabase.halva.nettests.Const.ConstTu;
 import static io.soabase.halva.nettests.Mult.Mult;
-import static io.soabase.halva.nettests.Mult.MultTu;
 import static io.soabase.halva.nettests.Neg.Neg;
-import static io.soabase.halva.nettests.Neg.NegTu;
 import static io.soabase.halva.nettests.X.X;
 import static io.soabase.halva.tuple.Tuple.Tu;
 
@@ -273,19 +270,19 @@ public class TestPlayingWithScalaPatternMatching
      */
     int eval(Expression expression, int xValue)
     {
-        Any<Integer> cst = new AnyType<Integer>(){};
-        Any<Expression> addLeft = new AnyType<Expression>(){};
-        Any<Expression> addRight = new AnyType<Expression>(){};
-        Any<Expression> multLeft = new AnyType<Expression>(){};
-        Any<Expression> multRight = new AnyType<Expression>(){};
-        Any<Expression> expr = new AnyType<Expression>(){};
+        AnyVal<Integer> cst = new AnyVal<Integer>(){};
+        AnyVal<Expression> addLeft = new AnyVal<Expression>(){};
+        AnyVal<Expression> addRight = new AnyVal<Expression>(){};
+        AnyVal<Expression> multLeft = new AnyVal<Expression>(){};
+        AnyVal<Expression> multRight = new AnyVal<Expression>(){};
+        AnyVal<Expression> expr = new AnyVal<Expression>(){};
 
         return match(expression)
             .caseOf(X(), () -> xValue)
-            .caseOf(ConstTu(cst), cst::val)
-            .caseOf(AddTu(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
-            .caseOf(MultTu(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
-            .caseOf(NegTu(expr), () -> -1 * eval(expr.val(), xValue))
+            .caseOf(Const(cst), cst::val)
+            .caseOf(Add(addLeft, addRight), () -> eval(addLeft.val(), xValue) + eval(addRight.val(), xValue))
+            .caseOf(Mult(multLeft, multRight), () -> eval(multLeft.val(), xValue) * eval(multRight.val(), xValue))
+            .caseOf(Neg(expr), () -> -1 * eval(expr.val(), xValue))
             .get();
     }
 
@@ -300,19 +297,19 @@ public class TestPlayingWithScalaPatternMatching
      */
     Expression deriv(Expression expression)
     {
-        Any<Integer> cst = new AnyType<Integer>(){};
-        Any<Expression> addLeft = new AnyType<Expression>(){};
-        Any<Expression> addRight = new AnyType<Expression>(){};
-        Any<Expression> multLeft = new AnyType<Expression>(){};
-        Any<Expression> multRight = new AnyType<Expression>(){};
-        Any<Expression> expr = new AnyType<Expression>(){};
+        AnyVal<Integer> cst = new AnyVal<Integer>(){};
+        AnyVal<Expression> addLeft = new AnyVal<Expression>(){};
+        AnyVal<Expression> addRight = new AnyVal<Expression>(){};
+        AnyVal<Expression> multLeft = new AnyVal<Expression>(){};
+        AnyVal<Expression> multRight = new AnyVal<Expression>(){};
+        AnyVal<Expression> expr = new AnyVal<Expression>(){};
 
         return match(expression)
             .caseOf(X(), () -> Const(1))
-            .caseOf(ConstTu(cst), () -> Const(0))
-            .caseOf(AddTu(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
-            .caseOf(MultTu(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
-            .caseOf(NegTu(expr), () -> Neg(deriv(expr.val())))
+            .caseOf(Const(cst), () -> Const(0))
+            .caseOf(Add(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
+            .caseOf(Mult(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))
+            .caseOf(Neg(expr), () -> Neg(deriv(expr.val())))
             .get();
     }
 

@@ -35,7 +35,6 @@ import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.Cash.Cash;
 import static io.soabase.halva.nettests.Civilian.Civilian;
 import static io.soabase.halva.nettests.Guy.Guy;
-import static io.soabase.halva.nettests.Guy.GuyTu;
 import static io.soabase.halva.nettests.SuperHero.SuperHero;
 import static io.soabase.halva.nettests.TestScalaEssentialsPatternMatchingAndCaseClasses.Power.*;
 import static io.soabase.halva.nettests.Villain.Villain;
@@ -159,9 +158,9 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
                 case ironMan => "anyone!"
               }
          */
-        Any<Integer> anyAge = new AnyType<Integer>(){};
+        AnyVal<Integer> anyAge = new AnyVal<Integer>(){};
         String result = match(Guy("Dr. Who", Integer.MAX_VALUE))
-            .caseOf(GuyTu("Dr. Who", anyAge), () -> "Exactly!")
+            .caseOf(Guy(val("Dr. Who"), anyAge), () -> "Exactly!")
             .caseOf(() -> "anyone!")
             .get();
         Assert.assertEquals("Exactly!", result);

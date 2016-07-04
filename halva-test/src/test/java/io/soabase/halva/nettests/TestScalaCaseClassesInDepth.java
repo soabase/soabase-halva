@@ -16,15 +16,14 @@
 
 package io.soabase.halva.nettests;
 
+import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyType;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.nettests.PersonCase.PersonCase;
-import static io.soabase.halva.nettests.ValueCase.ValueCaseTu;
+import static io.soabase.halva.nettests.ValueCase.ValueCase;
 
 // from http://www.alessandrolacava.com/blog/scala-case-classes-in-depth/
 public class TestScalaCaseClassesInDepth
@@ -78,10 +77,10 @@ public class TestScalaCaseClassesInDepth
         logValue(v) // prints We have a value here: 42
         logValue(v_1) // prints I'm sorry, no value
      */
-    public <T> String logValue(Maybe<T> value, Any<T> v)
+    public <T> String logValue(Maybe<T> value, AnyVal<T> v)
     {
         return match(value)
-            .caseOf(ValueCaseTu(v), () -> "We have a value here: " + v.val())
+            .caseOf(ValueCase(v), () -> "We have a value here: " + v.val())
             .caseOf(() -> "I'm sorry, no value")
             .get();
     }
@@ -91,7 +90,7 @@ public class TestScalaCaseClassesInDepth
     {
         Maybe<Integer> v = ValueCase.<Integer>builder().value(42).build();
         Maybe<Integer> v1 = new NoValue<Integer>(){};
-        Any<Integer> typeLiteral = new AnyType<Integer>(){};
+        AnyVal<Integer> typeLiteral = new AnyVal<Integer>(){};
         Assert.assertEquals("We have a value here: 42", logValue(v, typeLiteral));
         Assert.assertEquals("I'm sorry, no value", logValue(v1, typeLiteral));
     }

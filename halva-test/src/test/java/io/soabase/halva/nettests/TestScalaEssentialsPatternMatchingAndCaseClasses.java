@@ -20,6 +20,7 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.matcher.Matcher;
 import io.soabase.halva.matcher.Partial;
+import io.soabase.halva.matcher.PartialFirst;
 import io.soabase.halva.sugar.ConsList;
 import io.soabase.halva.tuple.ClassTuple;
 import io.soabase.halva.tuple.Tuplable;
@@ -170,7 +171,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     Optional<List<Power>> getPowers(Character person)
     {
         AnyVal<String> anyName = new AnyVal<String>(){};
-        AnyVal<ConsList<Power>> anyPowers = new AnyVal<ConsList<Power>>(){};
+        AnyVal<List<Power>> anyPowers = new AnyVal<List<Power>>(){};
         return match(person)
             .caseOf(SuperHeroMatch(anyName, anyPowers, lit(Optional.of(TonyStark))), () -> Optional.of(anyPowers.val()))
             .caseOf(Optional::empty)
@@ -284,7 +285,7 @@ public class TestScalaEssentialsPatternMatchingAndCaseClasses
     public void testPartials()
     {
         AnyVal<Integer> anyInt = new AnyVal<Integer>(){};
-        Partial<Integer> partial = Matcher.<Integer>partial()
+        Partial<String, Integer> partial = Matcher.<Integer>partial()
             .caseOf(8, () -> "eight")
             .caseOf(anyInt, () -> "Number " + anyInt.val());
         Assert.assertEquals("eight", partial.with(8).get());

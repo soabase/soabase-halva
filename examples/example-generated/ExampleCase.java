@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
 public class ExampleCase implements Serializable, Example, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = ExampleCaseMatch(AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any()).getClass();
+    private static final Class classTuplableClass = ExampleCaseMatch(Any.any(), Any.any(), Any.any(), Any.any(), Any.any()).getClass();
 
     private final String firstName;
 
@@ -90,7 +90,7 @@ public class ExampleCase implements Serializable, Example, Tuplable, ClassTuplab
     }
 
     public static AnyClassTuple<ExampleCase> ExampleCaseMatch(AnyVal<? extends String> firstName, AnyVal<? extends String> lastName, AnyVal<? extends Integer> age, AnyVal<? extends Boolean> active, AnyVal<? extends List<? extends Date>> importantDates) {
-        return new AnyClassTuple<ExampleCase>(Tuple.Tu(Any.anyLoose(firstName), Any.anyLoose(lastName), Any.anyLoose(age), Any.anyLoose(active), Any.anyLoose(importantDates))){};
+        return new AnyClassTuple<ExampleCase>(Tuple.Tu(Any.loose(firstName), Any.loose(lastName), Any.loose(age), Any.loose(active), Any.loose(importantDates))){};
     }
 
     @Override

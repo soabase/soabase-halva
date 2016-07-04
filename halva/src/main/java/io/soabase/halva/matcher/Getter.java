@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-class Getter<ARG> implements GettersBase
+class Getter<RES, ARG> implements GettersBase<RES>
 {
     private final List<Entry<ARG>> entries = new ArrayList<>();
     private final Optional<ARG> arg;
@@ -59,7 +59,7 @@ class Getter<ARG> implements GettersBase
         this.arg = Optional.ofNullable(arg);
     }
 
-    Getter(ARG arg, Getter<ARG> rhs)
+    Getter(ARG arg, Getter<RES, ARG> rhs)
     {
         this.defaultEntry = rhs.defaultEntry;
         this.arg = Optional.ofNullable(arg);
@@ -86,7 +86,7 @@ class Getter<ARG> implements GettersBase
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Optional<T> getOpt()
+    public Optional<RES> getOpt()
     {
         ARG localArg = getArg();
 
@@ -98,14 +98,14 @@ class Getter<ARG> implements GettersBase
 
         if ( first.isPresent() )
         {
-            return Optional.ofNullable((T)first.get().get());
+            return Optional.ofNullable((RES)first.get().get());
         }
         if ( defaultEntry != null )
         {
             Optional<? extends Supplier<?>> supplier = defaultEntry.curry.apply(localArg);
             if ( supplier.isPresent() )
             {
-                return Optional.ofNullable((T)supplier.get().get());
+                return Optional.ofNullable((RES)supplier.get().get());
             }
         }
         return Optional.empty();
@@ -113,9 +113,9 @@ class Getter<ARG> implements GettersBase
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T get()
+    public RES get()
     {
-        return (T)getOpt().orElseThrow(() -> new MatchError("No matches found and no default provided for: " + getArg()));
+        return getOpt().orElseThrow(() -> new MatchError("No matches found and no default provided for: " + getArg()));
     }
 
     @Override

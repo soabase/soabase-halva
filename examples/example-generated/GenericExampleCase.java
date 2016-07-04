@@ -17,7 +17,7 @@ import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
 public class GenericExampleCase<A, B> implements Serializable, GenericExample<A, B>, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = GenericExampleCaseMatch(AnyVal.any(), AnyVal.any()).getClass();
+    private static final Class classTuplableClass = GenericExampleCaseMatch(Any.any(), Any.any()).getClass();
 
     private final A first;
 
@@ -57,7 +57,7 @@ public class GenericExampleCase<A, B> implements Serializable, GenericExample<A,
     }
 
     public static <A, B> AnyClassTuple<GenericExampleCase<A, B>> GenericExampleCaseMatch(AnyVal<? extends A> first, AnyVal<? extends B> second) {
-        return new AnyClassTuple<GenericExampleCase<A, B>>(Tuple.Tu(Any.anyLoose(first), Any.anyLoose(second))){};
+        return new AnyClassTuple<GenericExampleCase<A, B>>(Tuple.Tu(Any.loose(first), Any.loose(second))){};
     }
 
     @Override

@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @Generated("io.soabase.halva.container.TypeContainer")
 public class ExampleContainer {
     public static class MyStack implements Serializable, ExampleContainer_.MyStack, Tuplable, ClassTuplable {
-        private static final Class classTuplableClass = MyStackMatch(AnyVal.any(), AnyVal.any()).getClass();
+        private static final Class classTuplableClass = MyStackMatch(Any.any(), Any.any()).getClass();
 
         private final Stack stack;
 
@@ -63,7 +63,7 @@ public class ExampleContainer {
         }
 
         public static AnyClassTuple<MyStack> MyStackMatch(AnyVal<? extends Stack> stack, AnyVal<? extends Integer> value) {
-            return new AnyClassTuple<MyStack>(Tuple.Tu(Any.anyLoose(stack), Any.anyLoose(value))){};
+            return new AnyClassTuple<MyStack>(Tuple.Tu(Any.loose(stack), Any.loose(value))){};
         }
 
         @Override

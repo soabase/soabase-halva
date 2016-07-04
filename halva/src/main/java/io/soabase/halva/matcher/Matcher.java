@@ -15,6 +15,7 @@
  */
 package io.soabase.halva.matcher;
 
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
@@ -23,9 +24,9 @@ import java.util.function.Supplier;
 /**
  * Main factory for pattern matching
  */
-public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<ARG>>
+public class Matcher<ARG>
 {
-    private AnyVal nextBinder = null;
+    private final ARG arg;
 
     /**
      * Start a pattern matcher on the given value
@@ -44,107 +45,68 @@ public class Matcher<ARG> extends Getter<ARG> implements CasesBase<ARG, Matcher<
      *
      * @return a new partial
      */
-    public static <ARG> Partial<ARG> partial()
+    public static <ARG> PartialFirst<ARG> partial()
     {
-        return new PartialImpl<>();
+        return new PartialFirst<>();
     }
 
-    <T> Matcher<ARG> register(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)
+    public <RES> MatcherNext<RES, ARG> as()
     {
-        ExtractObject extracter = new ExtractObject(fields, guard, nextBinder);
-        addEntry(new Entry<>(extracter, proc));
-        nextBinder = null;
-        return this;
+        return new MatcherNext<>(arg);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOf(Tuple fields, Supplier<Boolean> guard, Supplier<T> proc)
+    public <RES> MatcherNext<RES, ARG> as(RES dummy)
     {
-        return register(fields, guard, proc);
+        return new MatcherNext<>(arg);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOf(Tuple fields, Supplier<T> proc)
+    public <RES> MatcherNext<RES, ARG> as(AnyType<RES> dummy)
     {
-        return register(fields, null, proc);
+        return new MatcherNext<>(arg);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOf(Object lhs, Supplier<T> proc)
+    public <RES> MatcherNext<RES, ARG> as(Class<RES> dummy)
     {
-        return register(Tuple.Tu(lhs), null, proc);
+        return new MatcherNext<>(arg);
     }
 
-    @Override
-    public Matcher<ARG> caseOfUnit(Object lhs, Runnable proc)
+    public <RES> MatcherNext<RES, ARG> caseOf(Tuple fields, Supplier<Boolean> guard, Supplier<RES> proc)
     {
-        return register(Tuple.Tu(lhs), null, wrap(proc));
+        return new MatcherNext<RES, ARG>(arg).caseOf(fields, guard, proc);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOf(Object lhs, Supplier<Boolean> guard, Supplier<T> proc)
+    public <RES> MatcherNext<RES, ARG> caseOf(Tuple fields, Supplier<RES> proc)
     {
-        return register(Tuple.Tu(lhs), guard, proc);
+        return new MatcherNext<RES, ARG>(arg).caseOf(fields, proc);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOfUnit(Tuple lhs, Supplier<Boolean> guard, Runnable proc)
+    public <RES> MatcherNext<RES, ARG> caseOf(Object lhs, Supplier<RES> proc)
     {
-        return register(lhs, guard, wrap(proc));
+        return new MatcherNext<RES, ARG>(arg).caseOf(lhs, proc);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOfUnit(Object lhs, Supplier<Boolean> guard, Runnable proc)
+    public <RES> MatcherNext<RES, ARG> caseOf(Object lhs, Supplier<Boolean> guard, Supplier<RES> proc)
     {
-        return register(Tuple.Tu(lhs), guard, wrap(proc));
+        return new MatcherNext<RES, ARG>(arg).caseOf(lhs, guard, proc);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOfUnit(Tuple lhs, Runnable proc)
+    public <RES> MatcherNext<RES, ARG> caseOfTest(Predicate<ARG> tester, Supplier<RES> proc)
     {
-        return register(lhs, null, wrap(proc));
+        return new MatcherNext<RES, ARG>(arg).caseOfTest(tester, proc);
     }
 
-    @Override
-    public <T> Matcher<ARG> caseOfTest(Predicate<ARG> tester, Supplier<T> proc)
+    public <RES> MatcherNext<RES, ARG> caseOf(Supplier<RES> proc)
     {
-        return register(Tuple.Tu(tester), null, proc);
+        return new MatcherNext<RES, ARG>(arg).caseOf(proc);
     }
 
-    @Override
-    public Matcher<ARG> caseOfTestUnit(Predicate<ARG> tester, Runnable proc)
+    public <RES> MatcherNext<RES, ARG> bindTo(AnyVal<RES> binder)
     {
-        return register(Tuple.Tu(tester), null, wrap(proc));
-    }
-
-    @Override
-    public <T> Matcher<ARG> caseOf(Supplier<T> proc)
-    {
-        setDefault(proc);
-        return this;
-    }
-
-    @Override
-    public Matcher<ARG> caseOfUnit(Runnable proc)
-    {
-        setDefault(wrap(proc));
-        return this;
-    }
-
-    @Override
-    public <T> Matcher<ARG> bindTo(AnyVal<T> binder)
-    {
-        nextBinder = binder;
-        return this;
+        return new MatcherNext<RES, ARG>(arg).bindTo(binder);
     }
 
     Matcher(ARG arg)
     {
-        super(arg);
-    }
-
-    private <T> Supplier<T> wrap(Runnable proc)
-    {
-        return () -> { proc.run(); return null; };
+        this.arg = arg;
     }
 }

@@ -31,7 +31,7 @@ import javax.annotation.Generated;
 
 @Generated("io.soabase.halva.caseclass.CaseClass")
 public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
-    private static final Class classTuplableClass = TestCaseMatch(AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any(), AnyVal.any()).getClass();
+    private static final Class classTuplableClass = TestCaseMatch(Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any(), Any.any()).getClass();
 
     private final String name;
 
@@ -176,7 +176,7 @@ public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
     }
 
     public static AnyClassTuple<TestCase> TestCaseMatch(AnyVal<? extends String> name, AnyVal<? extends Integer> date, AnyVal<? extends List<? extends Long>> longList, AnyVal<? extends Map<? extends String, ? extends List<Date>>> stringDateMap, AnyVal<? extends ConcurrentMap<? extends String, ? extends String>> concurrentMap, AnyVal<? extends Boolean> truth, AnyVal<? extends Date> activation, AnyVal<? extends Double> percent, AnyVal<? extends Float> section, AnyVal<? extends Boolean> isIt, AnyVal<? extends String> mutableValue, AnyVal<? extends Charset> charset) {
-        return new AnyClassTuple<TestCase>(Tuple.Tu(Any.anyLoose(name), Any.anyLoose(date), Any.anyLoose(longList), Any.anyLoose(stringDateMap), Any.anyLoose(concurrentMap), Any.anyLoose(truth), Any.anyLoose(activation), Any.anyLoose(percent), Any.anyLoose(section), Any.anyLoose(isIt), Any.anyLoose(mutableValue), Any.anyLoose(charset))){};
+        return new AnyClassTuple<TestCase>(Tuple.Tu(Any.loose(name), Any.loose(date), Any.loose(longList), Any.loose(stringDateMap), Any.loose(concurrentMap), Any.loose(truth), Any.loose(activation), Any.loose(percent), Any.loose(section), Any.loose(isIt), Any.loose(mutableValue), Any.loose(charset))){};
     }
 
     @Override

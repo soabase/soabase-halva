@@ -18,8 +18,6 @@ package io.soabase.halva.nettests;
 
 import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.caseclass.CaseClass;
-import io.soabase.halva.any.Any;
-import io.soabase.halva.any.AnyType;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.function.Predicate;
@@ -309,7 +307,7 @@ public class TestPlayingWithScalaPatternMatching
         AnyVal<Expression> expr = new AnyVal<Expression>(){};
 
         return match(expression)
-            .caseOf(X(), () -> Const(1))
+            .caseOf(X(), () -> (Expression)Const(1))
             .caseOf(ConstMatch(cst), () -> Const(0))
             .caseOf(AddMatch(addLeft, addRight), () -> Add(deriv(addLeft.val()), deriv(addRight.val())))
             .caseOf(MultMatch(multLeft, multRight), () -> Add(Mult(deriv(multLeft.val()), multRight.val()), Mult(multLeft.val(), deriv(multRight.val()))))

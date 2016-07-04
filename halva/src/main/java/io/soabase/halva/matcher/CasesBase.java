@@ -20,7 +20,7 @@ import io.soabase.halva.tuple.Tuple;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface CasesBase<ARG, M>
+public interface CasesBase<RES, ARG, M>
 {
     /**
      * Add a case to the pattern matcher with a guard test. If the value matches
@@ -31,7 +31,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOf(Tuple lhs, Supplier<Boolean> guard, Supplier<T> proc);
+    M caseOf(Tuple lhs, Supplier<Boolean> guard, Supplier<RES> proc);
 
     /**
      * Add a case to the pattern matcher with a guard test. If the value matches
@@ -42,7 +42,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOf(Object lhs, Supplier<Boolean> guard, Supplier<T> proc);
+    M caseOf(Object lhs, Supplier<Boolean> guard, Supplier<RES> proc);
 
     /**
      * Add a case to the pattern matcher. If the value matches,
@@ -52,7 +52,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOf(Tuple lhs, Supplier<T> proc);
+    M caseOf(Tuple lhs, Supplier<RES> proc);
 
     /**
      * Add a case to the pattern matcher. If the value matches,
@@ -62,7 +62,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOf(Object lhs, Supplier<T> proc);
+    M caseOf(Object lhs, Supplier<RES> proc);
 
     /**
      * Add a case to the pattern matcher with a guard test. If the value matches
@@ -73,7 +73,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOfUnit(Tuple lhs, Supplier<Boolean> guard, Runnable proc);
+    M caseOfUnit(Tuple lhs, Supplier<Boolean> guard, Runnable proc);
 
     /**
      * Add a case to the pattern matcher with a guard test. If the value matches
@@ -84,7 +84,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOfUnit(Object lhs, Supplier<Boolean> guard, Runnable proc);
+    M caseOfUnit(Object lhs, Supplier<Boolean> guard, Runnable proc);
 
     /**
      * Add a case to the pattern matcher. If the value matches,
@@ -94,7 +94,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOfUnit(Tuple lhs, Runnable proc);
+    M caseOfUnit(Tuple lhs, Runnable proc);
 
     /**
      * Add a case to the pattern matcher. If the value matches,
@@ -104,7 +104,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc to execute on match
      * @return this
      */
-    <T> M caseOfUnit(Object lhs, Runnable proc);
+    M caseOfUnit(Object lhs, Runnable proc);
 
     /**
      * The predicate is executed. If the test passes, the proc is executed
@@ -113,7 +113,7 @@ public interface CasesBase<ARG, M>
      * @param proc proc
      * @return this
      */
-    <T> M caseOfTest(Predicate<ARG> tester, Supplier<T> proc);
+    M caseOfTest(Predicate<ARG> tester, Supplier<RES> proc);
 
     /**
      * The predicate is executed. If the test passes, the proc is executed
@@ -131,7 +131,7 @@ public interface CasesBase<ARG, M>
      * @param proc the proc
      * @return this
      */
-    <T> M caseOf(Supplier<T> proc);
+    M caseOf(Supplier<RES> proc);
 
     /**
      * The default case - if there are no matches in any other cases,
@@ -149,5 +149,5 @@ public interface CasesBase<ARG, M>
      * @param binder value to hold the match
      * @return this
      */
-    <T> M bindTo(AnyVal<T> binder);
+    M bindTo(AnyVal<RES> binder);
 }

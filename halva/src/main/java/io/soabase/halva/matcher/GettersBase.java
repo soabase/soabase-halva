@@ -20,14 +20,14 @@ import java.util.Optional;
 /**
  * <em>Terminal operations</em>
  */
-public interface GettersBase
+public interface GettersBase<RES>
 {
     /**
      * Process all the added cases and return the match
      *
      * @return Optional of the match. If the optional is empty, there is no match
      */
-    <T> Optional<T> getOpt();
+    Optional<RES> getOpt();
 
     /**
      * Process all the added cases and return the match
@@ -35,7 +35,7 @@ public interface GettersBase
      * @return the match
      * @throws MatchError if there are no matches
      */
-    <T> T get();
+    RES get();
 
     /**
      * Process all the added cases without returning any value

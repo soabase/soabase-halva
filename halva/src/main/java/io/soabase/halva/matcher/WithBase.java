@@ -15,7 +15,7 @@
  */
 package io.soabase.halva.matcher;
 
-public interface WithBase<ARG>
+public interface WithBase<RES, ARG>
 {
-    GettersBase with(ARG arg);
+    GettersBase<RES> with(ARG arg);
 }

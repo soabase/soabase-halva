@@ -15,7 +15,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +42,7 @@ public class ExampleCase implements Serializable, Example, Tuplable, ClassTuplab
             lastName = "";
         }
         if ( importantDates == null ) {
-            importantDates = Collections.unmodifiableList(new ArrayList<>());
+            importantDates = Collections.emptyList();
         }
         this.firstName = firstName;
         this.lastName = lastName;

@@ -19,10 +19,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,10 +63,10 @@ public class TestCase implements Serializable, Test, Tuplable, ClassTuplable {
             date = Test.super.date();
         }
         if ( longList == null ) {
-            longList = Collections.unmodifiableList(new ArrayList<>());
+            longList = Collections.emptyList();
         }
         if ( stringDateMap == null ) {
-            stringDateMap = Collections.unmodifiableMap(new HashMap<>());
+            stringDateMap = Collections.emptyMap();
         }
         if ( concurrentMap == null ) {
             concurrentMap = new ConcurrentHashMap<>();

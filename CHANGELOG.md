@@ -1,5 +1,30 @@
 # Change Log
 
+## [halva-0.2.0](https://github.com/Randgalt/halva/tree/halva-0.2.0) (2016-07-05)
+[Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.3...halva-0.2.0)
+
+**Implemented enhancements:**
+
+- Pattern matching should support @ operator [\#1](https://github.com/Randgalt/halva/issues/1)
+
+**Closed issues:**
+
+- Review Type Safety - Pattern/Extraction is currently loosely typed. Make it strongly typed without \(hopefully\) losing usability [\#35](https://github.com/Randgalt/halva/issues/35)
+- Support command line overrides for Annotation attributes [\#34](https://github.com/Randgalt/halva/issues/34)
+- MonadicFor annotation can generate NPE [\#32](https://github.com/Randgalt/halva/issues/32)
+- Use enums for case objects [\#31](https://github.com/Randgalt/halva/issues/31)
+- Should \(can?\) type aliases also "override" the static members to "fix" the return type [\#29](https://github.com/Randgalt/halva/issues/29)
+- Have simpler Consable\<T\> interface? [\#28](https://github.com/Randgalt/halva/issues/28)
+- Support generated values inside of generated classes [\#26](https://github.com/Randgalt/halva/issues/26)
+- Support container types for concrete classes [\#25](https://github.com/Randgalt/halva/issues/25)
+
+**Merged pull requests:**
+
+- Tighten type safety [\#39](https://github.com/Randgalt/halva/pull/39) ([Randgalt](https://github.com/Randgalt))
+- Prefer Collections.emptyList over allocating an empty, immutable coll… [\#36](https://github.com/Randgalt/halva/pull/36) ([azell](https://github.com/azell))
+- Prefer an enum for case object implementation. [\#33](https://github.com/Randgalt/halva/pull/33) ([azell](https://github.com/azell))
+- Reuse an immutable ObjectMapper, and perform a full \(deep\) value equa… [\#27](https://github.com/Randgalt/halva/pull/27) ([azell](https://github.com/azell))
+
 ## [halva-0.1.3](https://github.com/Randgalt/halva/tree/halva-0.1.3) (2016-06-27)
 [Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.2...halva-0.1.3)
 

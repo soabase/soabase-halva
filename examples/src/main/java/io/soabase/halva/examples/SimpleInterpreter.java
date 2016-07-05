@@ -2,6 +2,7 @@ package io.soabase.halva.examples;
 
 import io.soabase.halva.alias.TypeAlias;
 import io.soabase.halva.any.Any;
+import io.soabase.halva.any.AnyType;
 import io.soabase.halva.caseclass.CaseClass;
 import io.soabase.halva.caseclass.CaseClassIgnore;
 import io.soabase.halva.caseclass.CaseObject;
@@ -12,21 +13,21 @@ import java.util.function.Function;
 
 import static io.soabase.halva.comprehension.For.forComp;
 import static io.soabase.halva.examples.Add.Add;
-import static io.soabase.halva.examples.Add.AddMatch;
+import static io.soabase.halva.examples.Add.AddAny;
 import static io.soabase.halva.examples.App.App;
-import static io.soabase.halva.examples.App.AppMatch;
+import static io.soabase.halva.examples.App.AppAny;
 import static io.soabase.halva.examples.Con.Con;
-import static io.soabase.halva.examples.Con.ConMatch;
+import static io.soabase.halva.examples.Con.ConAny;
 import static io.soabase.halva.examples.Environment.Environment;
 import static io.soabase.halva.examples.Fun.Fun;
-import static io.soabase.halva.examples.Fun.FunMatch;
+import static io.soabase.halva.examples.Fun.FunAny;
 import static io.soabase.halva.examples.Lam.Lam;
-import static io.soabase.halva.examples.Lam.LamMatch;
+import static io.soabase.halva.examples.Lam.LamAny;
 import static io.soabase.halva.examples.M.M;
 import static io.soabase.halva.examples.Num.Num;
-import static io.soabase.halva.examples.Num.NumMatch;
+import static io.soabase.halva.examples.Num.NumAny;
 import static io.soabase.halva.examples.Var.Var;
-import static io.soabase.halva.examples.Var.VarMatch;
+import static io.soabase.halva.examples.Var.VarAny;
 import static io.soabase.halva.examples.Wrong.Wrong;
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.Iterable;
@@ -72,7 +73,7 @@ class SimpleInterpreter
         AnyVal<Value> b = new AnyVal<Value>(){};
         AnyVal<Environment> e1 = Any.typeAlias(Environment.TypeAliasType);
 
-        return match(e).
+        return match(e).as(new AnyType<M<Value>>(){}).
             caseOf( List(), () -> unitM(Wrong) ).
             caseOf( Any.headAnyTail(Pair(y, b), e1), () -> x.equals(y.val()) ? unitM(b.val()) : lookup(x, e1.val()) ).
         get();
@@ -83,8 +84,8 @@ class SimpleInterpreter
         AnyVal<Integer> m = new AnyVal<Integer>(){};
         AnyVal<Integer> n = new AnyVal<Integer>(){};
 
-        return match(Pair(a, b)).
-            caseOf( Pair(NumMatch(m), NumMatch(n)), () -> unitM(Num(m.val() + n.val())) ).
+        return match(Pair(a, b)).as(new AnyType<M<Value>>(){}).
+            caseOf( Pair(NumAny(m), NumAny(n)), () -> unitM(Num(m.val() + n.val())) ).
             caseOf( () -> unitM(Wrong) ).
         get();
     }
@@ -94,7 +95,7 @@ class SimpleInterpreter
         AnyVal<Function<Value, M<Value>>> k = new AnyVal<Function<Value, M<Value>>>(){};
 
         return match(a).
-            caseOf( FunMatch(k), () -> k.val().apply(b) ).
+            caseOf( FunAny(k), () -> k.val().apply(b) ).
             caseOf( () -> unitM(Wrong) ).
         get();
     }
@@ -108,20 +109,20 @@ class SimpleInterpreter
         AnyVal<Term> t = new AnyVal<Term>(){};
         AnyVal<Term> f = new AnyVal<Term>(){};
 
-        AnyVal<M<Value>> a = AnyVal.any();
-        AnyVal<M<Value>> b = AnyVal.any();
-        AnyVal<M<Value>> c = AnyVal.any();
+        AnyVal<M<Value>> a = Any.any();
+        AnyVal<M<Value>> b = Any.any();
+        AnyVal<M<Value>> c = Any.any();
 
         return match(term).
-            caseOf( VarMatch(x), () -> lookup( x.val(), e) ).
-            caseOf( ConMatch(n), () -> unitM( Num(n.val())) ).
-            caseOf( AddMatch(l, r), () -> forComp (a, Iterable(interp(l.val(), e)) ).
+            caseOf( VarAny(x), () -> lookup( x.val(), e) ).
+            caseOf( ConAny(n), () -> unitM( Num(n.val())) ).
+            caseOf( AddAny(l, r), () -> forComp (a, Iterable(interp(l.val(), e)) ).
                                       forComp( b, () -> Iterable(interp(r.val(), e)) ).
                                       forComp( c, () -> Iterable(add(a.val().value(), b.val().value())) ).
                                       yield1( c::val )
                    ).
-            caseOf( LamMatch(x, t), () -> unitM( Fun(arg -> interp(t.val(), Environment(cons(Pair(x.val(), arg), e))))) ).
-            caseOf( AppMatch(f, t), () -> forComp( a, Iterable(interp(f.val(), e)) ).
+            caseOf( LamAny(x, t), () -> unitM( Fun(arg -> interp(t.val(), Environment(cons(Pair(x.val(), arg), e))))) ).
+            caseOf( AppAny(f, t), () -> forComp( a, Iterable(interp(f.val(), e)) ).
                                       forComp( b, () -> Iterable(interp(t.val(), e)) ).
                                       forComp( c, () -> Iterable(apply(a.val().value(), b.val().value())) ).
                                       yield1( c::val )

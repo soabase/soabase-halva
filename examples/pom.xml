@@ -16,7 +16,7 @@
         <maven-compiler-plugin-version>3.5.1</maven-compiler-plugin-version>
         <maven-shade-plugin-version>2.4.3</maven-shade-plugin-version>
 
-        <halva-version>0.1.4-SNAPSHOT</halva-version>
+        <halva-version>0.2.0</halva-version>
     </properties>
 
     <dependencies>

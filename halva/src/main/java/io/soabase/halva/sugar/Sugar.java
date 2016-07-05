@@ -74,7 +74,7 @@ public class Sugar
     {
         if ( (a == null) || (a.length == 0) )
         {
-            return Collections.unmodifiableSet(new HashSet<>());
+            return Collections.emptySet();
         }
         Set<T> set = new HashSet<>(a.length);
         Collections.addAll(set, a);
@@ -93,7 +93,7 @@ public class Sugar
     {
         if ( (kvs == null) || (kvs.length == 0) )
         {
-            return Collections.unmodifiableMap(new HashMap<>());
+            return Collections.emptyMap();
         }
         Map<K, V> map = new HashMap<>(kvs.length);
         for ( Tuple2<K, V> t : kvs )

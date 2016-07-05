@@ -68,7 +68,7 @@ to match a PersonCase instance with the name "John Galt" and extract the age:
 Any<Integer> age = new Any<Integer>(){};
 int foundAge = match(person)
     .caseOf(PersonCaseAny(Any.lit("John Galt"), age), () -> age.val())
-    caseOf(() -> 0)
+    .caseOf(() -> 0)
     .get()
 ```
 

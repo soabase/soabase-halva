@@ -22,6 +22,7 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -44,7 +45,7 @@ class Templates
         this.environment = environment;
     }
 
-    void addField(CaseClassItem item, TypeSpec.Builder builder, TypeName type, boolean makeFinal, boolean makeVolatile, boolean json)
+    void addField(CaseClassItem item, TypeSpec.Builder builder, TypeName type, boolean makeFinal, boolean makeVolatile, Settings settings)
     {
         TypeName localType;
         if ( makeFinal )
@@ -64,10 +65,17 @@ class Templates
         {
             fieldBuilder.addModifiers(Modifier.VOLATILE);
         }
-        if ( json && !checkParentJsonAnnotations(item.getElement(), fieldBuilder) )
+        if ( settings.json && !checkParentJsonAnnotations(item.getElement(), fieldBuilder) )
         {
             AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.annotation", "JsonProperty")).build();
             fieldBuilder.addAnnotation(annotationSpec);
+        }
+        if ( settings.beanValidation )
+        {
+            item.getElement().getAnnotationMirrors().stream()
+                .filter(this::checkExternalAnnotation)
+                .map(AnnotationSpec::get)
+                .forEach(fieldBuilder::addAnnotation);
         }
         builder.addField(fieldBuilder.build());
     }
@@ -116,37 +124,37 @@ class Templates
         builder.addMethod(methodSpec);
     }
 
-    void addGetterItem(CaseClassItem item, TypeSpec.Builder builder, boolean json)
+    void addGetterItem(CaseClassItem item, TypeSpec.Builder builder, Settings settings)
     {
         TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
-        addField(item, builder, type, true, false, json);
+        addField(item, builder, type, true, false, settings);
         addGetter(item, builder, type, Modifier.PUBLIC);
     }
 
-    void addSetterItem(CaseClassItem item, TypeSpec.Builder builder, boolean json)
+    void addSetterItem(CaseClassItem item, TypeSpec.Builder builder, Settings settings)
     {
         TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
-        addField(item, builder, type, false, true, json);
+        addField(item, builder, type, false, true, settings);
         addGetter(item, builder, type, Modifier.PUBLIC);
         addSetter(item, builder, type, Modifier.PUBLIC);
     }
 
-    void addItem(CaseClassItem item, TypeSpec.Builder builder, boolean json)
+    void addItem(CaseClassItem item, TypeSpec.Builder builder, Settings settings)
     {
         if ( item.isMutable() )
         {
-            addSetterItem(item, builder, json);
+            addSetterItem(item, builder, settings);
         }
         else
         {
-            addGetterItem(item, builder, json);
+            addGetterItem(item, builder, settings);
         }
     }
 
-    void addBuilderSetterItem(CaseClassItem item, TypeSpec.Builder builder, TypeName builderClassName, boolean json)
+    void addBuilderSetterItem(CaseClassItem item, TypeSpec.Builder builder, TypeName builderClassName, Settings settings)
     {
         TypeName type = environment.getGeneratedManager().toTypeName(item.getType());
-        addField(item, builder, type, false, false, json);
+        addField(item, builder, type, false, false, settings);
         addBuilderSetter(item, builder, type, builderClassName, Modifier.PUBLIC);
     }
 
@@ -359,10 +367,10 @@ class Templates
         builder.addMethod(methodSpecBuilder.build());
     }
 
-    void addBuilder(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json, Optional<List<TypeVariableName>> typeVariableNames)
+    void addBuilder(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Settings settings, Optional<List<TypeVariableName>> typeVariableNames)
     {
         TypeName builderClassName = getBuilderClassName(className, typeVariableNames);
-        TypeSpec typeSpec = buildBuilderClass(spec, className, builderClassName, json, typeVariableNames);
+        TypeSpec typeSpec = buildBuilderClass(spec, className, builderClassName, settings, typeVariableNames);
         MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("builder")
             .returns(builderClassName)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -399,10 +407,10 @@ class Templates
         builder.addMethod(copySpec);
     }
 
-    void addClassTuple(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json, Optional<List<TypeVariableName>> typeVariableNames)
+    void addClassTuple(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Settings settings, Optional<List<TypeVariableName>> typeVariableNames)
     {
         addClassTupleMethods(spec, builder, className, typeVariableNames);
-        addClassTuplable(spec, builder, className, json);
+        addClassTuplable(spec, builder, className, settings);
     }
 
     private void addClassTupleMethods(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Optional<List<TypeVariableName>> typeVariableNames)
@@ -475,7 +483,7 @@ class Templates
         return className.simpleName() + "Any";
     }
 
-    private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, boolean json)
+    private void addClassTuplable(CaseClassSpec spec, TypeSpec.Builder builder, ClassName className, Settings settings)
     {
         CodeBlock anyVal = CodeBlock.of("$T.any()", Any.class);
         CodeBlock.Builder initialize = CodeBlock.builder().add("$L(", getClassTupleMethodName(className));
@@ -497,7 +505,7 @@ class Templates
             .returns(Class.class)
             .addCode(CodeBlock.builder().addStatement("return classTuplableClass").build())
             ;
-        if ( json )
+        if ( settings.json )
         {
             methodSpecBuilder.addAnnotation(ClassName.get("com.fasterxml.jackson.annotation", "JsonIgnore"));
         }
@@ -555,7 +563,7 @@ class Templates
         return codeBuilder.build();
     }
 
-    private TypeSpec buildBuilderClass(CaseClassSpec spec, ClassName caseClassName, TypeName builderClassName, boolean json, Optional<List<TypeVariableName>> typeVariableNames)
+    private TypeSpec buildBuilderClass(CaseClassSpec spec, ClassName caseClassName, TypeName builderClassName, Settings settings, Optional<List<TypeVariableName>> typeVariableNames)
     {
         TypeName localCaseClassName = getLocalCaseClassName(caseClassName, typeVariableNames);
         CodeBlock.Builder newBuilder = CodeBlock.builder().add("return new $L$L(", caseClassName.simpleName(), getDuck(typeVariableNames));
@@ -576,7 +584,7 @@ class Templates
         MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PRIVATE)
             ;
-        if ( json )
+        if ( settings.json )
         {
             AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.annotation", "JsonCreator")).build();
             constructorSpecBuilder.addAnnotation(annotationSpec);
@@ -592,7 +600,7 @@ class Templates
             .addMethod(constructorSpecBuilder.build())
             .addMethod(copyConstructorBuilder.build())
             .addMethod(newSpecBuilder.build());
-        if ( json )
+        if ( settings.json )
         {
             AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.databind.annotation", "JsonPOJOBuilder"))
                 .addMember("withPrefix", "\"\"")
@@ -604,7 +612,7 @@ class Templates
             builder.addTypeVariables(typeVariableNames.get());
         }
 
-        spec.getItems().forEach(item -> addBuilderSetterItem(item, builder, builderClassName, json));
+        spec.getItems().forEach(item -> addBuilderSetterItem(item, builder, builderClassName, settings));
 
         return builder.build();
     }
@@ -637,5 +645,13 @@ class Templates
             }
             return false;
         }).count() > 0;
+    }
+
+    private boolean checkExternalAnnotation(AnnotationMirror annotation)
+    {
+        String path = annotation.getAnnotationType().asElement().toString();
+
+        return path.startsWith("io.soabase.halva.caseclass.")
+            || path.startsWith("com.fasterxml.jackson.annotation.") ? false : true;
     }
 }

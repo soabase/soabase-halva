@@ -22,15 +22,17 @@ import io.soabase.halva.any.AnyVal;
 import io.soabase.halva.processor.Environment;
 import io.soabase.halva.tuple.Tuple;
 import io.soabase.halva.tuple.details.Tuple0;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -65,18 +67,24 @@ class Templates
         {
             fieldBuilder.addModifiers(Modifier.VOLATILE);
         }
-        if ( settings.json && !checkParentJsonAnnotations(item.getElement(), fieldBuilder) )
+        Set<AnnotationSpec> annotationSpecs = new HashSet<>();
+        if ( settings.json )
         {
-            AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.annotation", "JsonProperty")).build();
-            fieldBuilder.addAnnotation(annotationSpec);
+            List<AnnotationSpec> parent = parentJsonAnnotations(item.getElement());
+            if ( parent.isEmpty() )
+            {
+                AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.annotation", "JsonProperty")).build();
+                parent = Collections.singletonList(annotationSpec);
+            }
+            annotationSpecs.addAll(parent);
         }
-        if ( settings.beanValidation )
+        if ( settings.validate )
         {
             item.getElement().getAnnotationMirrors().stream()
-                .filter(this::checkExternalAnnotation)
                 .map(AnnotationSpec::get)
-                .forEach(fieldBuilder::addAnnotation);
+                .forEach(annotationSpecs::add);
         }
+        fieldBuilder.addAnnotations(annotationSpecs);
         builder.addField(fieldBuilder.build());
     }
 
@@ -631,27 +639,17 @@ class Templates
         return localCaseClassName;
     }
 
-    private boolean checkParentJsonAnnotations(Element element, FieldSpec.Builder fieldBuilder)
+    private List<AnnotationSpec> parentJsonAnnotations(Element element)
     {
         return element.getAnnotationMirrors().stream().filter(annotation -> {
-            if ( annotation.getAnnotationType().asElement().toString().equals("com.fasterxml.jackson.annotation.JsonProperty")
-                || annotation.getAnnotationType().asElement().toString().equals("com.fasterxml.jackson.annotation.JsonIgnore") )
-            {
-                AnnotationSpec.Builder annotationSpec = AnnotationSpec.builder(ClassName.get((TypeElement)annotation.getAnnotationType().asElement()));
-                annotation.getElementValues().entrySet().forEach(entry ->
-                    annotationSpec.addMember(entry.getKey().getSimpleName().toString(), "$S", entry.getValue().getValue()));
-                fieldBuilder.addAnnotation(annotationSpec.build());
-                return true;
-            }
-            return false;
-        }).count() > 0;
-    }
-
-    private boolean checkExternalAnnotation(AnnotationMirror annotation)
-    {
-        String path = annotation.getAnnotationType().asElement().toString();
-
-        return path.startsWith("io.soabase.halva.caseclass.")
-            || path.startsWith("com.fasterxml.jackson.annotation.") ? false : true;
+            String type = annotation.getAnnotationType().asElement().toString();
+            return ( type.equals("com.fasterxml.jackson.annotation.JsonProperty")
+                || type.equals("com.fasterxml.jackson.annotation.JsonIgnore") );
+        }).map(annotation -> {
+            AnnotationSpec.Builder annotationSpec = AnnotationSpec.builder(ClassName.get((TypeElement)annotation.getAnnotationType().asElement()));
+            annotation.getElementValues().entrySet().forEach(entry ->
+                annotationSpec.addMember(entry.getKey().getSimpleName().toString(), "$S", entry.getValue().getValue()));
+            return annotationSpec.build();
+        }).collect(Collectors.toList());
     }
 }

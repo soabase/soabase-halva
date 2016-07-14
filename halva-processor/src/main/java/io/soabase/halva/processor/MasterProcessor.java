@@ -88,7 +88,7 @@ import static io.soabase.halva.tuple.Tuple.Pair;
     "CaseClass.suffix",
     "CaseClass.unsuffix",
     "CaseClass.json",
-    "CaseClass.beanValidation",
+    "CaseClass.validate",
     "CaseObject.suffix",
     "CaseObject.unsuffix",
     "CaseObject.asEnum",

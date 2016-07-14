@@ -16,6 +16,9 @@
 
 package io.soabase.halva.caseclass;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,11 +35,11 @@ import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class TestBeanValidation
+public class TestValidation
 {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    @CaseClass(beanValidation = true)
+    @CaseClass(json = true, validate = true)
     interface ChildBean
     {
         @NotNull
@@ -45,19 +48,21 @@ public class TestBeanValidation
 
         @Min(5)
         @Max(10)
+        @JsonIgnore // not a repeatable annotation type
         int quantity();
     }
 
-    @CaseClass(beanValidation = true)
+    @CaseClass(json = true, validate = true)
     interface ParentBean
     {
         @NotNull
         @Valid
+        @JsonProperty("child") // not a repeatable annotation type
         ChildBean child();
     }
 
     @Test
-    public void testBeanValidationPasses()
+    public void testValidationPasses()
     {
         ParentBean parent = ParentBeanCase(ChildBeanCase("tester", 10));
         Set<ConstraintViolation<ParentBean>> violations = validator.validate(parent);
@@ -66,7 +71,7 @@ public class TestBeanValidation
     }
 
     @Test
-    public void testBeanValidationFails()
+    public void testValidationFails()
     {
         ParentBean parent = ParentBeanCase(ChildBeanCase("A very long name", 4));
         Set<ConstraintViolation<ParentBean>> violations = validator.validate(parent);

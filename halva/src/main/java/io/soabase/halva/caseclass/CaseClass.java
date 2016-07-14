@@ -56,5 +56,5 @@ public @interface CaseClass
      *
      * @return true/false
      */
-    boolean beanValidation() default false;
+    boolean validate() default false;
 }

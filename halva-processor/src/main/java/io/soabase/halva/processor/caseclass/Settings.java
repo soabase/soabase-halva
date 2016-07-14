@@ -23,7 +23,7 @@ class Settings
     final boolean isCaseObject;
     final boolean asEnum;
     final boolean json;
-    final boolean beanValidation;
+    final boolean validate;
 
     Settings(CaseClassSpec spec)
     {
@@ -32,6 +32,6 @@ class Settings
         isCaseObject = reader.getName().equals(CaseObject.class.getSimpleName());
         asEnum = isCaseObject && reader.getBoolean("asEnum");
         json = reader.getBoolean("json");
-        beanValidation = reader.getBoolean("beanValidation");
+        validate = reader.getBoolean("validate");
     }
 }

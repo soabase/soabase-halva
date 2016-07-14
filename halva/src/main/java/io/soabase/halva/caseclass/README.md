@@ -106,7 +106,7 @@ JSR 349 annotations on methods are recognized only if the methods use the JavaBe
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@CaseClass(beanValidation = true)
+@CaseClass(validate = true)
 public interface Example {
     @NotNull
     @Size(min = 6, max = 12)

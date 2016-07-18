@@ -98,6 +98,22 @@ public interface Example {
 }
 ```
 
+**Bean Validation**
+
+JSR 349 annotations on methods are recognized only if the methods use the JavaBean naming convention.  If enabled, any non-Jackson annotations defined on an interface method will be copied to the field definition.
+
+```java
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+@CaseClass(validate = true)
+public interface Example {
+    @NotNull
+    @Size(min = 6, max = 12)
+    String name();
+}
+```
+
 **Case Objects**
 
 Case objects are created just like case classes except you use the `@CaseObject` annotation instead. Additionally, case objects cannot contain any *case class field*s. The generated class is a singleton and the annotation processor generates a public static final field that has the singleton instance. Becauase a static instance is generated, any declared methods must have a default implementation. E.g.

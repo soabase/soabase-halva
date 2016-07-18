@@ -56,15 +56,14 @@ class PassCreateClass implements Pass
     {
         String packageName = environment.getPackage(spec.getAnnotatedElement());
         GeneratedClass generatedClass = environment.getGeneratedManager().resolve(spec.getAnnotatedElement());
-        boolean isCaseObject = spec.getAnnotationReader().getName().equals(CaseObject.class.getSimpleName());
+        Settings settings = new Settings(spec);
 
         environment.log("Generating " + spec.getAnnotationReader().getName() + " for " + generatedClass.getOriginal() + " as " + generatedClass.getGenerated());
 
         Collection<Modifier> modifiers = environment.getModifiers(spec.getAnnotatedElement());
         TypeName baseType = TypeName.get(spec.getAnnotatedElement().asType());
-        boolean asEnum = isCaseObject && spec.getAnnotationReader().getBoolean("asEnum");
         TypeSpec.Builder builder;
-        if ( asEnum )
+        if ( settings.asEnum )
         {
             builder = TypeSpec.enumBuilder(generatedClass.getGenerated())
                 .addEnumConstant(generatedClass.getGenerated().simpleName());
@@ -77,36 +76,35 @@ class PassCreateClass implements Pass
         builder.addSuperinterface(baseType)
             .addSuperinterface(Tuplable.class)
             .addModifiers(modifiers.toArray(new Modifier[modifiers.size()]));
-        if ( !isCaseObject )
+        if ( !settings.isCaseObject )
         {
             builder.addSuperinterface(ClassTuplable.class);
         }
 
         Optional<List<TypeVariableName>> typeVariableNames = environment.addTypeVariableNames(builder::addTypeVariables, spec.getAnnotatedElement().getTypeParameters());
-        boolean json = spec.getAnnotationReader().getBoolean("json");
-        if ( json )
+        if ( settings.json )
         {
             AnnotationSpec annotationSpec = AnnotationSpec.builder(ClassName.get("com.fasterxml.jackson.databind.annotation", "JsonDeserialize"))
                 .addMember("builder", "$T.class", templates.getBuilderClassName(generatedClass.getGenerated(), typeVariableNames))
                 .build();
             builder.addAnnotation(annotationSpec);
         }
-        spec.getItems().forEach(item -> templates.addItem(item, builder, json));
-        if ( isCaseObject )
+        spec.getItems().forEach(item -> templates.addItem(item, builder, settings));
+        if ( settings.isCaseObject )
         {
-            if ( !asEnum )
+            if ( !settings.asEnum )
             {
                 templates.addObjectInstance(builder, generatedClass.getGenerated(), typeVariableNames);
             }
         }
         else
         {
-            templates.addBuilder(spec, builder, generatedClass.getGenerated(), json, typeVariableNames);
+            templates.addBuilder(spec, builder, generatedClass.getGenerated(), settings, typeVariableNames);
             templates.addCopy(builder, generatedClass.getGenerated(), typeVariableNames);
             templates.addApplyBuilder(spec, builder, generatedClass.getGenerated(), typeVariableNames);
-            templates.addClassTuple(spec, builder, generatedClass.getGenerated(), json, typeVariableNames);
+            templates.addClassTuple(spec, builder, generatedClass.getGenerated(), settings, typeVariableNames);
         }
-        if ( !asEnum )
+        if ( !settings.asEnum )
         {
             templates.addConstructor(spec, builder);
             templates.addEquals(spec, builder, generatedClass.getGenerated());

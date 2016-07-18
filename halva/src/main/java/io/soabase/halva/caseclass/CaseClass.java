@@ -50,4 +50,11 @@ public @interface CaseClass
      * @return true/false
      */
     boolean json() default false;
+
+    /**
+     * If true, add annotations to the field definition for JSR 349
+     *
+     * @return true/false
+     */
+    boolean validate() default false;
 }

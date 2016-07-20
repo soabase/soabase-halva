@@ -1,5 +1,16 @@
 # Change Log
 
+## [halva-0.2.1](https://github.com/Randgalt/halva/tree/halva-0.2.1) (2016-07-20)
+[Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.2.0...halva-0.2.1)
+
+**Closed issues:**
+
+- Think about supporting Bean Validation 1.1 annotations on fields [\#37](https://github.com/Randgalt/halva/issues/37)
+
+**Merged pull requests:**
+
+- Support JSR 349 annotations on fields. [\#40](https://github.com/Randgalt/halva/pull/40) ([azell](https://github.com/azell))
+
 ## [halva-0.2.0](https://github.com/Randgalt/halva/tree/halva-0.2.0) (2016-07-05)
 [Full Changelog](https://github.com/Randgalt/halva/compare/halva-0.1.3...halva-0.2.0)
 

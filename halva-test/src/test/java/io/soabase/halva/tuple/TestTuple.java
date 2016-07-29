@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static io.soabase.halva.matcher.Matcher.match;
 import static io.soabase.halva.sugar.Sugar.List;
+import static io.soabase.halva.tuple.Assign.Assign;
 import static io.soabase.halva.tuple.Tuple.Pair;
 import static io.soabase.halva.tuple.Tuple.Tu;
 import static org.junit.Assert.assertEquals;
@@ -81,5 +82,23 @@ public class TestTuple
         Assert.assertEquals("-10/-10 :: 20/20", extractFunc(List(Pair("-10", -10), Pair("20", 20))));
         Assert.assertEquals(Pair("100", 100) + " :: 20/20 30/30", extractFunc(List(Pair("100", 100), Pair("20", 20), Pair("30", 30))));
         Assert.assertEquals(Pair("66", 66) + " :: " + List(Pair("100", 100), Pair("200", 200)), extractFunc(List(Pair("66", 66), Pair("100", 100), Pair("200", 200))));
+    }
+
+    @Test
+    public void testMultiAssignment()
+    {
+        AnyVal<Integer> a = Any.any();
+        AnyVal<Integer> b = Any.any();
+        Assign(a, b).from(Tu(1, 2));
+        Assert.assertEquals(a.val().intValue(), 1);
+        Assert.assertEquals(b.val().intValue(), 2);
+
+        AnyVal<String> x = Any.any();
+        AnyVal<List<String>> y = Any.any();
+        Assign(x, y, a, b).from(Tu("hey", List("one", "two"), 10, 20));
+        Assert.assertEquals(x.val(), "hey");
+        Assert.assertEquals(y.val(), List("one", "two"));
+        Assert.assertEquals(a.val().intValue(), 10);
+        Assert.assertEquals(b.val().intValue(), 20);
     }
 }

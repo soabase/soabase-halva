@@ -6,6 +6,7 @@ A Tuple is a heterogeneous collection of items. Halva provides Tuple sizes for 0
 * Like Scala, Tuple2 provides a `swap()` method. 
 * Like Scala, Halva provides a `Pair` class that extends `Tuple2`.
 * Like Scala, Tuple1 has a public field named `_1`, Tuple2 has public fields named `_1`, `_2` and so on.
+* Like Scala, multi-assignment is supported
 
 #### Usage
 
@@ -44,4 +45,29 @@ public static class Tester implements Tuplable {
 
 // this prints "true"
 System.out.println(Tu(1, 2).equals(new Tester()));
+```
+
+#### Multi-assignment
+
+The helper class `Assign` is used to do Scala style multi-assignment. You'll need to pre-declare [Anys](../any/README.md) to hold the values. E.g.
+
+```java
+import static io.soabase.halva.tuple.Assign.Assign;
+
+AnyVal<Integer> a = Any.any();
+AnyVal<String> b = Any.any();
+Assign(a, b).from(Tu(1, "one"));
+```
+
+or
+
+```java
+import static io.soabase.halva.tuple.Assign.Assign;
+
+...
+public Tuple2<Person, Status> getDetails(...) { ... }
+
+AnyVal<Person> p = Any.any();
+AnyVal<Status> s = Any.any();
+Assign(p, s).from(getDetails(...));
 ```

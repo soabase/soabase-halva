@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * Marks a class as a template for a implicit class
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ImplicitClass
 {

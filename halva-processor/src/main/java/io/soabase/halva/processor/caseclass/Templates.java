@@ -28,6 +28,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +82,7 @@ class Templates
         if ( settings.validate )
         {
             item.getElement().getAnnotationMirrors().stream()
+                .filter(annotation -> !annotation.getAnnotationType().toString().startsWith("java.lang."))
                 .map(AnnotationSpec::get)
                 .forEach(annotationSpecs::add);
         }

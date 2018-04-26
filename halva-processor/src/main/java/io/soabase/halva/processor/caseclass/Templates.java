@@ -446,8 +446,6 @@ class Templates
             }
             returnCode.add("$T.loose($L)", anyClassName, item.getName());
         });
-        spec.getItems().forEach(item -> {
-        });
         returnCode.addStatement(")){}");
 
         MethodSpec.Builder tupleMethod = MethodSpec
@@ -466,7 +464,15 @@ class Templates
                     TypeName[] typeNames = new TypeName[typeArguments.size()];
                     for ( int i = 0; i < typeArguments.size(); ++i )
                     {
-                        typeNames[i] = WildcardTypeName.subtypeOf(TypeName.get(typeArguments.get(i)).box());
+                        TypeMirror thisMirror = typeArguments.get(i);
+                        if ( thisMirror.getKind() == TypeKind.WILDCARD )
+                        {
+                            typeNames[i] = WildcardTypeName.get(thisMirror);
+                        }
+                        else
+                        {
+                            typeNames[i] = WildcardTypeName.subtypeOf(TypeName.get(thisMirror).box());
+                        }
                     }
                     mainType = ParameterizedTypeName.get(ClassName.get((TypeElement)declaredType.asElement()), typeNames);
                 }

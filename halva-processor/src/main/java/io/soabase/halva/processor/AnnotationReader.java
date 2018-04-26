@@ -43,7 +43,7 @@ public class AnnotationReader
         this.annotationFullName = annotationFullName;
         Optional<? extends AnnotationMirror> annotation = (element == null) ? Optional.empty() :
             element.getAnnotationMirrors().stream()
-            .filter(mirror -> element.getAnnotationMirrors().get(0).getAnnotationType().asElement().getSimpleName().toString().equals(annotationName))
+            .filter(mirror -> mirror.getAnnotationType().asElement().getSimpleName().toString().equals(annotationName))
             .findFirst();
         if ( !annotation.isPresent() )
         {

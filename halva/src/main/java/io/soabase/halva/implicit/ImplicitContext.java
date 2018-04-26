@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * methods and fields in the class annotated with {@link Implicit} will be candidates
  * for implicit injection
  */
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
 public @interface ImplicitContext
 {

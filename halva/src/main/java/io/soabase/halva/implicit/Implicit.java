@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * Marks a field, parameter or method as being implicit
  */
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface Implicit
 {

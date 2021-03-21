@@ -1,16 +1,37 @@
-forms:
-  myForm:
-  - fullName: { label: "Name", type: "string", pattern: ".* .*", readonly: true, placeholder: "Place name here" }
-  - age: { label: "Age", type: "int", min: 21, max: 100 }
-  - favouriteColour: { label: "Favourite colour", type: "string", allow: ["gray", "grey"], search: true }
-  - languages: { label: "Preferred languages", type: "string+", allow: "${locale.languages()}" }
-  - password: { label: "Password", type: "string", inputType: "password" }
-  - rememberMe: { label: "Remember me", type: "boolean" }
-  - photo: { label: "Photo", type: "file" }
-  - email: { label: "Email", type: "string", inputType: "email" }
+configuration:
+  arguments:
+    myForm:
+      lastName: Smith
 
 flows:
   default:
-  - log: "Hello Concord User"
   - form: myForm
-    saveSubmittedBy: true
+    # form calls can override form values or provide additional data
+    values:
+      lastName: "Appleseed"
+      sum: "${1 + 2}"
+      address:
+        city: Toronto
+        province: Ontario
+        country: Canada
+
+  - log: "Hello, ${myForm.firstName} ${myForm.lastName}"
+  - log: "We got your file and stored it as ${myForm.aFile}"
+  - log: "You have following skills"
+  - task: log
+    in:
+      msg: "Skill -> ${item}"
+    withItems: ${myForm.skills}
+  - if: ${myForm.tosAgree}
+    then:
+      - log: "${myForm.firstName} says: I have agreed to the Terms and Conditions"
+
+forms:
+  myForm:
+  - firstName: { label: "First name", type: "string", value: "John" }
+  - lastName: { label: "Last name", type: "string" }
+  - age: { label: "Age", type: "int", min: 21, max: 999 }
+  - color: { label: "Favorite color", type: "string", allow: ["red", "green", "blue"] }
+  - aFile: { label: "A file", type: "file?" }
+  - tosAgree: { label: "Terms and conditions read", type: "boolean", value: true }
+  - skills: { label: "Skills", type: "string*", allow: ["css", "design", "angular"]}

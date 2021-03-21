@@ -1,3 +1,16 @@
+forms:
+  myForm:
+  - fullName: { label: "Name", type: "string", pattern: ".* .*", readonly: true, placeholder: "Place name here" }
+  - age: { label: "Age", type: "int", min: 21, max: 100 }
+  - favouriteColour: { label: "Favourite colour", type: "string", allow: ["gray", "grey"], search: true }
+  - languages: { label: "Preferred languages", type: "string+", allow: "${locale.languages()}" }
+  - password: { label: "Password", type: "string", inputType: "password" }
+  - rememberMe: { label: "Remember me", type: "boolean" }
+  - photo: { label: "Photo", type: "file" }
+  - email: { label: "Email", type: "string", inputType: "email" }
+
 flows:
   default:
   - log: "Hello Concord User"
+  - form: myForm
+    saveSubmittedBy: true
